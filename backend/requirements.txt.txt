@@ -1,0 +1,34 @@
+flask==3.0.0
+flask-cors==4.0.0
+biopython==1.83
+pandas==2.1.0
+requests==2.31.0
+```
+
+---
+
+## **📂 FINAL FOLDER STRUCTURE (What You Should Have)**
+```
+amp-analysis-platform/
+│
+├── backend/
+│   ├── analysis/
+│   │   ├── __init__.py              ← YOU CREATE THIS
+│   │   ├── physicochemical.py       ← YOU CREATE THIS
+│   │   ├── structure.py             ← YOU CREATE THIS
+│   │   └── functional.py            ← YOU CREATE THIS
+│   │
+│   ├── utils/
+│   │   ├── __init__.py              ← YOU CREATE THIS
+│   │   ├── file_parser.py           ← YOU CREATE THIS
+│   │   └── validators.py            ← YOU CREATE THIS
+│   │
+│   ├── venv/                        ← CREATED BY: python -m venv venv
+│   ├── app.py                       ← YOU CREATE THIS
+│   └── requirements.txt             ← YOU CREATE THIS
+│
+├── frontend/
+│   └── index.html                   ← YOU CREATE THIS
+│
+├── data/
+└── structures/
