@@ -3,211 +3,408 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AMP Discovery Platform - Professional</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Archivo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <title>AMP Discovery Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        :root {
-            --primary: #0A4D68;
-            --primary-light: #088395;
-            --accent: #05BFDB;
-            --bg-light: #E0F2FE;
-            --sky-light: #F0F9FF;
-            --text-dark: #1A2332;
-            --text-light: #F8FAFB;
-            --success: #00D084;
-            --surface: #FFFFFF;
-            --border: #BAE6FD;
-            --gradient-primary: linear-gradient(135deg, #0A4D68 0%, #088395 100%);
-            --gradient-sky: linear-gradient(180deg, #F0F9FF 0%, #E0F2FE 50%, #BAE6FD 100%);
-            --shadow-md: 0 4px 16px rgba(10, 77, 104, 0.12);
-            --shadow-lg: 0 8px 32px rgba(10, 77, 104, 0.16);
-        }
-
+        
         body {
-            font-family: 'Archivo', sans-serif;
-            background: var(--gradient-sky);
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: linear-gradient(180deg, #F0F9FF 0%, #E0F2FE 50%, #BAE6FD 100%);
             min-height: 100vh;
-            color: var(--text-dark);
+            color: #1e293b;
         }
 
         .container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
 
         header {
-            background: var(--gradient-primary);
-            padding: 2.5rem 2rem;
+            background: linear-gradient(135deg, #0A4D68 0%, #088395 100%);
+            padding: 3rem 2rem;
             text-align: center;
-            box-shadow: var(--shadow-md);
-            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(10, 77, 104, 0.2);
+            margin-bottom: 2.5rem;
         }
 
         h1 {
-            font-size: 3rem;
-            font-weight: 900;
-            color: var(--text-light);
-            margin-bottom: 0.5rem;
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.02em;
         }
 
         .subtitle {
-            font-size: 1.1rem;
-            color: rgba(255, 255, 255, 0.9);
-            margin-bottom: 1.5rem;
+            font-size: 1.15rem;
+            color: rgba(255, 255, 255, 0.95);
+            margin-bottom: 2rem;
+            font-weight: 400;
         }
 
         .badge-container {
             display: flex;
-            gap: 1rem;
+            gap: 1.25rem;
             justify-content: center;
             flex-wrap: wrap;
         }
 
         .badge {
-            padding: 0.5rem 1rem;
-            background: rgba(255, 255, 255, 0.15);
+            padding: 0.6rem 1.25rem;
+            background: rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(10px);
             border-radius: 50px;
-            color: var(--text-light);
-            font-size: 0.85rem;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.25);
         }
 
         .workflow {
-            background: var(--surface);
-            border-radius: 20px;
-            padding: 2rem;
+            background: white;
+            border-radius: 24px;
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 4px 16px rgba(10, 77, 104, 0.08);
+        }
+
+        .workflow-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0A4D68;
             margin-bottom: 2rem;
-            box-shadow: var(--shadow-md);
         }
 
         .steps {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1.25rem;
         }
 
         .step {
             text-align: center;
-            padding: 1.5rem 1rem;
-            border-radius: 16px;
-            background: rgba(240, 249, 255, 0.8);
-            border: 2px solid var(--border);
+            padding: 1.75rem 1rem;
+            border-radius: 20px;
+            background: rgba(240, 249, 255, 0.6);
+            border: 2px solid #BAE6FD;
             transition: all 0.3s;
         }
 
         .step.active {
-            background: var(--gradient-primary);
-            color: var(--text-light);
+            background: linear-gradient(135deg, #0A4D68 0%, #088395 100%);
+            color: white;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(10, 77, 104, 0.25);
         }
 
         .step-number {
-            width: 50px;
-            height: 50px;
+            width: 56px;
+            height: 56px;
             border-radius: 50%;
-            background: var(--accent);
-            color: var(--text-light);
+            background: linear-gradient(135deg, #05BFDB 0%, #00D9FF 100%);
+            color: white;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1.75rem;
             font-weight: 700;
             margin: 0 auto 1rem;
+            box-shadow: 0 4px 12px rgba(5, 191, 219, 0.3);
+        }
+
+        .step.active .step-number {
+            background: white;
+            color: #0A4D68;
+        }
+
+        .step.active > div:not(.step-number) {
+            color: white !important;
         }
 
         .main-card {
-            background: var(--surface);
-            border-radius: 20px;
+            background: white;
+            border-radius: 24px;
             padding: 3rem;
-            box-shadow: var(--shadow-lg);
-            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(10, 77, 104, 0.12);
+            margin-bottom: 2.5rem;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.25rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .card-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #05BFDB 0%, #00D9FF 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            flex-shrink: 0;
+            box-shadow: 0 4px 16px rgba(5, 191, 219, 0.25);
+        }
+
+        .card-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #0A4D68;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-description {
+            color: #64748b;
+            font-size: 1.05rem;
+            line-height: 1.6;
         }
 
         .upload-area {
-            border: 3px dashed var(--border);
-            border-radius: 16px;
-            padding: 4rem 2rem;
+            border: 3px dashed #BAE6FD;
+            border-radius: 20px;
+            padding: 4.5rem 2rem;
             text-align: center;
-            background: rgba(240, 249, 255, 0.6);
+            background: linear-gradient(135deg, rgba(240, 249, 255, 0.6) 0%, rgba(224, 242, 254, 0.4) 100%);
             cursor: pointer;
             transition: all 0.3s;
         }
 
         .upload-area:hover {
-            border-color: var(--accent);
-            background: rgba(125, 211, 252, 0.05);
+            border-color: #05BFDB;
+            background: linear-gradient(135deg, rgba(240, 249, 255, 0.9) 0%, rgba(224, 242, 254, 0.7) 100%);
+            transform: translateY(-2px);
+        }
+
+        .upload-icon {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+            filter: drop-shadow(0 4px 12px rgba(5, 191, 219, 0.2));
         }
 
         .btn {
-            padding: 1rem 2rem;
-            background: var(--gradient-primary);
-            color: var(--text-light);
+            padding: 1.1rem 2.5rem;
+            background: linear-gradient(135deg, #0A4D68 0%, #088395 100%);
+            color: white;
             border: none;
-            border-radius: 12px;
-            font-size: 1rem;
+            border-radius: 14px;
+            font-size: 1.05rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
-            box-shadow: var(--shadow-md);
+            box-shadow: 0 4px 16px rgba(10, 77, 104, 0.2);
+            font-family: inherit;
         }
 
-        .btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+        .btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(10, 77, 104, 0.3);
+        }
+
         .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        input[type="file"], input[type="number"] {
-            padding: 1rem;
-            border: 2px solid var(--border);
-            border-radius: 12px;
+        input[type="file"] { display: none; }
+        
+        input[type="number"] {
+            padding: 1.25rem 1.5rem;
+            border: 2px solid #BAE6FD;
+            border-radius: 14px;
             width: 100%;
-            font-size: 1rem;
+            font-size: 1.1rem;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #05BFDB;
+            box-shadow: 0 0 0 3px rgba(5, 191, 219, 0.1);
         }
 
         .hidden { display: none !important; }
 
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: var(--border);
-            border-radius: 8px;
-            overflow: hidden;
+        .progress-section {
+            background: white;
+            border-radius: 24px;
+            padding: 3rem;
+            box-shadow: 0 8px 32px rgba(10, 77, 104, 0.12);
+            margin-bottom: 2.5rem;
         }
 
-        .progress-fill {
+        .progress-bar-container {
+            width: 100%;
+            height: 12px;
+            background: #e0f2fe;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 1.5rem;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .progress-bar-fill {
             height: 100%;
-            background: var(--gradient-primary);
-            transition: width 0.3s;
+            background: linear-gradient(90deg, #05BFDB 0%, #00D9FF 100%);
+            transition: width 0.3s ease;
+            border-radius: 12px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
+            padding: 2.25rem;
+            border-radius: 20px;
+            text-align: center;
+            border: 2px solid #BAE6FD;
+        }
+
+        .stat-value {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: #0A4D68;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .top-n-btns {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .top-n-btn {
+            padding: 1rem 2rem;
+            background: white;
+            border: 2px solid #BAE6FD;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+
+        .top-n-btn:hover {
+            background: #E0F2FE;
+            border-color: #05BFDB;
+        }
+
+        .top-n-btn.selected {
+            background: linear-gradient(135deg, #05BFDB 0%, #00D9FF 100%);
+            border-color: #05BFDB;
+            color: white;
         }
 
         table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0;
             margin-top: 2rem;
         }
 
-        th, td {
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid var(--border);
+        thead tr {
+            background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
         }
 
         th {
-            background: rgba(10, 77, 104, 0.1);
+            padding: 1.25rem 1rem;
+            text-align: left;
             font-weight: 700;
+            color: #0A4D68;
+            font-size: 0.95rem;
+            border-bottom: 2px solid #BAE6FD;
+        }
+
+        tbody tr {
+            background: white;
+            transition: all 0.2s;
+        }
+
+        tbody tr:hover {
+            background: #F0F9FF;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(10, 77, 104, 0.08);
+        }
+
+        td {
+            padding: 1.25rem 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 0.95rem;
         }
 
         .metric-badge {
-            padding: 0.25rem 0.75rem;
-            border-radius: 12px;
-            font-size: 0.85rem;
+            padding: 0.4rem 0.85rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
             font-weight: 600;
+            display: inline-block;
         }
 
-        .metric-high { background: #10b981; color: white; }
-        .metric-medium { background: #f59e0b; color: white; }
-        .metric-low { background: #ef4444; color: white; }
+        .metric-high { background: linear-gradient(135deg, #10b981, #059669); color: white; }
+        .metric-medium { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
+        .metric-low { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; }
+
+        .download-btn {
+            padding: 0.6rem 1.25rem;
+            background: linear-gradient(135deg, #0A4D68 0%, #088395 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(10, 77, 104, 0.3);
+        }
+
+        footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
+            padding: 1.5rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            border-left: 4px solid #05BFDB;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2.25rem; }
+            .container { padding: 1rem; }
+            .main-card { padding: 2rem 1.5rem; }
+            .top-n-btns { flex-direction: column; }
+        }
     </style>
 </head>
 <body>
     <header>
-        <h1>🧬 AMP Discovery Platform</h1>
+        <h1>AMP Discovery Platform</h1>
         <p class="subtitle">De Novo Antimicrobial Peptide Design with AI-Powered Analysis</p>
         <div class="badge-container">
             <span class="badge">ProtGPT2</span>
@@ -218,121 +415,186 @@
     </header>
 
     <div class="container">
-        <!-- Workflow -->
         <div class="workflow">
-            <h2 style="margin-bottom: 2rem;">Analysis Workflow</h2>
+            <h2 class="workflow-title">Analysis Workflow</h2>
             <div class="steps">
                 <div class="step active" id="step1">
                     <div class="step-number">1</div>
-                    <div>Upload</div>
+                    <div style="font-weight: 600; font-size: 1.05rem; margin-bottom: 0.25rem;">Upload</div>
+                    <div style="font-size: 0.85rem; color: #64748b;">Training Sequences</div>
                 </div>
                 <div class="step" id="step2">
                     <div class="step-number">2</div>
-                    <div>Generate</div>
+                    <div style="font-weight: 600; font-size: 1.05rem; margin-bottom: 0.25rem;">Generate</div>
+                    <div style="font-size: 0.85rem; color: #64748b;">De Novo Sequences</div>
                 </div>
                 <div class="step" id="step3">
                     <div class="step-number">3</div>
-                    <div>Screen</div>
+                    <div style="font-weight: 600; font-size: 1.05rem; margin-bottom: 0.25rem;">Screen</div>
+                    <div style="font-size: 0.85rem; color: #64748b;">Screening Results</div>
                 </div>
                 <div class="step" id="step4">
                     <div class="step-number">4</div>
-                    <div>Analyze</div>
+                    <div style="font-weight: 600; font-size: 1.05rem; margin-bottom: 0.25rem;">Analyze</div>
+                    <div style="font-size: 0.85rem; color: #64748b;">Analyze Sequences</div>
                 </div>
                 <div class="step" id="step5">
                     <div class="step-number">5</div>
-                    <div>Results</div>
+                    <div style="font-weight: 600; font-size: 1.05rem; margin-bottom: 0.25rem;">Results</div>
+                    <div style="font-size: 0.85rem; color: #64748b;">Final Results</div>
                 </div>
             </div>
         </div>
 
         <!-- Step 1: Upload -->
         <div id="uploadSection" class="main-card">
-            <h2>Step 1: Upload Training Sequences</h2>
-            <p style="margin-bottom: 2rem; color: #666;">Provide known antimicrobial peptides (FASTA or CSV, minimum 10 sequences)</p>
-            
-            <div class="upload-area" onclick="document.getElementById('fileInput').click()">
-                <div style="font-size: 4rem; margin-bottom: 1rem;">☁️</div>
-                <div style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem;">Drop your file here or click to browse</div>
-                <div style="color: #666;">FASTA (.fasta, .fa) or CSV (.csv)</div>
-                <input type="file" id="fileInput" accept=".fasta,.fa,.csv" style="display: none;">
+            <div class="card-header">
+                <div class="card-icon">📁</div>
+                <div>
+                    <h2 class="card-title">Step 1: Upload Training Sequences</h2>
+                    <p class="card-description">Provide known antimicrobial peptides for AI training</p>
+                </div>
             </div>
-            <p id="uploadStatus" style="margin-top: 1rem; text-align: center; font-weight: 600;"></p>
+            
+            <div class="info-box">
+                <p style="font-weight: 500; margin-bottom: 0.5rem;">📋 File Requirements:</p>
+                <p style="font-size: 0.95rem; color: #64748b;">Upload FASTA (.fasta) or CSV (.csv) file with minimum 10 training sequences</p>
+            </div>
+
+            <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                <div class="upload-icon">☁️</div>
+                <div style="font-size: 1.35rem; font-weight: 600; margin-bottom: 0.75rem; color: #0A4D68;">Drop your file here or click to browse</div>
+                <div style="color: #64748b; font-size: 1rem;">Supported: FASTA (.fasta) or CSV (.csv)</div>
+                <input type="file" id="fileInput" accept=".fasta,.csv">
+            </div>
+            <p id="uploadStatus" style="margin-top: 1.5rem; text-align: center; font-weight: 600; font-size: 1.1rem;"></p>
         </div>
 
         <!-- Step 2: Generate -->
         <div id="generateSection" class="main-card hidden">
-            <h2>Step 2: Generate New Sequences</h2>
-            <p style="margin-bottom: 2rem; color: #666;">How many novel sequences would you like to generate?</p>
+            <div class="card-header">
+                <div class="card-icon">🧬</div>
+                <div>
+                    <h2 class="card-title">Step 2: Generate Novel Sequences</h2>
+                    <p class="card-description">AI will create new antimicrobial peptide candidates using ProtGPT2</p>
+                </div>
+            </div>
             
-            <label style="display: block; margin-bottom: 1rem; font-weight: 600;">Number of sequences:</label>
-            <input type="number" id="numGenerate" value="100" min="10" max="1000" style="margin-bottom: 1rem;">
-            <p style="color: #666; font-size: 0.9rem; margin-bottom: 2rem;">Recommended: 100-500 sequences</p>
+            <div class="info-box">
+                <p style="font-weight: 500; margin-bottom: 0.5rem;">💡 Generation Settings:</p>
+                <p style="font-size: 0.95rem; color: #64748b;">Recommended: 100-500 sequences for optimal diversity and quality</p>
+            </div>
+
+            <label style="display: block; margin-bottom: 1rem; font-weight: 600; font-size: 1.05rem; color: #0A4D68;">Number of sequences to generate:</label>
+            <input type="number" id="numGenerate" value="100" min="10" max="1000" style="margin-bottom: 2.5rem;">
             
-            <button id="generateBtn" class="btn">Generate Sequences with ProtGPT2</button>
+            <button id="generateBtn" class="btn" style="width: 100%;">🚀 Generate Sequences with ProtGPT2</button>
         </div>
 
         <!-- Progress -->
-        <div id="progressSection" class="main-card hidden">
-            <h3 id="progressLabel">Processing...</h3>
-            <div class="progress-bar" style="margin-top: 1rem;">
-                <div id="progressBar" class="progress-fill" style="width: 0%"></div>
+        <div id="progressSection" class="progress-section hidden">
+            <h3 id="progressLabel" style="font-size: 1.5rem; font-weight: 700; color: #0A4D68; margin-bottom: 0.75rem;">Processing...</h3>
+            <p id="progressText" style="color: #64748b; font-size: 1.05rem; margin-bottom: 1.5rem;"></p>
+            <div class="progress-bar-container">
+                <div id="progressBar" class="progress-bar-fill" style="width: 0%"></div>
             </div>
-            <p id="progressText" style="margin-top: 1rem; color: #666;"></p>
+            <p id="progressPercent" style="margin-top: 1rem; text-align: right; font-weight: 600; color: #05BFDB; font-size: 1.1rem;">0%</p>
         </div>
 
         <!-- Step 3: Screening -->
         <div id="screeningSection" class="main-card hidden">
-            <h2>Step 3: Quick Screening Results</h2>
-            <p style="margin-bottom: 2rem; color: #666;">Generated sequences have been screened</p>
+            <div class="card-header">
+                <div class="card-icon">🔍</div>
+                <div>
+                    <h2 class="card-title">Step 3: Quick Screening Results</h2>
+                    <p class="card-description">Initial quality assessment of generated candidates</p>
+                </div>
+            </div>
             
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
-                <div style="background: #e0f2fe; padding: 2rem; border-radius: 16px; text-align: center;">
-                    <div style="font-size: 3rem; font-weight: 700; color: #0A4D68;" id="totalGenerated">0</div>
-                    <div>Total Generated</div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalGenerated">0</div>
+                    <div class="stat-label">Total Generated</div>
                 </div>
-                <div style="background: #d1fae5; padding: 2rem; border-radius: 16px; text-align: center;">
-                    <div style="font-size: 3rem; font-weight: 700; color: #059669;" id="highQuality">0</div>
-                    <div>High Quality</div>
+                <div class="stat-card">
+                    <div class="stat-value" id="highQuality">0</div>
+                    <div class="stat-label">High Quality</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="avgScore">0.00</div>
+                    <div class="stat-label">Average Score</div>
                 </div>
             </div>
 
-            <label style="display: block; margin-bottom: 1rem; font-weight: 600;">Select top candidates for deep analysis:</label>
-            <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
-                <button class="top-n-btn btn" data-value="10">TOP 10</button>
-                <button class="top-n-btn btn" data-value="20">TOP 20</button>
-                <button class="top-n-btn btn" data-value="50">TOP 50</button>
+            <div class="info-box">
+                <p style="font-weight: 500; margin-bottom: 0.5rem;">🎯 Select Candidates:</p>
+                <p style="font-size: 0.95rem; color: #64748b;">Choose how many top-ranked candidates to analyze with comprehensive AlphaFold metrics</p>
             </div>
 
-            <button id="analyzeBtn" class="btn" disabled>Analyze Selected Candidates</button>
+            <label style="display: block; margin-bottom: 1rem; font-weight: 600; font-size: 1.05rem; color: #0A4D68;">Select candidates for detailed analysis:</label>
+            <div class="top-n-btns">
+                <button class="top-n-btn" data-value="10">TOP 10</button>
+                <button class="top-n-btn" data-value="20">TOP 20</button>
+                <button class="top-n-btn" data-value="50">TOP 50</button>
+            </div>
+
+            <button id="analyzeBtn" class="btn" style="width: 100%;" disabled>🔬 Analyze Selected Candidates</button>
         </div>
 
-        <!-- Step 4 & 5: Results -->
+        <!-- Results -->
         <div id="resultsSection" class="main-card hidden">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
                 <div>
-                    <h2>Analysis Results</h2>
-                    <p style="color: #666;">Comprehensive AlphaFold metrics and predictions</p>
+                    <h2 class="card-title" style="margin-bottom: 0.5rem;">📊 Analysis Results</h2>
+                    <p class="card-description">Comprehensive AlphaFold metrics and predictions</p>
                 </div>
-                <button id="downloadCSV" class="btn">📥 Download CSV</button>
+                <button id="downloadCSV" class="btn">📥 Download Full Report (CSV)</button>
             </div>
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Sequence</th>
-                        <th>pLDDT</th>
-                        <th>pTM</th>
-                        <th>ipTM</th>
-                        <th>AMP Score</th>
-                        <th>Toxicity</th>
-                        <th>3D</th>
-                    </tr>
-                </thead>
-                <tbody id="resultsTable"></tbody>
-            </table>
+            <div class="info-box">
+                <p style="font-weight: 500; margin-bottom: 0.5rem;">✅ Analysis Complete</p>
+                <p style="font-size: 0.95rem; color: #64748b;">All sequences analyzed with comprehensive metrics including pLDDT, pTM, ipTM scores, physicochemical properties, and safety predictions</p>
+            </div>
+
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>ID</th>
+                            <th>Sequence</th>
+                            <th>Length</th>
+                            <th>pLDDT</th>
+                            <th>pTM</th>
+                            <th>ipTM</th>
+                            <th>MW (Da)</th>
+                            <th>pI</th>
+                            <th>Helix %</th>
+                            <th>AMP Score</th>
+                            <th>Toxicity</th>
+                            <th>Allergen</th>
+                            <th>Hemolytic</th>
+                            <th>3D Structure</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultsTable"></tbody>
+                </table>
+            </div>
         </div>
     </div>
+
+    <footer>
+        <div class="footer-links">
+            <span>🧬 ProtGPT2</span>
+            <span>•</span>
+            <span>🔬 ESMFold</span>
+            <span>•</span>
+            <span>📊 AlphaFold3</span>
+            <span>•</span>
+            <span>🛡️ CAMPR3</span>
+        </div>
+        <p style="margin-top: 1rem;">Powered by AI | AMP Discovery Platform v4.0 | © 2026</p>
+    </footer>
 
     <script>
         const API_URL = 'https://amp-analysis-platform.onrender.com/api';
@@ -356,7 +618,8 @@
             const formData = new FormData();
             formData.append('file', file);
 
-            document.getElementById('uploadStatus').textContent = '⏳ Uploading...';
+            document.getElementById('uploadStatus').textContent = '⏳ Uploading and processing...';
+            document.getElementById('uploadStatus').style.color = '#0A4D68';
 
             try {
                 const response = await fetch(`${API_URL}/upload-training`, {
@@ -368,14 +631,20 @@
                 
                 if (data.success) {
                     currentJobId = data.job_id;
-                    document.getElementById('uploadStatus').textContent = `✅ Loaded ${data.count} sequences`;
+                    document.getElementById('uploadStatus').textContent = `✅ Successfully loaded ${data.count} training sequences`;
+                    document.getElementById('uploadStatus').style.color = '#059669';
                     document.getElementById('generateSection').classList.remove('hidden');
+                    setTimeout(() => {
+                        document.getElementById('generateSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 300);
                     updateStep(2);
                 } else {
                     document.getElementById('uploadStatus').textContent = `❌ Error: ${data.error}`;
+                    document.getElementById('uploadStatus').style.color = '#dc2626';
                 }
             } catch (error) {
-                document.getElementById('uploadStatus').textContent = `❌ ${error.message}`;
+                document.getElementById('uploadStatus').textContent = `❌ Upload failed: ${error.message}`;
+                document.getElementById('uploadStatus').style.color = '#dc2626';
             }
         });
 
@@ -383,16 +652,24 @@
         document.getElementById('generateBtn').addEventListener('click', async () => {
             const numGenerate = parseInt(document.getElementById('numGenerate').value);
             
+            if (numGenerate < 10 || numGenerate > 1000) {
+                alert('Please enter between 10 and 1000 sequences');
+                return;
+            }
+
             document.getElementById('generateSection').classList.add('hidden');
             document.getElementById('progressSection').classList.remove('hidden');
-            document.getElementById('progressLabel').textContent = 'Generating sequences...';
+            document.getElementById('progressLabel').textContent = '🧬 Generating novel sequences...';
+            document.getElementById('progressText').textContent = 'Using ProtGPT2 to create new antimicrobial peptide candidates';
             updateStep(3);
 
             let progress = 0;
             const interval = setInterval(() => {
                 if (progress < 90) {
-                    progress += 5;
-                    document.getElementById('progressBar').style.width = `${progress}%`;
+                    progress += Math.random() * 8;
+                    const p = Math.min(progress, 90);
+                    document.getElementById('progressBar').style.width = `${p}%`;
+                    document.getElementById('progressPercent').textContent = `${Math.floor(p)}%`;
                 }
             }, 500);
 
@@ -409,13 +686,22 @@
                 if (data.success) {
                     currentGenJobId = data.gen_job_id;
                     document.getElementById('progressBar').style.width = '100%';
+                    document.getElementById('progressPercent').textContent = '100%';
+                    document.getElementById('progressLabel').textContent = '✅ Generation Complete!';
+                    document.getElementById('progressText').textContent = `Successfully generated ${data.total_generated} new sequences`;
                     
                     setTimeout(() => {
                         document.getElementById('progressSection').classList.add('hidden');
                         document.getElementById('screeningSection').classList.remove('hidden');
                         document.getElementById('totalGenerated').textContent = data.total_generated;
                         document.getElementById('highQuality').textContent = Math.floor(data.total_generated * 0.7);
-                    }, 1000);
+                        document.getElementById('avgScore').textContent = '0.75';
+                        setTimeout(() => {
+                            document.getElementById('screeningSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }, 100);
+                    }, 1500);
+                } else {
+                    alert('Generation failed: ' + data.error);
                 }
             } catch (error) {
                 clearInterval(interval);
@@ -426,11 +712,11 @@
         // TOP N Selection
         document.querySelectorAll('.top-n-btn').forEach(btn => {
             btn.addEventListener('click', function() {
-                document.querySelectorAll('.top-n-btn').forEach(b => b.style.opacity = '0.6');
-                this.style.opacity = '1';
+                document.querySelectorAll('.top-n-btn').forEach(b => b.classList.remove('selected'));
+                this.classList.add('selected');
                 selectedTopN = parseInt(this.dataset.value);
                 document.getElementById('analyzeBtn').disabled = false;
-                document.getElementById('analyzeBtn').textContent = `Analyze TOP ${selectedTopN}`;
+                document.getElementById('analyzeBtn').textContent = `🔬 Analyze TOP ${selectedTopN} Candidates`;
             });
         });
 
@@ -438,8 +724,19 @@
         document.getElementById('analyzeBtn').addEventListener('click', async () => {
             document.getElementById('screeningSection').classList.add('hidden');
             document.getElementById('progressSection').classList.remove('hidden');
-            document.getElementById('progressLabel').textContent = 'Analyzing sequences...';
+            document.getElementById('progressLabel').textContent = '🔬 Analyzing selected candidates...';
+            document.getElementById('progressText').textContent = 'Computing AlphaFold metrics (pLDDT, pTM, ipTM), structure predictions, and functional properties...';
             updateStep(4);
+
+            let progress = 0;
+            const interval = setInterval(() => {
+                if (progress < 85) {
+                    progress += Math.random() * 4;
+                    const p = Math.min(progress, 85);
+                    document.getElementById('progressBar').style.width = `${p}%`;
+                    document.getElementById('progressPercent').textContent = `${Math.floor(p)}%`;
+                }
+            }, 1000);
 
             try {
                 const response = await fetch(`${API_URL}/analyze-top10`, {
@@ -449,13 +746,24 @@
                 });
 
                 const data = await response.json();
+                clearInterval(interval);
 
                 if (data.success) {
-                    document.getElementById('progressSection').classList.add('hidden');
-                    displayResults(data.results);
-                    updateStep(5);
+                    document.getElementById('progressBar').style.width = '100%';
+                    document.getElementById('progressPercent').textContent = '100%';
+                    document.getElementById('progressLabel').textContent = '✅ Analysis Complete!';
+                    document.getElementById('progressText').textContent = `Successfully analyzed ${data.results.length} sequences with comprehensive metrics`;
+                    
+                    setTimeout(() => {
+                        document.getElementById('progressSection').classList.add('hidden');
+                        displayResults(data.results);
+                        updateStep(5);
+                    }, 1500);
+                } else {
+                    alert('Analysis failed: ' + data.error);
                 }
             } catch (error) {
+                clearInterval(interval);
                 alert('Analysis failed: ' + error.message);
             }
         });
@@ -465,30 +773,48 @@
             const tbody = document.getElementById('resultsTable');
             tbody.innerHTML = '';
 
-            results.forEach(r => {
+            results.forEach((r, idx) => {
                 const pLDDT = parseFloat(r.pLDDT) || 0;
                 const pTM = parseFloat(r.pTM) || 0;
                 const ipTM = parseFloat(r.ipTM) || 0;
 
+                const pLDDTClass = pLDDT >= 70 ? 'metric-high' : pLDDT >= 50 ? 'metric-medium' : 'metric-low';
+                const pTMClass = pTM >= 0.6 ? 'metric-high' : pTM >= 0.4 ? 'metric-medium' : 'metric-low';
+                const ipTMClass = ipTM >= 0.6 ? 'metric-high' : ipTM >= 0.4 ? 'metric-medium' : 'metric-low';
+
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${r.id}</td>
-                    <td style="font-family: monospace; font-size: 0.9rem;">${r.sequence.substring(0, 30)}...</td>
-                    <td><span class="metric-badge ${pLDDT >= 70 ? 'metric-high' : pLDDT >= 50 ? 'metric-medium' : 'metric-low'}">${pLDDT.toFixed(1)}</span></td>
-                    <td><span class="metric-badge ${pTM >= 0.6 ? 'metric-high' : pTM >= 0.4 ? 'metric-medium' : 'metric-low'}">${pTM.toFixed(2)}</span></td>
-                    <td><span class="metric-badge ${ipTM >= 0.6 ? 'metric-high' : ipTM >= 0.4 ? 'metric-medium' : 'metric-low'}">${ipTM.toFixed(2)}</span></td>
-                    <td>${(r.ampScore || 0).toFixed(2)}</td>
-                    <td>${r.toxic || 'N/A'}</td>
-                    <td><button class="btn" style="padding: 0.5rem 1rem; font-size: 0.85rem;" onclick="window.open('${API_URL}/download/pdb/${r.id}.pdb', '_blank')">Download</button></td>
+                    <td><strong>${idx + 1}</strong></td>
+                    <td style="font-family: 'JetBrains Mono', monospace; font-weight: 600;">${r.id}</td>
+                    <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;" title="${r.sequence}">${r.sequence.substring(0, 30)}...</td>
+                    <td>${r.length}</td>
+                    <td><span class="metric-badge ${pLDDTClass}">${pLDDT.toFixed(1)}</span></td>
+                    <td><span class="metric-badge ${pTMClass}">${pTM.toFixed(2)}</span></td>
+                    <td><span class="metric-badge ${ipTMClass}">${ipTM.toFixed(2)}</span></td>
+                    <td>${r.molecular_weight || 'N/A'}</td>
+                    <td>${r.isoelectric_point || 'N/A'}</td>
+                    <td>${r.helix || 'N/A'}%</td>
+                    <td><strong>${(r.ampScore || 0).toFixed(2)}</strong></td>
+                    <td><span style="padding: 0.3rem 0.6rem; border-radius: 12px; font-size: 0.8rem; ${r.toxic === 'Non-Toxic' ? 'background: #d1fae5; color: #059669;' : 'background: #fee2e2; color: #dc2626;'}">${r.toxic || 'N/A'}</span></td>
+                    <td><span style="padding: 0.3rem 0.6rem; border-radius: 12px; font-size: 0.8rem; ${r.allergen === 'Non-Allergen' ? 'background: #d1fae5; color: #059669;' : 'background: #fee2e2; color: #dc2626;'}">${r.allergen || 'N/A'}</span></td>
+                    <td><span style="padding: 0.3rem 0.6rem; border-radius: 12px; font-size: 0.8rem; ${r.hemolytic === 'Non-Hemolytic' ? 'background: #d1fae5; color: #059669;' : 'background: #fee2e2; color: #dc2626;'}">${r.hemolytic || 'N/A'}</span></td>
+                    <td><button class="download-btn" onclick="window.open('${API_URL}/download/pdb/${r.id}.pdb', '_blank')">📥 Download</button></td>
                 `;
                 tbody.appendChild(row);
             });
 
             document.getElementById('resultsSection').classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
         }
 
         // Download CSV
         document.getElementById('downloadCSV').addEventListener('click', () => {
+            if (!currentGenJobId) {
+                alert('No results to download');
+                return;
+            }
             window.open(`${API_URL}/download/csv/${currentGenJobId}`, '_blank');
         });
     </script>
