@@ -463,8 +463,10 @@
 
             <div class="upload-area" onclick="document.getElementById('fileInput').click()">
                 <div class="upload-icon">☁️</div>
-                <div style="font-size: 1.35rem; font-weight: 600; margin-bottom: 0.75rem; color: #0A4D68;">Drop your file here or click to browse</div>
-                <div style="color: #64748b; font-size: 1rem;">Supported: FASTA (.fasta) or CSV (.csv)</div>
+                <div style="font-size: 1.35rem; font-weight: 600; margin-bottom: 0.5rem; color: #0A4D68;">Drop your file here or click to browse</div>
+                <div style="color: #64748b; font-size: 0.95rem; margin-top: 0.75rem;">
+                    <strong>Supported formats:</strong> FASTA (.fasta) or CSV (.csv)
+                </div>
                 <input type="file" id="fileInput" accept=".fasta,.csv">
             </div>
             <p id="uploadStatus" style="margin-top: 1.5rem; text-align: center; font-weight: 600; font-size: 1.1rem;"></p>
@@ -622,10 +624,27 @@
             document.getElementById('uploadStatus').style.color = '#0A4D68';
 
             try {
+                // Add timeout of 60 seconds
+                const controller = new AbortController();
+                const timeout = setTimeout(() => controller.abort(), 60000);
+
                 const response = await fetch(`${API_URL}/upload-training`, {
                     method: 'POST',
-                    body: formData
+                    body: formData,
+                    signal: controller.signal
                 });
+
+                clearTimeout(timeout);
+
+                // Check if response is ok
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status} ${response.statusText}`);
+                }
+
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    throw new Error('Server returned non-JSON response. Backend may be down.');
+                }
 
                 const data = await response.json();
                 
@@ -643,8 +662,17 @@
                     document.getElementById('uploadStatus').style.color = '#dc2626';
                 }
             } catch (error) {
-                document.getElementById('uploadStatus').textContent = `❌ Upload failed: ${error.message}`;
+                let errorMessage = 'Upload failed';
+                if (error.name === 'AbortError') {
+                    errorMessage = 'Upload timeout - backend server may be sleeping. Please wait 30s and try again.';
+                } else if (error.message.includes('Failed to fetch')) {
+                    errorMessage = 'Cannot connect to backend. Please check if server is running at ' + API_URL;
+                } else {
+                    errorMessage = error.message;
+                }
+                document.getElementById('uploadStatus').textContent = `❌ ${errorMessage}`;
                 document.getElementById('uploadStatus').style.color = '#dc2626';
+                console.error('Upload error:', error);
             }
         });
 
@@ -674,14 +702,25 @@
             }, 500);
 
             try {
+                // Generation can take time - set 5 minute timeout
+                const controller = new AbortController();
+                const timeout = setTimeout(() => controller.abort(), 300000);
+
                 const response = await fetch(`${API_URL}/generate`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ job_id: currentJobId, num_generate: numGenerate })
+                    body: JSON.stringify({ job_id: currentJobId, num_generate: numGenerate }),
+                    signal: controller.signal
                 });
 
-                const data = await response.json();
+                clearTimeout(timeout);
                 clearInterval(interval);
+
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status}`);
+                }
+
+                const data = await response.json();
 
                 if (data.success) {
                     currentGenJobId = data.gen_job_id;
@@ -701,11 +740,24 @@
                         }, 100);
                     }, 1500);
                 } else {
-                    alert('Generation failed: ' + data.error);
+                    clearInterval(interval);
+                    alert('Generation failed: ' + (data.error || 'Unknown error'));
+                    document.getElementById('generateSection').classList.remove('hidden');
+                    document.getElementById('progressSection').classList.add('hidden');
                 }
             } catch (error) {
                 clearInterval(interval);
-                alert('Generation failed: ' + error.message);
+                let errorMsg = 'Generation failed';
+                if (error.name === 'AbortError') {
+                    errorMsg = 'Generation timeout (5 min). Try generating fewer sequences.';
+                } else if (error.message.includes('Failed to fetch')) {
+                    errorMsg = 'Cannot connect to backend. Please check server status.';
+                } else {
+                    errorMsg = error.message;
+                }
+                alert(errorMsg);
+                document.getElementById('generateSection').classList.remove('hidden');
+                document.getElementById('progressSection').classList.add('hidden');
             }
         });
 
@@ -739,11 +791,28 @@
             }, 1000);
 
             try {
+                // Analysis can take 5-10 minutes for structure prediction
+                // Set timeout to 10 minutes (600 seconds)
+                const controller = new AbortController();
+                const timeout = setTimeout(() => controller.abort(), 600000);
+
                 const response = await fetch(`${API_URL}/analyze-top10`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ gen_job_id: currentGenJobId, top_n: selectedTopN })
+                    body: JSON.stringify({ gen_job_id: currentGenJobId, top_n: selectedTopN }),
+                    signal: controller.signal
                 });
+
+                clearTimeout(timeout);
+
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status}`);
+                }
+
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    throw new Error('Server returned non-JSON response');
+                }
 
                 const data = await response.json();
                 clearInterval(interval);
@@ -760,11 +829,37 @@
                         updateStep(5);
                     }, 1500);
                 } else {
-                    alert('Analysis failed: ' + data.error);
+                    clearInterval(interval);
+                    document.getElementById('progressLabel').textContent = '❌ Analysis Error';
+                    document.getElementById('progressText').textContent = data.error || 'Analysis failed';
+                    setTimeout(() => {
+                        alert('Analysis failed: ' + (data.error || 'Unknown error'));
+                        document.getElementById('progressSection').classList.add('hidden');
+                        document.getElementById('screeningSection').classList.remove('hidden');
+                    }, 2000);
                 }
             } catch (error) {
                 clearInterval(interval);
-                alert('Analysis failed: ' + error.message);
+                let errorMsg = 'Analysis failed';
+                if (error.name === 'AbortError') {
+                    errorMsg = 'Analysis timeout (10 min limit). This happens when:\n' +
+                               '1. Processing many sequences (try fewer candidates)\n' +
+                               '2. Backend server is slow/overloaded\n' +
+                               '3. Network connection issues\n\n' +
+                               'Try selecting fewer candidates (TOP 10 instead of TOP 50)';
+                } else if (error.message.includes('Failed to fetch')) {
+                    errorMsg = 'Cannot connect to backend server. The server may have crashed or restarted.\n' +
+                               'Please refresh the page and try again.';
+                } else {
+                    errorMsg = error.message;
+                }
+                document.getElementById('progressLabel').textContent = '❌ Analysis Failed';
+                document.getElementById('progressText').textContent = errorMsg.split('\n')[0];
+                alert(errorMsg);
+                setTimeout(() => {
+                    document.getElementById('progressSection').classList.add('hidden');
+                    document.getElementById('screeningSection').classList.remove('hidden');
+                }, 2000);
             }
         });
 
