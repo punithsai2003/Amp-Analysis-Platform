@@ -823,8 +823,8 @@
             updateStep(2);
             
             try {
-                console.log('Uploading to:', `${API_URL}/upload`);
-                const response = await fetch(`${API_URL}/upload`, {
+                console.log('Uploading to:', `${API_URL}/upload-training`);
+                const response = await fetch(`${API_URL}/upload-training`, {
                     method: 'POST',
                     body: formData
                 });
@@ -844,12 +844,14 @@
                 console.log('Response data:', data);
                 
                 if (response.ok && data.success) {
-                    showNotification('File uploaded successfully!');
+                    showNotification(`File uploaded successfully! ${data.count} sequences loaded.`);
+                    // Store job_id for later use
+                    window.currentJobId = data.job_id;
                     setTimeout(() => {
                         loading.classList.remove('active');
                         results.classList.add('active');
-                        updateStep(5);
-                    }, 2000);
+                        updateStep(2);
+                    }, 1000);
                 } else {
                     throw new Error(data.error || data.message || 'Upload failed');
                 }
