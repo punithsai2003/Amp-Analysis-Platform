@@ -806,6 +806,16 @@
         }
 
         async function handleFile(file) {
+            // Validate file type
+            const fileName = file.name.toLowerCase();
+            const validExtensions = ['.fasta', '.fa', '.csv'];
+            const isValidFile = validExtensions.some(ext => fileName.endsWith(ext));
+            
+            if (!isValidFile) {
+                showNotification('Please upload a FASTA (.fasta, .fa) or CSV (.csv) file', true);
+                return;
+            }
+
             const formData = new FormData();
             formData.append('file', file);
 
@@ -813,14 +823,27 @@
             updateStep(2);
             
             try {
+                console.log('Uploading to:', `${API_URL}/upload`);
                 const response = await fetch(`${API_URL}/upload`, {
                     method: 'POST',
                     body: formData
                 });
 
+                console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers);
+
+                // Check if response is JSON
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    const text = await response.text();
+                    console.error('Non-JSON response:', text);
+                    throw new Error(`Backend returned non-JSON response. Status: ${response.status}. Check if /api/upload endpoint exists.`);
+                }
+
                 const data = await response.json();
+                console.log('Response data:', data);
                 
-                if (data.success) {
+                if (response.ok && data.success) {
                     showNotification('File uploaded successfully!');
                     setTimeout(() => {
                         loading.classList.remove('active');
@@ -828,9 +851,10 @@
                         updateStep(5);
                     }, 2000);
                 } else {
-                    throw new Error(data.error || 'Upload failed');
+                    throw new Error(data.error || data.message || 'Upload failed');
                 }
             } catch (error) {
+                console.error('Upload error:', error);
                 loading.classList.remove('active');
                 showNotification('Error uploading file: ' + error.message, true);
                 updateStep(1);
