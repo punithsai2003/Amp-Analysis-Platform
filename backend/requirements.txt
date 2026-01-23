@@ -3,4 +3,4 @@ flask-cors==4.0.0
 biopython==1.83 
 pandas==2.1.0 
 requests==2.31.0 
-echo gunicorn
+gunicorn
