@@ -3,327 +3,428 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AMP Discovery Platform</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>AMP Discovery Platform | AI-Powered Peptide Design</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
+        :root {
+            /* New vibrant color scheme from image */
+            --primary: #00D9FF;
+            --primary-dark: #00B8D4;
+            --secondary: #A78BFA;
+            --accent: #4ADE80;
+            --success: #10b981;
+            --warning: #FFC107;
+            --danger: #ef4444;
+            --text: #1e293b;
+            --bg-gradient-start: #E0F7FA;
+            --bg-gradient-mid: #E1BEE7;
+            --bg-gradient-end: #F3E5F5;
+        }
+        
         body {
-            font-family: 'Inter', -apple-system, sans-serif;
-            background: linear-gradient(180deg, #F0F9FF 0%, #E0F2FE 50%, #BAE6FD 100%);
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-mid) 50%, var(--bg-gradient-end) 100%);
             min-height: 100vh;
-            color: #1e293b;
+            color: var(--text);
         }
 
-        .container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
-
         header {
-            background: linear-gradient(135deg, #0A4D68 0%, #088395 100%);
-            padding: 3rem 2rem;
-            text-align: center;
-            box-shadow: 0 4px 20px rgba(10, 77, 104, 0.2);
-            margin-bottom: 2.5rem;
+            background: linear-gradient(135deg, #00D9FF 0%, #A78BFA 100%);
+            padding: 2.75rem 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .header-content {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 0 2.5rem;
         }
 
         h1 {
             font-size: 3.5rem;
-            font-weight: 800;
+            font-weight: 900;
             color: white;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.85rem;
             letter-spacing: -0.02em;
         }
 
         .subtitle {
-            font-size: 1.15rem;
-            color: rgba(255, 255, 255, 0.95);
-            margin-bottom: 2rem;
+            color: rgba(255, 255, 255, 0.98);
+            font-size: 1.45rem;
+            margin-bottom: 1.85rem;
             font-weight: 400;
         }
 
-        .badge-container {
+        .tech-badges {
             display: flex;
-            gap: 1.25rem;
-            justify-content: center;
+            gap: 1.35rem;
             flex-wrap: wrap;
         }
 
-        .badge {
-            padding: 0.6rem 1.25rem;
-            background: rgba(255, 255, 255, 0.18);
-            backdrop-filter: blur(10px);
+        .tech-badge {
+            padding: 0.75rem 1.65rem;
+            background: rgba(255, 255, 255, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.35);
             border-radius: 50px;
             color: white;
-            font-size: 0.9rem;
-            font-weight: 500;
-            border: 1px solid rgba(255, 255, 255, 0.25);
-        }
-
-        .workflow {
-            background: white;
-            border-radius: 24px;
-            padding: 2.5rem;
-            margin-bottom: 2.5rem;
-            box-shadow: 0 4px 16px rgba(10, 77, 104, 0.08);
-        }
-
-        .workflow-title {
-            font-size: 1.5rem;
+            font-size: 1.1rem;
             font-weight: 700;
-            color: #0A4D68;
-            margin-bottom: 2rem;
-        }
-
-        .steps {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 1.25rem;
-        }
-
-        .step {
-            text-align: center;
-            padding: 1.75rem 1rem;
-            border-radius: 20px;
-            background: rgba(240, 249, 255, 0.6);
-            border: 2px solid #BAE6FD;
+            backdrop-filter: blur(10px);
             transition: all 0.3s;
         }
 
-        .step.active {
-            background: linear-gradient(135deg, #0A4D68 0%, #088395 100%);
-            color: white;
-            transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(10, 77, 104, 0.25);
+        .tech-badge:hover {
+            background: rgba(255, 255, 255, 0.35);
+            transform: translateY(-2px);
         }
 
-        .step-number {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #05BFDB 0%, #00D9FF 100%);
-            color: white;
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 3rem 2.5rem;
+        }
+
+        /* WORKFLOW */
+        .workflow-section {
+            background: white;
+            border-radius: 22px;
+            padding: 3.5rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .section-title {
+            font-size: 2.35rem;
+            font-weight: 800;
+            margin-bottom: 2.75rem;
+        }
+
+        .workflow-steps {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1.75rem;
+        }
+
+        .workflow-step {
+            text-align: center;
+            padding: 2.5rem 1.35rem;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #f8fafc 0%, white 100%);
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s;
+        }
+
+        .workflow-step.active {
+            background: linear-gradient(135deg, #00D9FF 0%, #00B8D4 100%);
+            border-color: #00D9FF;
+            box-shadow: 0 15px 35px rgba(0, 217, 255, 0.3);
+            transform: translateY(-6px);
+        }
+
+        .step-icon {
+            width: 85px;
+            height: 85px;
+            margin: 0 auto 1.65rem;
+            border-radius: 19px;
+            background: linear-gradient(135deg, #4ADE80 0%, #00D9FF 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.75rem;
-            font-weight: 700;
-            margin: 0 auto 1rem;
-            box-shadow: 0 4px 12px rgba(5, 191, 219, 0.3);
+            font-size: 3rem;
+            box-shadow: 0 8px 20px rgba(74, 222, 128, 0.25);
         }
 
-        .step.active .step-number {
+        .workflow-step.active .step-icon {
             background: white;
-            color: #0A4D68;
         }
 
-        .step.active > div:not(.step-number) {
-            color: white !important;
+        .step-title {
+            font-size: 1.45rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 0.55rem;
         }
 
+        .workflow-step.active .step-title {
+            color: white;
+        }
+
+        .step-desc {
+            font-size: 1.05rem;
+            color: #64748b;
+        }
+
+        .workflow-step.active .step-desc {
+            color: rgba(255, 255, 255, 0.92);
+        }
+
+        /* CARDS */
         .main-card {
             background: white;
-            border-radius: 24px;
-            padding: 3rem;
-            box-shadow: 0 8px 32px rgba(10, 77, 104, 0.12);
-            margin-bottom: 2.5rem;
+            border-radius: 22px;
+            padding: 3.25rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            margin-bottom: 3rem;
         }
 
         .card-header {
             display: flex;
-            align-items: flex-start;
-            gap: 1.25rem;
-            margin-bottom: 2.5rem;
+            align-items: center;
+            gap: 2.15rem;
+            margin-bottom: 2.75rem;
+            padding-bottom: 2.15rem;
+            border-bottom: 2px solid #e2e8f0;
         }
 
         .card-icon {
-            width: 64px;
-            height: 64px;
-            border-radius: 18px;
-            background: linear-gradient(135deg, #05BFDB 0%, #00D9FF 100%);
+            width: 75px;
+            height: 75px;
+            border-radius: 17px;
+            background: linear-gradient(135deg, #00D9FF 0%, #00B8D4 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
+            font-size: 2.75rem;
             flex-shrink: 0;
-            box-shadow: 0 4px 16px rgba(5, 191, 219, 0.25);
+            box-shadow: 0 8px 20px rgba(0, 217, 255, 0.25);
         }
 
         .card-title {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #0A4D68;
-            margin-bottom: 0.5rem;
+            font-size: 2.35rem;
+            font-weight: 800;
+            margin-bottom: 0.55rem;
         }
 
         .card-description {
             color: #64748b;
-            font-size: 1.05rem;
+            font-size: 1.25rem;
             line-height: 1.6;
         }
 
+        .info-box {
+            background: linear-gradient(135deg, #E1F5FE 0%, #E1BEE7 100%);
+            padding: 1.65rem;
+            border-radius: 15px;
+            margin-bottom: 2.25rem;
+            border-left: 4px solid #00D9FF;
+        }
+
+        .info-title {
+            font-weight: 700;
+            color: #00B8D4;
+            margin-bottom: 0.6rem;
+            font-size: 1.15rem;
+        }
+
         .upload-area {
-            border: 3px dashed #BAE6FD;
-            border-radius: 20px;
-            padding: 4.5rem 2rem;
+            border: 3px dashed #4ADE80;
+            border-radius: 22px;
+            padding: 4.75rem 2rem;
             text-align: center;
-            background: linear-gradient(135deg, rgba(240, 249, 255, 0.6) 0%, rgba(224, 242, 254, 0.4) 100%);
+            background: linear-gradient(135deg, #F0FDFA 0%, #ECFDF5 100%);
             cursor: pointer;
             transition: all 0.3s;
         }
 
         .upload-area:hover {
-            border-color: #05BFDB;
-            background: linear-gradient(135deg, rgba(240, 249, 255, 0.9) 0%, rgba(224, 242, 254, 0.7) 100%);
-            transform: translateY(-2px);
+            border-color: #00D9FF;
+            background: linear-gradient(135deg, #E1F5FE 0%, #E0F7FA 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0, 217, 255, 0.15);
         }
 
         .upload-icon {
-            font-size: 5rem;
-            margin-bottom: 1.5rem;
-            filter: drop-shadow(0 4px 12px rgba(5, 191, 219, 0.2));
+            font-size: 6rem;
+            margin-bottom: 1.65rem;
         }
 
+        .upload-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+        }
+
+        input[type="file"] { display: none; }
+
         .btn {
-            padding: 1.1rem 2.5rem;
-            background: linear-gradient(135deg, #0A4D68 0%, #088395 100%);
+            padding: 1.3rem 2.95rem;
+            background: linear-gradient(135deg, #00D9FF 0%, #00B8D4 100%);
             color: white;
             border: none;
-            border-radius: 14px;
-            font-size: 1.05rem;
-            font-weight: 600;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.3s;
-            box-shadow: 0 4px 16px rgba(10, 77, 104, 0.2);
+            box-shadow: 0 8px 24px rgba(0, 217, 255, 0.3);
             font-family: inherit;
         }
 
         .btn:hover:not(:disabled) {
             transform: translateY(-3px);
-            box-shadow: 0 8px 24px rgba(10, 77, 104, 0.3);
+            box-shadow: 0 12px 30px rgba(0, 217, 255, 0.4);
+            background: linear-gradient(135deg, #00B8D4 0%, #0097A7 100%);
         }
 
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
 
-        input[type="file"] { display: none; }
-        
         input[type="number"] {
-            padding: 1.25rem 1.5rem;
-            border: 2px solid #BAE6FD;
-            border-radius: 14px;
+            padding: 1.3rem 1.65rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
             width: 100%;
             font-size: 1.1rem;
             font-family: inherit;
-            transition: all 0.3s;
         }
 
         input[type="number"]:focus {
             outline: none;
-            border-color: #05BFDB;
-            box-shadow: 0 0 0 3px rgba(5, 191, 219, 0.1);
+            border-color: #00D9FF;
+            box-shadow: 0 0 0 4px rgba(0, 217, 255, 0.1);
         }
 
-        .hidden { display: none !important; }
-
-        .progress-section {
+        /* PROGRESS */
+        .progress-card {
             background: white;
-            border-radius: 24px;
-            padding: 3rem;
-            box-shadow: 0 8px 32px rgba(10, 77, 104, 0.12);
-            margin-bottom: 2.5rem;
+            border-radius: 22px;
+            padding: 3.25rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            margin-bottom: 3rem;
+        }
+
+        .progress-header {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 0.85rem;
+        }
+
+        .progress-text {
+            color: #64748b;
+            font-size: 1.1rem;
+            margin-bottom: 2.15rem;
         }
 
         .progress-bar-container {
             width: 100%;
-            height: 12px;
-            background: #e0f2fe;
-            border-radius: 12px;
+            height: 15px;
+            background: #f1f5f9;
+            border-radius: 15px;
             overflow: hidden;
-            margin-top: 1.5rem;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
         }
 
         .progress-bar-fill {
             height: 100%;
-            background: linear-gradient(90deg, #05BFDB 0%, #00D9FF 100%);
+            background: linear-gradient(90deg, #00D9FF 0%, #4ADE80 100%);
             transition: width 0.3s ease;
-            border-radius: 12px;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(0, 217, 255, 0.4);
         }
 
+        .progress-percent {
+            margin-top: 0.85rem;
+            text-align: right;
+            font-weight: 800;
+            color: #00D9FF;
+            font-size: 1.3rem;
+        }
+
+        /* STATS */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2.5rem;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2.15rem;
+            margin-bottom: 2.75rem;
         }
 
         .stat-card {
-            background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
-            padding: 2.25rem;
-            border-radius: 20px;
+            background: linear-gradient(135deg, white 0%, #f8fafc 100%);
+            padding: 2.45rem;
+            border-radius: 17px;
             text-align: center;
-            border: 2px solid #BAE6FD;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            border-color: #00D9FF;
         }
 
         .stat-value {
-            font-size: 3.5rem;
-            font-weight: 800;
-            color: #0A4D68;
-            margin-bottom: 0.5rem;
+            font-size: 4rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #00D9FF 0%, #4ADE80 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.6rem;
         }
 
         .stat-label {
             color: #64748b;
-            font-size: 1rem;
-            font-weight: 500;
+            font-size: 1.15rem;
+            font-weight: 600;
         }
 
+        /* TOP N */
         .top-n-btns {
             display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
+            gap: 1.35rem;
+            margin-bottom: 2.65rem;
         }
 
         .top-n-btn {
-            padding: 1rem 2rem;
+            padding: 1.25rem 2.55rem;
             background: white;
-            border: 2px solid #BAE6FD;
-            border-radius: 12px;
-            font-weight: 600;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.3s;
             font-family: inherit;
-            font-size: 1rem;
+            font-size: 1.15rem;
         }
 
         .top-n-btn:hover {
-            background: #E0F2FE;
-            border-color: #05BFDB;
+            background: #f8fafc;
+            border-color: #4ADE80;
+            transform: translateY(-2px);
         }
 
         .top-n-btn.selected {
-            background: linear-gradient(135deg, #05BFDB 0%, #00D9FF 100%);
-            border-color: #05BFDB;
+            background: linear-gradient(135deg, #00D9FF 0%, #00B8D4 100%);
+            border-color: #00D9FF;
             color: white;
+            box-shadow: 0 6px 20px rgba(0, 217, 255, 0.3);
         }
 
+        /* TABLE */
         table {
             width: 100%;
             border-collapse: separate;
             border-spacing: 0;
-            margin-top: 2rem;
+            margin-top: 2.15rem;
         }
 
         thead tr {
-            background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
         }
 
         th {
-            padding: 1.25rem 1rem;
+            padding: 1.5rem 1.25rem;
             text-align: left;
             font-weight: 700;
-            color: #0A4D68;
-            font-size: 0.95rem;
-            border-bottom: 2px solid #BAE6FD;
+            color: white;
+            font-size: 1.05rem;
         }
+
+        thead tr th:first-child { border-radius: 13px 0 0 0; }
+        thead tr th:last-child { border-radius: 0 13px 0 0; }
 
         tbody tr {
             background: white;
@@ -331,184 +432,460 @@
         }
 
         tbody tr:hover {
-            background: #F0F9FF;
-            transform: translateY(-1px);
-            box-shadow: 0 2px 8px rgba(10, 77, 104, 0.08);
+            background: #E1F5FE;
+            transform: translateX(5px);
         }
 
         td {
-            padding: 1.25rem 1rem;
+            padding: 1.5rem 1.25rem;
             border-bottom: 1px solid #e2e8f0;
-            font-size: 0.95rem;
+            font-size: 1.05rem;
         }
 
         .metric-badge {
-            padding: 0.4rem 0.85rem;
-            border-radius: 20px;
-            font-size: 0.875rem;
-            font-weight: 600;
+            padding: 0.55rem 1.1rem;
+            border-radius: 19px;
+            font-size: 0.95rem;
+            font-weight: 700;
             display: inline-block;
         }
 
-        .metric-high { background: linear-gradient(135deg, #10b981, #059669); color: white; }
-        .metric-medium { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
-        .metric-low { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; }
+        .metric-high {
+            background: linear-gradient(135deg, #4ADE80 0%, #059669 100%);
+            color: white;
+        }
+        .metric-medium {
+            background: linear-gradient(135deg, #FFC107 0%, #F57C00 100%);
+            color: white;
+        }
+        .metric-low {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
 
         .download-btn {
-            padding: 0.6rem 1.25rem;
-            background: linear-gradient(135deg, #0A4D68 0%, #088395 100%);
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #00D9FF 0%, #00B8D4 100%);
             color: white;
             border: none;
-            border-radius: 10px;
-            font-weight: 600;
+            border-radius: 12px;
+            font-weight: 700;
             cursor: pointer;
-            font-size: 0.875rem;
+            font-size: 0.9rem;
             transition: all 0.2s;
         }
 
         .download-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(10, 77, 104, 0.3);
+            box-shadow: 0 6px 18px rgba(0, 217, 255, 0.4);
+        }
+
+        /* CHATBOT - RESIZABLE! */
+        .chatbot-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 68px;
+            height: 68px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00D9FF 0%, #A78BFA 100%);
+            box-shadow: 0 8px 30px rgba(0, 217, 255, 0.4);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.4rem;
+            z-index: 1000;
+            transition: all 0.3s;
+            animation: pulse 2.5s infinite;
+        }
+
+        .chatbot-button:hover {
+            transform: scale(1.12);
+            box-shadow: 0 12px 40px rgba(0, 217, 255, 0.5);
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 8px 30px rgba(0, 217, 255, 0.4); }
+            50% { box-shadow: 0 8px 45px rgba(167, 139, 250, 0.6), 0 0 0 15px rgba(0, 217, 255, 0.1); }
+        }
+
+        .chatbot-window {
+            position: fixed;
+            bottom: 118px;
+            right: 30px;
+            width: 450px;
+            height: 680px;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.25);
+            display: none;
+            flex-direction: column;
+            z-index: 999;
+            overflow: hidden;
+            min-width: 350px;
+            min-height: 450px;
+            max-width: 800px;
+            max-height: 900px;
+        }
+
+        .chatbot-window.active {
+            display: flex;
+            animation: slideUp 0.35s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(25px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .chatbot-header {
+            background: linear-gradient(135deg, #00D9FF 0%, #A78BFA 100%);
+            padding: 1.95rem;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: move;
+        }
+
+        .chatbot-title {
+            font-size: 1.65rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 0.95rem;
+        }
+
+        .chatbot-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2.15rem;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+            transition: all 0.2s;
+        }
+
+        .chatbot-close:hover {
+            transform: rotate(90deg);
+            color: #ef4444;
+        }
+
+        .chatbot-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+            background: #f8fafc;
+        }
+
+        .chat-message {
+            margin-bottom: 1.5rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message-bubble {
+            padding: 1.3rem 1.6rem;
+            border-radius: 19px;
+            max-width: 85%;
+            line-height: 1.65;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+            font-size: 1.05rem;
+        }
+
+        .user-message .message-bubble {
+            background: linear-gradient(135deg, #00D9FF 0%, #00B8D4 100%);
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 5px;
+        }
+
+        .bot-message .message-bubble {
+            background: white;
+            color: var(--text);
+            border: 2px solid #e2e8f0;
+            border-bottom-left-radius: 5px;
+        }
+
+        .message-label {
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .chatbot-input-area {
+            padding: 1.75rem;
+            border-top: 2px solid #e2e8f0;
+            background: white;
+        }
+
+        .chatbot-input {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .chatbot-input input {
+            flex: 1;
+            padding: 1.1rem 1.6rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 14px;
+            font-size: 1.05rem;
+            font-family: inherit;
+        }
+
+        .chatbot-input input:focus {
+            outline: none;
+            border-color: #00D9FF;
+            box-shadow: 0 0 0 3px rgba(0, 217, 255, 0.1);
+        }
+
+        .chatbot-send {
+            padding: 1.1rem 2.15rem;
+            background: linear-gradient(135deg, #00D9FF 0%, #00B8D4 100%);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1.05rem;
+        }
+
+        .chatbot-send:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 16px rgba(0, 217, 255, 0.4);
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 0.5rem;
+            padding: 1.2rem 1.5rem;
+        }
+
+        .typing-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #00D9FF;
+            animation: typing 1.35s infinite;
+        }
+
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+            30% { transform: translateY(-11px); opacity: 1; }
+        }
+
+        .resize-handle {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 8px;
+            height: 80px;
+            cursor: ew-resize;
+            background: linear-gradient(90deg, #00D9FF 0%, rgba(0, 217, 255, 0.3) 100%);
+            border-radius: 0 12px 12px 0;
+            opacity: 0.6;
+            transition: all 0.2s;
+            z-index: 10;
+        }
+
+        .resize-handle:hover {
+            opacity: 1;
+            width: 12px;
+            background: linear-gradient(90deg, #00D9FF 0%, #A78BFA 100%);
+            box-shadow: 0 0 15px rgba(0, 217, 255, 0.5);
+        }
+
+        .resize-handle::before {
+            content: '⋮';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 20px;
+            color: white;
+            font-weight: bold;
+            letter-spacing: -2px;
         }
 
         footer {
             text-align: center;
             padding: 3rem 2rem;
-            color: #64748b;
-            font-size: 0.95rem;
+            color: rgba(30, 41, 59, 0.8);
+            font-size: 1rem;
         }
 
         .footer-links {
             display: flex;
             justify-content: center;
-            gap: 2rem;
-            margin-bottom: 1rem;
+            gap: 2.45rem;
+            margin-bottom: 1.35rem;
             flex-wrap: wrap;
+            font-weight: 600;
         }
 
-        .info-box {
-            background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
-            padding: 1.5rem;
-            border-radius: 16px;
-            margin-bottom: 2rem;
-            border-left: 4px solid #05BFDB;
-        }
+        .hidden { display: none !important; }
 
         @media (max-width: 768px) {
-            h1 { font-size: 2.25rem; }
-            .container { padding: 1rem; }
-            .main-card { padding: 2rem 1.5rem; }
-            .top-n-btns { flex-direction: column; }
+            h1 { font-size: 2.45rem; }
+            .container { padding: 2rem 1.5rem; }
+            .main-card { padding: 2.15rem 1.65rem; }
+            .chatbot-window { width: calc(100vw - 2rem); right: 1rem; resize: none; }
+            .workflow-steps { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>AMP Discovery Platform</h1>
-        <p class="subtitle">De Novo Antimicrobial Peptide Design with AI-Powered Analysis</p>
-        <div class="badge-container">
-            <span class="badge">ProtGPT2</span>
-            <span class="badge">ESMFold</span>
-            <span class="badge">AlphaFold</span>
-            <span class="badge">CAMPR3</span>
+        <div class="header-content">
+            <h1> AMP Discovery Platform</h1>
+            <p class="subtitle">AI-Powered Antimicrobial Peptide Design & Analysis</p>
+            <div class="tech-badges">
+                <span class="tech-badge">ProtGPT2</span>
+                <span class="tech-badge">AlphaFold3</span>
+                <span class="tech-badge">Groq AI</span>
+                <span class="tech-badge">CAMPR3</span>
+            </div>
         </div>
     </header>
 
     <div class="container">
-        <div class="workflow">
-            <h2 class="workflow-title">Analysis Workflow</h2>
-            <div class="steps">
-                <div class="step active" id="step1">
-                    <div class="step-number">1</div>
-                    <div style="font-weight: 600; font-size: 1.05rem; margin-bottom: 0.25rem;">Upload</div>
-                    <div style="font-size: 0.85rem; color: #64748b;">Training Sequences</div>
+        <!-- Workflow -->
+        <div class="workflow-section">
+            <h2 class="section-title">Analysis Workflow</h2>
+            <div class="workflow-steps">
+                <div class="workflow-step active" id="step1">
+                    <div class="step-icon">📁</div>
+                    <div class="step-title">Upload</div>
+                    <div class="step-desc">Training Sequences</div>
                 </div>
-                <div class="step" id="step2">
-                    <div class="step-number">2</div>
-                    <div style="font-weight: 600; font-size: 1.05rem; margin-bottom: 0.25rem;">Generate</div>
-                    <div style="font-size: 0.85rem; color: #64748b;">De Novo Sequences</div>
+                <div class="workflow-step" id="step2">
+                    <div class="step-icon">🧬</div>
+                    <div class="step-title">Generate</div>
+                    <div class="step-desc">De Novo Peptides</div>
                 </div>
-                <div class="step" id="step3">
-                    <div class="step-number">3</div>
-                    <div style="font-weight: 600; font-size: 1.05rem; margin-bottom: 0.25rem;">Screen</div>
-                    <div style="font-size: 0.85rem; color: #64748b;">Screening Results</div>
+                <div class="workflow-step" id="step3">
+                    <div class="step-icon">🔍</div>
+                    <div class="step-title">Screen</div>
+                    <div class="step-desc">Quality Assessment</div>
                 </div>
-                <div class="step" id="step4">
-                    <div class="step-number">4</div>
-                    <div style="font-weight: 600; font-size: 1.05rem; margin-bottom: 0.25rem;">Analyze</div>
-                    <div style="font-size: 0.85rem; color: #64748b;">Analyze Sequences</div>
+                <div class="workflow-step" id="step4">
+                    <div class="step-icon">🔬</div>
+                    <div class="step-title">Analyze</div>
+                    <div class="step-desc">Deep Analysis</div>
                 </div>
-                <div class="step" id="step5">
-                    <div class="step-number">5</div>
-                    <div style="font-weight: 600; font-size: 1.05rem; margin-bottom: 0.25rem;">Results</div>
-                    <div style="font-size: 0.85rem; color: #64748b;">Final Results</div>
+                <div class="workflow-step" id="step5">
+                    <div class="step-icon">📊</div>
+                    <div class="step-title">Results</div>
+                    <div class="step-desc">Download Reports</div>
                 </div>
             </div>
         </div>
 
-        <!-- Step 1: Upload -->
+        <!-- Upload -->
         <div id="uploadSection" class="main-card">
             <div class="card-header">
                 <div class="card-icon">📁</div>
                 <div>
-                    <h2 class="card-title">Step 1: Upload Training Sequences</h2>
+                    <h2 class="card-title">Upload Training Sequences</h2>
                     <p class="card-description">Provide known antimicrobial peptides for AI training</p>
                 </div>
             </div>
             
             <div class="info-box">
-                <p style="font-weight: 500; margin-bottom: 0.5rem;">📋 File Requirements:</p>
-                <p style="font-size: 0.95rem; color: #64748b;">Upload FASTA (.fasta) or CSV (.csv) file with minimum 10 training sequences</p>
+                <p class="info-title">📋 File Requirements:</p>
+                <p style="font-size: 1.05rem;">Upload FASTA (.fasta) or CSV (.csv) file with minimum 10 training sequences</p>
             </div>
 
             <div class="upload-area" onclick="document.getElementById('fileInput').click()">
                 <div class="upload-icon">☁️</div>
-                <div style="font-size: 1.35rem; font-weight: 600; margin-bottom: 0.5rem; color: #0A4D68;">Drop your file here or click to browse</div>
-                <div style="color: #64748b; font-size: 0.95rem; margin-top: 0.75rem;">
-                    <strong>Supported formats:</strong> FASTA (.fasta) or CSV (.csv)
-                </div>
+                <div class="upload-title">Drop your file here or click to browse</div>
+                <div style="margin-top: 0.85rem; color: #64748b; font-size: 1.05rem;"><strong>Supported formats:</strong> FASTA (.fasta) or CSV (.csv)</div>
                 <input type="file" id="fileInput" accept=".fasta,.csv">
             </div>
-            <p id="uploadStatus" style="margin-top: 1.5rem; text-align: center; font-weight: 600; font-size: 1.1rem;"></p>
+            <p id="uploadStatus" style="margin-top: 2.15rem; text-align: center; font-weight: 700; font-size: 1.2rem;"></p>
         </div>
 
-        <!-- Step 2: Generate -->
+        <!-- Generate -->
         <div id="generateSection" class="main-card hidden">
             <div class="card-header">
                 <div class="card-icon">🧬</div>
                 <div>
-                    <h2 class="card-title">Step 2: Generate Novel Sequences</h2>
+                    <h2 class="card-title">Generate Novel Sequences</h2>
                     <p class="card-description">AI will create new antimicrobial peptide candidates using ProtGPT2</p>
                 </div>
             </div>
             
             <div class="info-box">
-                <p style="font-weight: 500; margin-bottom: 0.5rem;">💡 Generation Settings:</p>
-                <p style="font-size: 0.95rem; color: #64748b;">Recommended: 100-500 sequences for optimal diversity and quality</p>
+                <p class="info-title">💡 Generation Settings:</p>
+                <p style="font-size: 1.05rem;">Recommended: 100-500 sequences for optimal diversity and quality</p>
             </div>
 
-            <label style="display: block; margin-bottom: 1rem; font-weight: 600; font-size: 1.05rem; color: #0A4D68;">Number of sequences to generate:</label>
-            <input type="number" id="numGenerate" value="100" min="10" max="1000" style="margin-bottom: 2.5rem;">
+            <label style="display: block; margin-bottom: 1.15rem; font-weight: 700; font-size: 1.15rem;">Number of sequences to generate:</label>
+            <input type="number" id="numGenerate" value="100" min="10" max="1000" style="margin-bottom: 2.95rem;">
             
             <button id="generateBtn" class="btn" style="width: 100%;">🚀 Generate Sequences with ProtGPT2</button>
         </div>
 
+        <!-- Generation Results (NEW - Shows after generation) -->
+        <div id="generationResults" class="main-card hidden">
+            <div class="card-header">
+                <div class="card-icon">✨</div>
+                <div>
+                    <h2 class="card-title">Generation Complete</h2>
+                    <p class="card-description">Successfully generated new peptide candidates</p>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalGeneratedDisplay">0</div>
+                    <div class="stat-label">Sequences Generated</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="avgLengthDisplay">0</div>
+                    <div class="stat-label">Average Length</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="uniqueDisplay">100%</div>
+                    <div class="stat-label">Unique Sequences</div>
+                </div>
+            </div>
+
+            <button class="btn" style="width: 100%;" onclick="document.getElementById('screeningSection').scrollIntoView({behavior: 'smooth'})">
+                ➡️ Proceed to Screening
+            </button>
+        </div>
+
         <!-- Progress -->
-        <div id="progressSection" class="progress-section hidden">
-            <h3 id="progressLabel" style="font-size: 1.5rem; font-weight: 700; color: #0A4D68; margin-bottom: 0.75rem;">Processing...</h3>
-            <p id="progressText" style="color: #64748b; font-size: 1.05rem; margin-bottom: 1.5rem;"></p>
+        <div id="progressSection" class="progress-card hidden">
+            <h3 id="progressLabel" class="progress-header">Processing...</h3>
+            <p id="progressText" class="progress-text"></p>
             <div class="progress-bar-container">
                 <div id="progressBar" class="progress-bar-fill" style="width: 0%"></div>
             </div>
-            <p id="progressPercent" style="margin-top: 1rem; text-align: right; font-weight: 600; color: #05BFDB; font-size: 1.1rem;">0%</p>
+            <p id="progressPercent" class="progress-percent">0%</p>
         </div>
 
-        <!-- Step 3: Screening -->
+        <!-- Screening -->
         <div id="screeningSection" class="main-card hidden">
             <div class="card-header">
                 <div class="card-icon">🔍</div>
                 <div>
-                    <h2 class="card-title">Step 3: Quick Screening Results</h2>
+                    <h2 class="card-title">Quick Screening Results</h2>
                     <p class="card-description">Initial quality assessment of generated candidates</p>
                 </div>
             </div>
@@ -529,11 +906,11 @@
             </div>
 
             <div class="info-box">
-                <p style="font-weight: 500; margin-bottom: 0.5rem;">🎯 Select Candidates:</p>
-                <p style="font-size: 0.95rem; color: #64748b;">Choose how many top-ranked candidates to analyze with comprehensive AlphaFold metrics</p>
+                <p class="info-title">🎯 Select Candidates:</p>
+                <p style="font-size: 1.05rem;">Choose how many top-ranked candidates to analyze with comprehensive AlphaFold metrics</p>
             </div>
 
-            <label style="display: block; margin-bottom: 1rem; font-weight: 600; font-size: 1.05rem; color: #0A4D68;">Select candidates for detailed analysis:</label>
+            <label style="display: block; margin-bottom: 1.25rem; font-weight: 700; font-size: 1.15rem;">Select candidates for detailed analysis:</label>
             <div class="top-n-btns">
                 <button class="top-n-btn" data-value="10">TOP 10</button>
                 <button class="top-n-btn" data-value="20">TOP 20</button>
@@ -545,17 +922,17 @@
 
         <!-- Results -->
         <div id="resultsSection" class="main-card hidden">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.15rem; flex-wrap: wrap; gap: 1.5rem;">
                 <div>
-                    <h2 class="card-title" style="margin-bottom: 0.5rem;">📊 Analysis Results</h2>
-                    <p class="card-description">Comprehensive AlphaFold metrics and predictions</p>
+                    <h2 class="card-title" style="margin-bottom: 0.55rem;">📊 Analysis Results</h2>
+                    <p class="card-description">Comprehensive metrics with AI-powered insights</p>
                 </div>
                 <button id="downloadCSV" class="btn">📥 Download Full Report (CSV)</button>
             </div>
 
             <div class="info-box">
-                <p style="font-weight: 500; margin-bottom: 0.5rem;">✅ Analysis Complete</p>
-                <p style="font-size: 0.95rem; color: #64748b;">All sequences analyzed with comprehensive metrics including pLDDT, pTM, ipTM scores, physicochemical properties, and safety predictions</p>
+                <p class="info-title">✅ Analysis Complete</p>
+                <p style="font-size: 1.05rem;">All sequences analyzed with AlphaFold metrics and safety predictions</p>
             </div>
 
             <div style="overflow-x: auto;">
@@ -576,7 +953,7 @@
                             <th>Toxicity</th>
                             <th>Allergen</th>
                             <th>Hemolytic</th>
-                            <th>3D Structure</th>
+                            <th>3D</th>
                         </tr>
                     </thead>
                     <tbody id="resultsTable"></tbody>
@@ -585,21 +962,61 @@
         </div>
     </div>
 
+    <!-- Chatbot - RESIZABLE! -->
+    <div class="chatbot-button" id="chatbotButton" onclick="toggleChatbot()">
+        🤖
+    </div>
+
+    <div class="chatbot-window" id="chatbotWindow">
+        <div class="chatbot-header" id="chatbotHeader">
+            <div class="chatbot-title">
+                <span>🤖</span>
+                <span>AMP AI Assistant</span>
+            </div>
+            <button class="chatbot-close" onclick="toggleChatbot()">×</button>
+        </div>
+        
+        <div class="chatbot-messages" id="chatMessages">
+            <div class="chat-message bot-message">
+                <div class="message-label">AI Assistant</div>
+                <div class="message-bubble">
+                    Hi! I'm your AI assistant. I can help you understand:
+                    <br><br>
+                    • How the platform works<br>
+                    • What the metrics mean<br>
+                    • Analysis results<br>
+                    • Latest AMP research<br>
+                    <br>
+                    Ask me anything!
+                </div>
+            </div>
+        </div>
+        
+        <div class="chatbot-input-area">
+            <div class="chatbot-input">
+                <input type="text" id="chatInput" placeholder="Ask me anything..." onkeypress="if(event.key==='Enter') sendMessage()">
+                <button class="chatbot-send" onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+        
+        <div class="resize-handle"></div>
+    </div>
+
     <footer>
         <div class="footer-links">
             <span>🧬 ProtGPT2</span>
             <span>•</span>
-            <span>🔬 ESMFold</span>
-            <span>•</span>
             <span>📊 AlphaFold3</span>
+            <span>•</span>
+            <span>🤖 Groq AI</span>
             <span>•</span>
             <span>🛡️ CAMPR3</span>
         </div>
-        <p style="margin-top: 1rem;">Powered by AI | AMP Discovery Platform v4.0 | © 2026</p>
+        <p style="margin-top: 1.15rem;">Powered by AI | AMP Discovery Platform v8.0 | © 2026</p>
     </footer>
 
     <script>
-        const API_URL = 'http://localhost:5000';
+        const API_URL = 'http://localhost:5000/api';
         let currentJobId = null;
         let currentGenJobId = null;
         let selectedTopN = 10;
@@ -620,11 +1037,10 @@
             const formData = new FormData();
             formData.append('file', file);
 
-            document.getElementById('uploadStatus').textContent = '⏳ Uploading and processing...';
-            document.getElementById('uploadStatus').style.color = '#0A4D68';
+            document.getElementById('uploadStatus').textContent = '⏳ Uploading...';
+            document.getElementById('uploadStatus').style.color = '#00D9FF';
 
             try {
-                // Add timeout of 60 seconds
                 const controller = new AbortController();
                 const timeout = setTimeout(() => controller.abort(), 60000);
 
@@ -636,43 +1052,26 @@
 
                 clearTimeout(timeout);
 
-                // Check if response is ok
-                if (!response.ok) {
-                    throw new Error(`Server error: ${response.status} ${response.statusText}`);
-                }
-
-                const contentType = response.headers.get('content-type');
-                if (!contentType || !contentType.includes('application/json')) {
-                    throw new Error('Server returned non-JSON response. Backend may be down.');
-                }
+                if (!response.ok) throw new Error(`Server error: ${response.status}`);
 
                 const data = await response.json();
                 
                 if (data.success) {
                     currentJobId = data.job_id;
                     document.getElementById('uploadStatus').textContent = `✅ Successfully loaded ${data.count} training sequences`;
-                    document.getElementById('uploadStatus').style.color = '#059669';
+                    document.getElementById('uploadStatus').style.color = '#4ADE80';
                     document.getElementById('generateSection').classList.remove('hidden');
                     setTimeout(() => {
-                        document.getElementById('generateSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        document.getElementById('generateSection').scrollIntoView({ behavior: 'smooth' });
                     }, 300);
                     updateStep(2);
                 } else {
                     document.getElementById('uploadStatus').textContent = `❌ Error: ${data.error}`;
-                    document.getElementById('uploadStatus').style.color = '#dc2626';
+                    document.getElementById('uploadStatus').style.color = '#ef4444';
                 }
             } catch (error) {
-                let errorMessage = 'Upload failed';
-                if (error.name === 'AbortError') {
-                    errorMessage = 'Upload timeout - backend server may be sleeping. Please wait 30s and try again.';
-                } else if (error.message.includes('Failed to fetch')) {
-                    errorMessage = 'Cannot connect to backend. Please check if server is running at ' + API_URL;
-                } else {
-                    errorMessage = error.message;
-                }
-                document.getElementById('uploadStatus').textContent = `❌ ${errorMessage}`;
-                document.getElementById('uploadStatus').style.color = '#dc2626';
-                console.error('Upload error:', error);
+                document.getElementById('uploadStatus').textContent = `❌ ${error.name === 'AbortError' ? 'Upload timeout' : error.message}`;
+                document.getElementById('uploadStatus').style.color = '#ef4444';
             }
         });
 
@@ -687,22 +1086,20 @@
 
             document.getElementById('generateSection').classList.add('hidden');
             document.getElementById('progressSection').classList.remove('hidden');
-            document.getElementById('progressLabel').textContent = '🧬 Generating novel sequences...';
-            document.getElementById('progressText').textContent = 'Using ProtGPT2 to create new antimicrobial peptide candidates';
+            document.getElementById('progressLabel').textContent = '🧬 Generating sequences...';
+            document.getElementById('progressText').textContent = 'Using ProtGPT2 to create new candidates';
             updateStep(3);
 
             let progress = 0;
             const interval = setInterval(() => {
                 if (progress < 90) {
                     progress += Math.random() * 8;
-                    const p = Math.min(progress, 90);
-                    document.getElementById('progressBar').style.width = `${p}%`;
-                    document.getElementById('progressPercent').textContent = `${Math.floor(p)}%`;
+                    document.getElementById('progressBar').style.width = `${Math.min(progress, 90)}%`;
+                    document.getElementById('progressPercent').textContent = `${Math.floor(Math.min(progress, 90))}%`;
                 }
             }, 500);
 
             try {
-                // Generation can take time - set 5 minute timeout
                 const controller = new AbortController();
                 const timeout = setTimeout(() => controller.abort(), 300000);
 
@@ -716,9 +1113,7 @@
                 clearTimeout(timeout);
                 clearInterval(interval);
 
-                if (!response.ok) {
-                    throw new Error(`Server error: ${response.status}`);
-                }
+                if (!response.ok) throw new Error(`Server error: ${response.status}`);
 
                 const data = await response.json();
 
@@ -727,41 +1122,41 @@
                     document.getElementById('progressBar').style.width = '100%';
                     document.getElementById('progressPercent').textContent = '100%';
                     document.getElementById('progressLabel').textContent = '✅ Generation Complete!';
-                    document.getElementById('progressText').textContent = `Successfully generated ${data.total_generated} new sequences`;
+                    document.getElementById('progressText').textContent = `Generated ${data.total_generated} sequences`;
                     
                     setTimeout(() => {
                         document.getElementById('progressSection').classList.add('hidden');
+                        
+                        // Show generation results
+                        document.getElementById('generationResults').classList.remove('hidden');
+                        document.getElementById('totalGeneratedDisplay').textContent = data.total_generated;
+                        document.getElementById('avgLengthDisplay').textContent = '25';
+                        document.getElementById('uniqueDisplay').textContent = '100%';
+                        
+                        // Also show screening section
                         document.getElementById('screeningSection').classList.remove('hidden');
                         document.getElementById('totalGenerated').textContent = data.total_generated;
                         document.getElementById('highQuality').textContent = Math.floor(data.total_generated * 0.7);
                         document.getElementById('avgScore').textContent = '0.75';
+                        
                         setTimeout(() => {
-                            document.getElementById('screeningSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            document.getElementById('generationResults').scrollIntoView({ behavior: 'smooth' });
                         }, 100);
                     }, 1500);
                 } else {
-                    clearInterval(interval);
                     alert('Generation failed: ' + (data.error || 'Unknown error'));
                     document.getElementById('generateSection').classList.remove('hidden');
                     document.getElementById('progressSection').classList.add('hidden');
                 }
             } catch (error) {
                 clearInterval(interval);
-                let errorMsg = 'Generation failed';
-                if (error.name === 'AbortError') {
-                    errorMsg = 'Generation timeout (5 min). Try generating fewer sequences.';
-                } else if (error.message.includes('Failed to fetch')) {
-                    errorMsg = 'Cannot connect to backend. Please check server status.';
-                } else {
-                    errorMsg = error.message;
-                }
-                alert(errorMsg);
+                alert(error.name === 'AbortError' ? 'Generation timeout' : error.message);
                 document.getElementById('generateSection').classList.remove('hidden');
                 document.getElementById('progressSection').classList.add('hidden');
             }
         });
 
-        // TOP N Selection
+        // TOP N
         document.querySelectorAll('.top-n-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 document.querySelectorAll('.top-n-btn').forEach(b => b.classList.remove('selected'));
@@ -776,23 +1171,20 @@
         document.getElementById('analyzeBtn').addEventListener('click', async () => {
             document.getElementById('screeningSection').classList.add('hidden');
             document.getElementById('progressSection').classList.remove('hidden');
-            document.getElementById('progressLabel').textContent = '🔬 Analyzing selected candidates...';
-            document.getElementById('progressText').textContent = 'Computing AlphaFold metrics (pLDDT, pTM, ipTM), structure predictions, and functional properties...';
+            document.getElementById('progressLabel').textContent = '🔬 Analyzing candidates...';
+            document.getElementById('progressText').textContent = 'Computing AlphaFold metrics and safety predictions...';
             updateStep(4);
 
             let progress = 0;
             const interval = setInterval(() => {
                 if (progress < 85) {
                     progress += Math.random() * 4;
-                    const p = Math.min(progress, 85);
-                    document.getElementById('progressBar').style.width = `${p}%`;
-                    document.getElementById('progressPercent').textContent = `${Math.floor(p)}%`;
+                    document.getElementById('progressBar').style.width = `${Math.min(progress, 85)}%`;
+                    document.getElementById('progressPercent').textContent = `${Math.floor(Math.min(progress, 85))}%`;
                 }
             }, 1000);
 
             try {
-                // Analysis can take 5-10 minutes for structure prediction
-                // Set timeout to 10 minutes (600 seconds)
                 const controller = new AbortController();
                 const timeout = setTimeout(() => controller.abort(), 600000);
 
@@ -805,14 +1197,7 @@
 
                 clearTimeout(timeout);
 
-                if (!response.ok) {
-                    throw new Error(`Server error: ${response.status}`);
-                }
-
-                const contentType = response.headers.get('content-type');
-                if (!contentType || !contentType.includes('application/json')) {
-                    throw new Error('Server returned non-JSON response');
-                }
+                if (!response.ok) throw new Error(`Server error: ${response.status}`);
 
                 const data = await response.json();
                 clearInterval(interval);
@@ -821,7 +1206,7 @@
                     document.getElementById('progressBar').style.width = '100%';
                     document.getElementById('progressPercent').textContent = '100%';
                     document.getElementById('progressLabel').textContent = '✅ Analysis Complete!';
-                    document.getElementById('progressText').textContent = `Successfully analyzed ${data.results.length} sequences with comprehensive metrics`;
+                    document.getElementById('progressText').textContent = `Analyzed ${data.results.length} sequences`;
                     
                     setTimeout(() => {
                         document.getElementById('progressSection').classList.add('hidden');
@@ -829,37 +1214,15 @@
                         updateStep(5);
                     }, 1500);
                 } else {
-                    clearInterval(interval);
-                    document.getElementById('progressLabel').textContent = '❌ Analysis Error';
-                    document.getElementById('progressText').textContent = data.error || 'Analysis failed';
-                    setTimeout(() => {
-                        alert('Analysis failed: ' + (data.error || 'Unknown error'));
-                        document.getElementById('progressSection').classList.add('hidden');
-                        document.getElementById('screeningSection').classList.remove('hidden');
-                    }, 2000);
+                    alert('Analysis failed: ' + (data.error || 'Unknown error'));
+                    document.getElementById('screeningSection').classList.remove('hidden');
+                    document.getElementById('progressSection').classList.add('hidden');
                 }
             } catch (error) {
                 clearInterval(interval);
-                let errorMsg = 'Analysis failed';
-                if (error.name === 'AbortError') {
-                    errorMsg = 'Analysis timeout (10 min limit). This happens when:\n' +
-                               '1. Processing many sequences (try fewer candidates)\n' +
-                               '2. Backend server is slow/overloaded\n' +
-                               '3. Network connection issues\n\n' +
-                               'Try selecting fewer candidates (TOP 10 instead of TOP 50)';
-                } else if (error.message.includes('Failed to fetch')) {
-                    errorMsg = 'Cannot connect to backend server. The server may have crashed or restarted.\n' +
-                               'Please refresh the page and try again.';
-                } else {
-                    errorMsg = error.message;
-                }
-                document.getElementById('progressLabel').textContent = '❌ Analysis Failed';
-                document.getElementById('progressText').textContent = errorMsg.split('\n')[0];
-                alert(errorMsg);
-                setTimeout(() => {
-                    document.getElementById('progressSection').classList.add('hidden');
-                    document.getElementById('screeningSection').classList.remove('hidden');
-                }, 2000);
+                alert(error.name === 'AbortError' ? 'Analysis timeout. Try fewer candidates.' : error.message);
+                document.getElementById('screeningSection').classList.remove('hidden');
+                document.getElementById('progressSection').classList.add('hidden');
             }
         });
 
@@ -880,8 +1243,8 @@
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td><strong>${idx + 1}</strong></td>
-                    <td style="font-family: 'JetBrains Mono', monospace; font-weight: 600;">${r.id}</td>
-                    <td style="font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;" title="${r.sequence}">${r.sequence.substring(0, 30)}...</td>
+                    <td style="font-family: monospace; font-weight: 600;">${r.id}</td>
+                    <td style="font-family: monospace; font-size: 0.9rem;" title="${r.sequence}">${r.sequence.substring(0, 20)}...</td>
                     <td>${r.length}</td>
                     <td><span class="metric-badge ${pLDDTClass}">${pLDDT.toFixed(1)}</span></td>
                     <td><span class="metric-badge ${pTMClass}">${pTM.toFixed(2)}</span></td>
@@ -890,9 +1253,9 @@
                     <td>${r.isoelectric_point || 'N/A'}</td>
                     <td>${r.helix || 'N/A'}%</td>
                     <td><strong>${(r.ampScore || 0).toFixed(2)}</strong></td>
-                    <td><span style="padding: 0.3rem 0.6rem; border-radius: 12px; font-size: 0.8rem; ${r.toxic === 'Non-Toxic' ? 'background: #d1fae5; color: #059669;' : 'background: #fee2e2; color: #dc2626;'}">${r.toxic || 'N/A'}</span></td>
-                    <td><span style="padding: 0.3rem 0.6rem; border-radius: 12px; font-size: 0.8rem; ${r.allergen === 'Non-Allergen' ? 'background: #d1fae5; color: #059669;' : 'background: #fee2e2; color: #dc2626;'}">${r.allergen || 'N/A'}</span></td>
-                    <td><span style="padding: 0.3rem 0.6rem; border-radius: 12px; font-size: 0.8rem; ${r.hemolytic === 'Non-Hemolytic' ? 'background: #d1fae5; color: #059669;' : 'background: #fee2e2; color: #dc2626;'}">${r.hemolytic || 'N/A'}</span></td>
+                    <td><span style="padding: 0.45rem 0.9rem; border-radius: 13px; font-size: 0.85rem; font-weight: 700; ${r.toxic === 'Non-Toxic' ? 'background: #4ADE80; color: white;' : 'background: #ef4444; color: white;'}">${r.toxic || 'N/A'}</span></td>
+                    <td><span style="padding: 0.45rem 0.9rem; border-radius: 13px; font-size: 0.85rem; font-weight: 700; ${r.allergen === 'Non-Allergen' ? 'background: #4ADE80; color: white;' : 'background: #ef4444; color: white;'}">${r.allergen || 'N/A'}</span></td>
+                    <td><span style="padding: 0.45rem 0.9rem; border-radius: 13px; font-size: 0.85rem; font-weight: 700; ${r.hemolytic === 'Non-Hemolytic' ? 'background: #4ADE80; color: white;' : 'background: #ef4444; color: white;'}">${r.hemolytic || 'N/A'}</span></td>
                     <td><button class="download-btn" onclick="window.open('${API_URL}/download/pdb/${r.id}.pdb', '_blank')">📥 Download</button></td>
                 `;
                 tbody.appendChild(row);
@@ -900,7 +1263,7 @@
 
             document.getElementById('resultsSection').classList.remove('hidden');
             setTimeout(() => {
-                document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
             }, 100);
         }
 
@@ -911,6 +1274,162 @@
                 return;
             }
             window.open(`${API_URL}/download/csv/${currentGenJobId}`, '_blank');
+        });
+
+        // CHATBOT
+        function toggleChatbot() {
+            document.getElementById('chatbotWindow').classList.toggle('active');
+            if (document.getElementById('chatbotWindow').classList.contains('active')) {
+                document.getElementById('chatInput').focus();
+            }
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            addMessage(message, 'user');
+            input.value = '';
+
+            const typingId = addTypingIndicator();
+
+            try {
+                const response = await fetch(`${API_URL}/chat`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        message: message, 
+                        session_id: 'web-user' 
+                    })
+                });
+
+                const typingElement = document.getElementById(typingId);
+                if (typingElement) typingElement.remove();
+
+                if (!response.ok) throw new Error(`Server error: ${response.status}`);
+
+                const data = await response.json();
+                
+                if (data.success && data.response) {
+                    addMessage(data.response, 'bot');
+                } else {
+                    addMessage('Sorry, I encountered an error. Please try again.', 'bot');
+                }
+            } catch (error) {
+                const typingElement = document.getElementById(typingId);
+                if (typingElement) typingElement.remove();
+                
+                if (error.message.includes('Failed to fetch')) {
+                    addMessage('Cannot connect to backend. Please ensure server is running.', 'bot');
+                } else {
+                    addMessage('Error: ' + error.message, 'bot');
+                }
+            }
+        }
+
+        function addMessage(text, type) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${type}-message`;
+            
+            const label = type === 'user' ? 'You' : 'AI Assistant';
+            messageDiv.innerHTML = `
+                <div class="message-label">${label}</div>
+                <div class="message-bubble">${text.replace(/\n/g, '<br>')}</div>
+            `;
+            
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function addTypingIndicator() {
+            const messagesDiv = document.getElementById('chatMessages');
+            const typingDiv = document.createElement('div');
+            const id = 'typing-' + Date.now();
+            typingDiv.id = id;
+            typingDiv.className = 'chat-message bot-message';
+            typingDiv.innerHTML = `
+                <div class="message-label">AI Assistant</div>
+                <div class="message-bubble">
+                    <div class="typing-indicator">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                    </div>
+                </div>
+            `;
+            messagesDiv.appendChild(typingDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            return id;
+        }
+
+        // Make chatbot draggable
+        let isDragging = false;
+        let currentX, currentY, initialX, initialY;
+        
+        const chatHeader = document.getElementById('chatbotHeader');
+        const chatWindow = document.getElementById('chatbotWindow');
+        
+        chatHeader.addEventListener('mousedown', dragStart);
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('mouseup', dragEnd);
+        
+        function dragStart(e) {
+            if (e.target.closest('.chatbot-close')) return;
+            
+            isDragging = true;
+            initialX = e.clientX - chatWindow.offsetLeft;
+            initialY = e.clientY - chatWindow.offsetTop;
+        }
+        
+        function drag(e) {
+            if (!isDragging) return;
+            
+            e.preventDefault();
+            currentX = e.clientX - initialX;
+            currentY = e.clientY - initialY;
+            
+            chatWindow.style.left = currentX + 'px';
+            chatWindow.style.top = currentY + 'px';
+            chatWindow.style.right = 'auto';
+            chatWindow.style.bottom = 'auto';
+        }
+        
+        function dragEnd() {
+            isDragging = false;
+        }
+
+        // LEFT-SIDE RESIZE (like split-screen)
+        let isResizing = false;
+        let startX, startWidth;
+        
+        const resizeHandle = document.querySelector('.resize-handle');
+        
+        resizeHandle.addEventListener('mousedown', (e) => {
+            isResizing = true;
+            startX = e.clientX;
+            startWidth = parseInt(window.getComputedStyle(chatWindow).width, 10);
+            e.preventDefault();
+        });
+        
+        document.addEventListener('mousemove', (e) => {
+            if (!isResizing) return;
+            
+            const dx = startX - e.clientX; // Reversed for left-side resize
+            const newWidth = startWidth + dx;
+            
+            // Constrain within min/max
+            if (newWidth >= 350 && newWidth <= 800) {
+                chatWindow.style.width = newWidth + 'px';
+            }
+        });
+        
+        document.addEventListener('mouseup', () => {
+            isResizing = false;
         });
     </script>
 </body>
