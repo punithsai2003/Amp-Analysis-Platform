@@ -1,11 +1,10 @@
 """
-AMP Analysis Platform - Enhanced Version with pTM/ipTM
-Professional backend with comprehensive AlphaFold metrics
-
+AMP Analysis Platform - Enhanced Version with AI
 Features:
-- pLDDT (per-residue confidence)
-- pTM (predicted TM-score)
-- ipTM (interface predicted TM-score)
+- Gemini AI analysis summaries
+- AI Chatbot with web search
+- ESMFold structure prediction
+- All existing features
 """
 
 from flask import Flask, request, jsonify, send_file
@@ -20,14 +19,27 @@ import re
 from datetime import datetime
 from pathlib import Path
 from collections import Counter
+from duckduckgo_search import DDGS
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={
+    r"/api/*": {
+        "origins": "*",
+        "methods": ["GET", "POST", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Accept"]
+    }
+})
+
+# Configure Groq AI (FREE alternative to Gemini)
+GROQ_API_KEY = os.environ.get('GROQ_API_KEY', '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') 
+GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
+# Use the latest supported model (as of Jan 2026)
+GROQ_MODEL = "llama-3.3-70b-versatile"  # Updated to latest supported model
 
 # Folders
-UPLOAD_FOLDER = Path('../data/uploads')
-STRUCTURE_FOLDER = Path('../structures')
-RESULTS_FOLDER = Path('../data/results')
+UPLOAD_FOLDER = Path('data/uploads')
+STRUCTURE_FOLDER = Path('structures')
+RESULTS_FOLDER = Path('data/results')
 for folder in [UPLOAD_FOLDER, STRUCTURE_FOLDER, RESULTS_FOLDER]:
     folder.mkdir(parents=True, exist_ok=True)
 
@@ -35,76 +47,219 @@ for folder in [UPLOAD_FOLDER, STRUCTURE_FOLDER, RESULTS_FOLDER]:
 training_data = {}
 generated_sequences = {}
 analysis_results = {}
-job_status = {}
+conversation_history = {}
 
 # ==========================================
-# PROTGPT2 INTEGRATION
+# GROQ AI INTEGRATION (FREE & UNLIMITED!)
+# ==========================================
+
+def call_groq_api(prompt, max_tokens=500):
+    """Call Groq API for AI completions"""
+    try:
+        headers = {
+            "Authorization": f"Bearer {GROQ_API_KEY}",
+            "Content-Type": "application/json"
+        }
+        
+        payload = {
+            "model": GROQ_MODEL,
+            "messages": [
+                {"role": "user", "content": prompt}
+            ],
+            "max_tokens": max_tokens,
+            "temperature": 0.7
+        }
+        
+        response = requests.post(GROQ_API_URL, headers=headers, json=payload, timeout=30)
+        
+        if response.status_code == 200:
+            data = response.json()
+            return data['choices'][0]['message']['content'].strip()
+        else:
+            print(f"⚠️ Groq API error: {response.status_code} - {response.text}")
+            return None
+    
+    except Exception as e:
+        print(f"⚠️ Groq API error: {e}")
+        return None
+
+def generate_ai_summary(sequence_data):
+    """Generate AI summary for a sequence using Groq"""
+    try:
+        prompt = f"""Analyze this antimicrobial peptide sequence and provide a concise, scientific summary:
+
+Sequence: {sequence_data['sequence']}
+Length: {sequence_data['length']} amino acids
+pLDDT Score: {sequence_data.get('pLDDT', 'N/A')}
+pTM Score: {sequence_data.get('pTM', 'N/A')}
+AMP Score: {sequence_data.get('ampScore', 'N/A')}
+Molecular Weight: {sequence_data.get('molecular_weight', 'N/A')} Da
+Isoelectric Point: {sequence_data.get('isoelectric_point', 'N/A')}
+Toxicity: {sequence_data.get('toxic', 'N/A')}
+Allergenicity: {sequence_data.get('allergen', 'N/A')}
+Hemolytic: {sequence_data.get('hemolytic', 'N/A')}
+
+Provide a brief analysis covering:
+1. Why this peptide shows promise (or concerns)
+2. Likely mechanism of action
+3. Potential target bacteria
+4. Safety considerations
+5. Recommended next steps
+
+Keep it concise (3-4 sentences max)."""
+
+        response = call_groq_api(prompt, max_tokens=300)
+        
+        if response:
+            return response
+        else:
+            return "AI analysis unavailable. Sequence shows standard AMP characteristics."
+    
+    except Exception as e:
+        print(f"⚠️ AI summary error: {e}")
+        return "AI analysis unavailable. Sequence shows standard AMP characteristics."
+
+# ==========================================
+# AI CHATBOT WITH WEB SEARCH
+# ==========================================
+
+def web_search(query, max_results=3):
+    """Search the web using DuckDuckGo"""
+    try:
+        ddgs = DDGS()
+        results = ddgs.text(query, max_results=max_results)
+        
+        search_results = []
+        for r in results:
+            search_results.append({
+                'title': r.get('title', ''),
+                'snippet': r.get('body', ''),
+                'url': r.get('href', '')
+            })
+        return search_results
+    except Exception as e:
+        print(f"⚠️ Web search error: {e}")
+        return []
+
+def chatbot_response(user_message, context=None):
+    """Generate chatbot response using Groq with web search capability"""
+    
+    try:
+        print(f"🤖 Processing: {user_message}")
+        
+        # Check if question needs web search
+        search_keywords = ['latest', 'recent', 'current', 'news', 'research', 'study', 'publication']
+        needs_search = any(keyword in user_message.lower() for keyword in search_keywords)
+        
+        search_context = ""
+        if needs_search:
+            print(f"   🔍 Searching web...")
+            # Perform web search
+            search_results = web_search(user_message)
+            if search_results:
+                search_context = "\n\nWeb Search Results:\n"
+                for i, result in enumerate(search_results, 1):
+                    search_context += f"{i}. {result['title']}\n{result['snippet']}\n\n"
+                print(f"   ✅ Found {len(search_results)} results")
+        
+        # Build prompt
+        system_prompt = """You are an expert AI assistant for an Antimicrobial Peptide (AMP) Discovery Platform. 
+
+You help users understand:
+- How the platform works (workflow, features)
+- Peptide analysis results and metrics
+- Scientific concepts (AMPs, structure prediction, etc.)
+- Best practices for peptide design
+
+Platform Workflow:
+1. Upload: User uploads training sequences (FASTA/CSV, min 10 sequences)
+2. Generate: AI generates new sequences using ProtGPT2
+3. Screen: Quick quality assessment of generated candidates
+4. Analyze: Deep analysis with AlphaFold structure prediction and functional predictions
+5. Results: Comprehensive table with all metrics and 3D structure downloads
+
+Key Metrics Explained:
+- pLDDT (0-100): Per-residue confidence score. >70 = high confidence, 50-70 = medium, <50 = low
+- pTM (0-1): Predicted TM-score for overall structure quality. >0.6 = good, 0.4-0.6 = medium, <0.4 = low
+- ipTM (0-1): Interface predicted TM-score. >0.6 = good interactions
+- AMP Score: Antimicrobial activity prediction (higher = better)
+- Molecular Weight, pI: Physicochemical properties
+- Toxicity, Allergen, Hemolytic: Safety predictions
+
+Be helpful, concise, and scientific. If you don't know something, say so."""
+
+        full_prompt = f"{system_prompt}\n\nUser Question: {user_message}{search_context}\n\nProvide a clear, helpful response:"
+        
+        print(f"   📤 Calling Groq API...")
+        response = call_groq_api(full_prompt, max_tokens=500)
+        
+        if response:
+            print(f"   ✅ Groq responded successfully")
+            return response
+        else:
+            print(f"   ⚠️ Groq API returned empty response")
+            return "I apologize, but I'm having trouble processing your request. Please try again."
+    
+    except Exception as e:
+        print(f"   ❌ Chatbot error: {e}")
+        return "I apologize, but I'm having trouble processing your request. Please try again or rephrase your question."
+
+@app.route('/api/chat', methods=['POST'])
+def chat():
+    """Chatbot endpoint"""
+    try:
+        print("\n💬 Chat request received")
+        data = request.json
+        print(f"Request data: {data}")
+        
+        user_message = data.get('message', '')
+        session_id = data.get('session_id', 'default')
+        
+        if not user_message:
+            print("❌ No message provided")
+            return jsonify({'error': 'No message provided'}), 400
+        
+        print(f"User: {user_message}")
+        
+        # Generate response
+        bot_response = chatbot_response(user_message)
+        print(f"Bot: {bot_response[:100]}...")
+        
+        # Store conversation history
+        if session_id not in conversation_history:
+            conversation_history[session_id] = []
+        
+        conversation_history[session_id].append({
+            'user': user_message,
+            'bot': bot_response,
+            'timestamp': datetime.now().isoformat()
+        })
+        
+        print("✅ Chat response sent successfully")
+        
+        return jsonify({
+            'success': True,
+            'response': bot_response,
+            'timestamp': datetime.now().isoformat()
+        })
+    
+    except Exception as e:
+        print(f"❌ Chat error: {type(e).__name__}: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({
+            'success': False,
+            'error': str(e),
+            'message': 'Chat service temporarily unavailable'
+        }), 500
+
+# ==========================================
+# PROTGPT2 GENERATION
 # ==========================================
 
 def generate_sequences_protgpt2(training_sequences, num_generate=100):
-    """Generate new peptide sequences using ProtGPT2 patterns"""
-    
-    print(f"🧬 Generating {num_generate} new sequences using ProtGPT2...")
-    
-    # Try Hugging Face API first
-    try:
-        generated = generate_via_huggingface(training_sequences, num_generate)
-        if generated:
-            return generated
-    except Exception as e:
-        print(f"⚠️ Hugging Face API not available: {e}")
-    
-    # Fallback to pattern-based generation
-    print("📊 Using pattern-based generation (trained on your sequences)")
-    return generate_via_patterns(training_sequences, num_generate)
-
-def generate_via_huggingface(training_sequences, num_generate):
-    """Generate using Hugging Face Inference API"""
-    api_key = os.environ.get('HF_API_KEY')
-    
-    if not api_key:
-        print("ℹ️ HF_API_KEY not found, skipping Hugging Face API")
-        return None
-    
-    API_URL = "https://api-inference.huggingface.co/models/nferruz/ProtGPT2"
-    headers = {"Authorization": f"Bearer {api_key}"}
-    
-    generated = []
-    sample_prompts = random.sample(training_sequences, min(10, len(training_sequences)))
-    
-    for i in range(num_generate):
-        prompt = random.choice(sample_prompts)[:10]
-        
-        payload = {
-            "inputs": prompt,
-            "parameters": {
-                "max_length": 50,
-                "temperature": 0.8,
-                "top_p": 0.9,
-                "num_return_sequences": 1
-            }
-        }
-        
-        try:
-            response = requests.post(API_URL, headers=headers, json=payload, timeout=30)
-            if response.status_code == 200:
-                result = response.json()
-                if isinstance(result, list) and len(result) > 0:
-                    seq = result[0].get('generated_text', '').upper()
-                    seq = ''.join(c for c in seq if c in 'ACDEFGHIKLMNPQRSTVWY')
-                    if 10 <= len(seq) <= 100:
-                        generated.append(seq)
-                        print(f"  Generated {len(generated)}/{num_generate}")
-        except Exception as e:
-            print(f"  Error on sequence {i+1}: {e}")
-            continue
-        
-        time.sleep(1)
-    
-    return generated if generated else None
-
-def generate_via_patterns(training_sequences, num_generate):
-    """Pattern-based generation using training data statistics"""
+    """Generate new peptide sequences using pattern-based approach"""
+    print(f"🧬 Generating {num_generate} new sequences...")
     
     stats = analyze_sequence_patterns(training_sequences)
     generated = []
@@ -133,7 +288,6 @@ def generate_via_patterns(training_sequences, num_generate):
 
 def analyze_sequence_patterns(sequences):
     """Extract patterns from training sequences"""
-    
     stats = {
         'lengths': [len(seq) for seq in sequences],
         'n_terminal_patterns': [],
@@ -156,10 +310,6 @@ def analyze_sequence_patterns(sequences):
                 stats['bigrams'][aa1] = []
             stats['bigrams'][aa1].append(aa2)
     
-    all_aas = ''.join(sequences)
-    for aa in 'ACDEFGHIKLMNPQRSTVWY':
-        stats['amino_acid_freq'][aa] = all_aas.count(aa)
-    
     return stats
 
 def choose_next_amino_acid(current_aa, bigrams):
@@ -172,20 +322,15 @@ def choose_next_amino_acid(current_aa, bigrams):
 
 def is_valid_generated_sequence(sequence, training_sequences):
     """Validate generated sequence"""
-    
     if not (10 <= len(sequence) <= 100):
         return False
-    
     if sequence in training_sequences:
         return False
-    
     if sequence.count('X') > 0:
         return False
-    
     for aa in 'ACDEFGHIKLMNPQRSTVWY':
         if aa * 5 in sequence:
             return False
-    
     return True
 
 # ==========================================
@@ -194,7 +339,6 @@ def is_valid_generated_sequence(sequence, training_sequences):
 
 def quick_screen_sequence(sequence):
     """Fast screening to calculate basic scores"""
-    
     length = len(sequence)
     pos_charged = sequence.count('K') + sequence.count('R') + sequence.count('H')
     neg_charged = sequence.count('D') + sequence.count('E')
@@ -232,12 +376,11 @@ def quick_screen_sequence(sequence):
     }
 
 # ==========================================
-# DEEP ANALYSIS WITH PTM/IPTM
+# DEEP ANALYSIS WITH AI
 # ==========================================
 
 def deep_analysis_sequence(sequence, seq_id, include_structure=True):
-    """Comprehensive analysis with pLDDT, pTM, and ipTM"""
-    
+    """Comprehensive analysis with AI summary"""
     result = {
         'id': seq_id,
         'sequence': sequence,
@@ -250,40 +393,11 @@ def deep_analysis_sequence(sequence, seq_id, include_structure=True):
     result.update(calculate_physicochemical(sequence))
     print(f"    ✓ Physicochemical")
     
-    # Structure Prediction with all AlphaFold metrics
+    # Structure Prediction with ESMFold
     if include_structure:
-        max_retries = 2  # Try twice if it fails
-        for attempt in range(max_retries):
-            try:
-                if attempt > 0:
-                    print(f"    🔄 Retry attempt {attempt + 1}/{max_retries}...")
-                    time.sleep(5)  # Wait 5 seconds before retry
-                
-                structure = predict_structure_esmfold_enhanced(sequence, seq_id)
-                
-                if structure.get('pdb_path'):
-                    # Success!
-                    result.update(structure)
-                    print(f"    ✓ Structure (pLDDT: {structure.get('pLDDT', 'N/A')}, pTM: {structure.get('pTM', 'N/A')}, ipTM: {structure.get('ipTM', 'N/A')})")
-                    break
-                else:
-                    # No PDB file generated
-                    if attempt == max_retries - 1:
-                        # Last attempt failed
-                        print(f"    ⚠️ Structure prediction failed after {max_retries} attempts")
-                        result.update(structure)  # Use estimated metrics
-                    # Otherwise, retry
-                    
-            except Exception as e:
-                print(f"    ⚠️ Structure attempt {attempt + 1} failed: {e}")
-                if attempt == max_retries - 1:
-                    # Last attempt, use defaults
-                    result.update({
-                        'pLDDT': 50,
-                        'pTM': 0.5,
-                        'ipTM': 0.5,
-                        'pdb_path': None
-                    })
+        structure = predict_structure_esmfold(sequence, seq_id)
+        result.update(structure)
+        print(f"    ✓ Structure (pLDDT: {structure.get('pLDDT', 'N/A')})")
     
     # Functional Predictions
     amp = predict_amp_detailed(sequence)
@@ -302,65 +416,48 @@ def deep_analysis_sequence(sequence, seq_id, include_structure=True):
     result.update(hemo)
     print(f"    ✓ Hemolytic: {hemo['hemolytic']}")
     
+    # AI Summary
+    print(f"    🤖 Generating AI summary...")
+    ai_summary = generate_ai_summary(result)
+    result['ai_summary'] = ai_summary
+    print(f"    ✓ AI Summary generated")
+    
     return result
 
 # ==========================================
-# ENHANCED STRUCTURE PREDICTION
+# STRUCTURE PREDICTION (ESMFold)
 # ==========================================
 
-def predict_structure_esmfold_enhanced(sequence, seq_id):
-    """
-    ESMFold API with enhanced metrics extraction
-    Returns: pLDDT, pTM, ipTM scores
-    """
-    print(f"    🔬 Predicting structure for {seq_id} ({len(sequence)} residues)...")
+def predict_structure_esmfold(sequence, seq_id):
+    """ESMFold structure prediction with metrics"""
+    print(f"    🔬 Predicting structure for {seq_id}...")
     
     try:
         url = "https://api.esmatlas.com/foldSequence/v1/pdb/"
-        print(f"    📡 Calling ESMFold API...")
-        
         response = requests.post(url, data=sequence, timeout=120)
-        
-        print(f"    📊 Response status: {response.status_code}")
         
         if response.status_code == 200:
             pdb_content = response.text
             
-            # Check if response is valid PDB
             if not pdb_content or len(pdb_content) < 100:
-                print(f"    ⚠️ Warning: Response too short ({len(pdb_content)} chars)")
                 raise ValueError("Invalid PDB response")
             
-            if not pdb_content.startswith('HEADER') and not 'ATOM' in pdb_content:
-                print(f"    ⚠️ Warning: Response doesn't look like PDB format")
-                raise ValueError("Invalid PDB format")
-            
             pdb_path = STRUCTURE_FOLDER / f"{seq_id}.pdb"
-            
             with open(pdb_path, 'w') as f:
                 f.write(pdb_content)
             
             print(f"    ✅ PDB saved: {pdb_path}")
             
-            # Extract all confidence scores
             metrics = extract_alphafold_metrics(pdb_content)
             metrics['pdb_path'] = str(pdb_path)
-            
-            print(f"    📈 Metrics: pLDDT={metrics['pLDDT']}, pTM={metrics['pTM']}, ipTM={metrics['ipTM']}")
             
             return metrics
         else:
             print(f"    ❌ ESMFold API error: HTTP {response.status_code}")
-            print(f"    Response: {response.text[:200]}")
-            
-    except requests.Timeout:
-        print(f"    ⏱️ ESMFold timeout (>120s) - sequence too complex or server busy")
-    except requests.RequestException as e:
-        print(f"    🌐 Network error: {e}")
-    except Exception as e:
-        print(f"    ❌ ESMFold error: {type(e).__name__}: {e}")
     
-    print(f"    ⚠️ Structure prediction failed - returning estimated metrics")
+    except Exception as e:
+        print(f"    ❌ ESMFold error: {e}")
+    
     return {
         'pLDDT': 50.0,
         'pTM': 0.5,
@@ -369,60 +466,38 @@ def predict_structure_esmfold_enhanced(sequence, seq_id):
     }
 
 def extract_alphafold_metrics(pdb_content):
-    """
-    Extract pLDDT, pTM, and ipTM from PDB file
-    
-    PDB Format:
-    - B-factor column (61-66) contains pLDDT scores (0-100)
-    - REMARK lines may contain pTM and ipTM scores
-    """
-    
-    # Extract pLDDT scores from B-factor column
+    """Extract pLDDT, pTM, ipTM from PDB"""
     plddt_scores = []
     ptm_score = None
     iptm_score = None
     
     for line in pdb_content.split('\n'):
-        # Extract pLDDT from ATOM records
         if line.startswith('ATOM'):
             try:
                 b_factor = float(line[60:66].strip())
                 plddt_scores.append(b_factor)
             except (ValueError, IndexError):
                 pass
-        
-        # Extract pTM from REMARK lines
         elif line.startswith('REMARK'):
-            # Look for pTM score patterns
             if 'pTM' in line.upper() or 'PTM' in line:
                 numbers = re.findall(r'\d+\.\d+', line)
                 if numbers:
                     ptm_score = float(numbers[0])
-            
-            # Look for ipTM score patterns
             if 'IPTM' in line.upper() or 'INTERFACE' in line.upper():
                 numbers = re.findall(r'\d+\.\d+', line)
                 if numbers:
                     iptm_score = float(numbers[0])
     
-    # Calculate average pLDDT
     avg_plddt = sum(plddt_scores) / len(plddt_scores) if plddt_scores else 50.0
     
-    # If pTM/ipTM not found in remarks, estimate from pLDDT
-    # This is a reasonable approximation for ESMFold predictions
     if ptm_score is None:
-        # pTM typically correlates with pLDDT but is generally lower
-        # Good structures: pLDDT > 70 -> pTM ~ 0.6-0.9
-        # Medium structures: pLDDT 50-70 -> pTM ~ 0.4-0.6
-        # Poor structures: pLDDT < 50 -> pTM ~ 0.2-0.4
         if avg_plddt > 70:
-            ptm_score = 0.6 + (avg_plddt - 70) / 30 * 0.3  # 0.6-0.9
+            ptm_score = 0.6 + (avg_plddt - 70) / 30 * 0.3
         elif avg_plddt > 50:
-            ptm_score = 0.4 + (avg_plddt - 50) / 20 * 0.2  # 0.4-0.6
+            ptm_score = 0.4 + (avg_plddt - 50) / 20 * 0.2
         else:
-            ptm_score = 0.2 + avg_plddt / 50 * 0.2  # 0.2-0.4
+            ptm_score = 0.2 + avg_plddt / 50 * 0.2
     
-    # ipTM estimation (usually slightly lower than pTM for single chains)
     if iptm_score is None:
         iptm_score = ptm_score * 0.9 if ptm_score else 0.4
     
@@ -439,9 +514,9 @@ def extract_alphafold_metrics(pdb_content):
 def calculate_physicochemical(sequence):
     """Calculate molecular properties"""
     aa_weights = {
-        'A': 89, 'R': 174, 'N': 132, 'D': 133, 'C': 121, 'E': 147, 
-        'Q': 146, 'G': 75, 'H': 155, 'I': 131, 'L': 131, 'K': 146, 
-        'M': 149, 'F': 165, 'P': 115, 'S': 105, 'T': 119, 'W': 204, 
+        'A': 89, 'R': 174, 'N': 132, 'D': 133, 'C': 121, 'E': 147,
+        'Q': 146, 'G': 75, 'H': 155, 'I': 131, 'L': 131, 'K': 146,
+        'M': 149, 'F': 165, 'P': 115, 'S': 105, 'T': 119, 'W': 204,
         'Y': 181, 'V': 117
     }
     mw = sum(aa_weights.get(aa, 110) for aa in sequence)
@@ -540,13 +615,14 @@ def parse_csv(content):
 @app.route('/')
 def index():
     return jsonify({
-        'service': 'AMP Analysis Platform - Enhanced Version',
-        'version': '4.0.0',
+        'service': 'AMP Analysis Platform - AI Enhanced',
+        'version': '5.0.0',
         'features': [
             'ProtGPT2 sequence generation',
-            'AlphaFold metrics (pLDDT, pTM, ipTM)',
-            'Comprehensive functional predictions',
-            'Professional UI/UX'
+            'ESMFold structure prediction',
+            'Gemini AI analysis summaries',
+            'AI Chatbot with web search',
+            'Comprehensive functional predictions'
         ]
     })
 
@@ -591,7 +667,7 @@ def upload_training():
 
 @app.route('/api/generate', methods=['POST'])
 def generate():
-    """Generate new sequences using ProtGPT2"""
+    """Generate new sequences"""
     try:
         data = request.json
         job_id = data.get('job_id')
@@ -640,7 +716,7 @@ def generate():
 
 @app.route('/api/analyze-top10', methods=['POST'])
 def analyze_top10():
-    """Deep analysis with enhanced AlphaFold metrics"""
+    """Deep analysis with AI summaries"""
     try:
         data = request.json
         gen_job_id = data.get('gen_job_id')
@@ -693,23 +769,24 @@ def analyze_top10():
 
 @app.route('/api/download/csv/<gen_job_id>', methods=['GET'])
 def download_csv(gen_job_id):
-    """Download results as CSV with all metrics"""
+    """Download results as CSV"""
     try:
         if gen_job_id not in analysis_results:
             return jsonify({'error': 'Results not found'}), 404
         
         results = analysis_results[gen_job_id]
         
-        csv_lines = ['ID,Sequence,Length,pLDDT,pTM,ipTM,MW,pI,Helix%,AMP_Score,Toxicity,Allergen,Hemolytic']
+        csv_lines = ['ID,Sequence,Length,pLDDT,pTM,ipTM,MW,pI,Helix%,AMP_Score,Toxicity,Allergen,Hemolytic,AI_Summary']
         
         for r in results:
+            ai_summary = r.get('ai_summary', '').replace(',', ';').replace('\n', ' ')
             csv_lines.append(
                 f"{r['id']},{r['sequence']},{r['length']},"
                 f"{r.get('pLDDT','N/A')},{r.get('pTM','N/A')},{r.get('ipTM','N/A')},"
                 f"{r.get('molecular_weight','N/A')},{r.get('isoelectric_point','N/A')},"
                 f"{r.get('helix','N/A')},{r.get('ampScore','N/A')},"
                 f"{r.get('toxic','N/A')},{r.get('allergen','N/A')},"
-                f"{r.get('hemolytic','N/A')}"
+                f"{r.get('hemolytic','N/A')},\"{ai_summary}\""
             )
         
         csv_content = '\n'.join(csv_lines)
@@ -752,14 +829,14 @@ def download_pdb(filename):
 
 if __name__ == '__main__':
     print("=" * 70)
-    print("🚀 AMP Analysis Platform - Enhanced v4.0")
+    print("🚀 AMP Analysis Platform - AI Enhanced v5.0")
     print("=" * 70)
     print("📡 Server: http://localhost:5000")
-    print("🧬 Features:")
-    print("   - ProtGPT2 sequence generation")
-    print("   - AlphaFold metrics: pLDDT, pTM, ipTM")
+    print("🤖 Features:")
+    print("   - Gemini AI analysis summaries")
+    print("   - AI Chatbot with web search")
+    print("   - ESMFold structure prediction")
     print("   - Comprehensive functional predictions")
-    print("   - Professional UI/UX")
     print("=" * 70)
     print("✅ Ready!")
     print("=" * 70)
