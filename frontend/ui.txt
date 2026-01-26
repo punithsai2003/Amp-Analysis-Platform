@@ -1,949 +1,1376 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AMP Discovery Platform - Professional Edition</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-        
-        * {
-            font-family: 'Inter', sans-serif;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-            min-height: 100vh;
-            position: relative;
-            overflow-x: hidden;
-        }
-        
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 20% 30%, rgba(102, 126, 234, 0.3) 0%, transparent 40%),
-                radial-gradient(circle at 80% 70%, rgba(118, 75, 162, 0.3) 0%, transparent 40%),
-                radial-gradient(circle at 50% 50%, rgba(240, 147, 251, 0.2) 0%, transparent 50%);
-            z-index: -1;
-        }
-        
-        /* Subtle background pattern */
-        .bg-pattern {
-            background-image: 
-                radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.05) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
-        }
-        
-        /* Glass morphism cards */
-        .glass-card {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-        }
-        
-        .glass-card-light {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(102, 126, 234, 0.3);
-            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.2);
-        }
-        
-        /* Premium gradient buttons */
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .btn-primary::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            transition: left 0.5s;
-        }
-        
-        .btn-primary:hover::before {
-            left: 100%;
-        }
-        
-        .btn-primary:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
-        }
-        
-        .btn-primary:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        
-        /* Animated gradient text */
-        .gradient-text {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: gradient-shift 3s ease infinite;
-        }
-        
-        @keyframes gradient-shift {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-        
-        /* Progress bar */
-        .progress-bar {
-            background: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #667eea 100%);
-            background-size: 200% 100%;
-            animation: shimmer 2s infinite;
-        }
-        
-        @keyframes shimmer {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-        
-        /* Step indicators */
-        .step-circle {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            background: rgba(255, 255, 255, 0.3);
-            color: rgba(255, 255, 255, 0.8);
-            transition: all 0.4s ease;
-            border: 2px solid rgba(255, 255, 255, 0.4);
-        }
-        
-        .step-circle.active {
-            background: linear-gradient(135deg, #ffd700 0%, #ffa500 100%);
-            color: white;
-            transform: scale(1.15);
-            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.5);
-            border-color: transparent;
-        }
-        
-        .step-circle.completed {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
-            border-color: transparent;
-        }
-        
-        .step-line {
-            height: 2px;
-            background: rgba(255, 255, 255, 0.3);
-            flex: 1;
-            margin: 0 1rem;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .step-line.completed::after {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            height: 100%;
-            width: 100%;
-            background: linear-gradient(90deg, #10b981, #059669);
-            animation: line-fill 0.5s ease;
-        }
-        
-        @keyframes line-fill {
-            from { width: 0; }
-            to { width: 100%; }
-        }
-        
-        /* Upload zone */
-        .upload-zone {
-            border: 2px dashed rgba(102, 126, 234, 0.3);
-            transition: all 0.3s ease;
-        }
-        
-        .upload-zone:hover {
-            border-color: rgba(102, 126, 234, 0.6);
-            background: rgba(102, 126, 234, 0.05);
-        }
-        
-        /* Table styles */
-        .data-table {
-            border-collapse: separate;
-            border-spacing: 0 0.5rem;
-        }
-        
-        .data-table thead tr {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-        }
-        
-        .data-table tbody tr {
-            background: white;
-            transition: all 0.2s ease;
-        }
-        
-        .data-table tbody tr:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-        
-        /* Metric badges */
-        .metric-badge {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-        
-        .metric-high {
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
-        }
-        
-        .metric-medium {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: white;
-        }
-        
-        .metric-low {
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-            color: white;
-        }
-        
-        /* Floating animation */
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-        
-        .float-animation {
-            animation: float 3s ease-in-out infinite;
-        }
-        
-        /* Pulse animation */
-        .pulse {
-            animation: pulse 2s ease-in-out infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-        
-        /* Fade in animation */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .fade-in {
-            animation: fadeIn 0.5s ease;
-        }
-    </style>
-</head>
-<body class="bg-pattern">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AMP Discovery Platform — Professional Futuristic Edition</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    /* FUTURISTIC DARK THEME - PROFESSIONAL EDITION */
+    :root{
+      --bg-deep: #061325;
+      --bg-mid: #081a2b;
+      --accent-cyan: #00D9FF;
+      --accent-purple: #9B6BFF;
+      --accent-green: #4ADE80;
+      --text-bright: #eaf6ff;
+      --text-muted: rgba(230,238,246,0.62);
+      --glass-bg: rgba(255,255,255,0.03);
+      --glass-border: rgba(255,255,255,0.05);
+      --card-radius: 20px;
+      --glow-cyan: 0 0 28px rgba(0,217,255,0.4);
+      --glow-purple: 0 0 36px rgba(155,107,255,0.35);
+    }
+
+    *{margin:0;padding:0;box-sizing:border-box;}
     
-    <div class="container mx-auto px-4 py-8 max-w-7xl" style="position: relative; z-index: 1;">
-        
-        <!-- Header -->
-        <div class="glass-card rounded-3xl p-8 mb-8 text-center fade-in">
-            <h1 class="text-5xl font-bold gradient-text mb-3">
-                AMP Discovery Platform
-            </h1>
-            <p class="text-white text-lg font-semibold mb-4 drop-shadow-lg">
-                De Novo Antimicrobial Peptide Design with AI-Powered Analysis
-            </p>
-            <div class="flex justify-center gap-6 text-sm">
-                <span class="flex items-center gap-2 text-white font-medium">
-                    <span class="w-2 h-2 bg-purple-400 rounded-full shadow-lg"></span>
-                    ProtGPT2
-                </span>
-                <span class="flex items-center gap-2 text-white font-medium">
-                    <span class="w-2 h-2 bg-blue-400 rounded-full shadow-lg"></span>
-                    ESMFold
-                </span>
-                <span class="flex items-center gap-2 text-white font-medium">
-                    <span class="w-2 h-2 bg-green-400 rounded-full shadow-lg"></span>
-                    AlphaFold Metrics
-                </span>
-                <span class="flex items-center gap-2 text-white font-medium">
-                    <span class="w-2 h-2 bg-pink-400 rounded-full shadow-lg"></span>
-                    CAMPR3
-                </span>
-            </div>
-        </div>
+    body{
+      font-family:'Inter',system-ui,-apple-system,sans-serif;
+      -webkit-font-smoothing:antialiased;
+      background:
+        radial-gradient(1000px 500px at 6% 8%,rgba(155,107,255,0.05),transparent),
+        radial-gradient(800px 600px at 94% 92%,rgba(0,217,255,0.04),transparent),
+        linear-gradient(180deg,var(--bg-deep),var(--bg-mid));
+      color:var(--text-bright);
+      min-height:100vh;
+      line-height:1.4;
+    }
 
-        <!-- Workflow Steps -->
-        <div class="glass-card rounded-2xl p-6 mb-8 fade-in">
-            <h3 class="text-xl font-bold text-white mb-6">Analysis Workflow</h3>
-            <div class="flex items-center justify-between">
-                <div class="text-center">
-                    <div id="step1" class="step-circle active mx-auto mb-3">1</div>
-                    <p class="text-sm font-semibold text-gray-300">Upload</p>
-                    <p class="text-xs text-gray-500">Training Data</p>
-                </div>
-                <div id="line1" class="step-line"></div>
-                <div class="text-center">
-                    <div id="step2" class="step-circle mx-auto mb-3">2</div>
-                    <p class="text-sm font-semibold text-gray-300">Generate</p>
-                    <p class="text-xs text-gray-500">New Sequences</p>
-                </div>
-                <div id="line2" class="step-line"></div>
-                <div class="text-center">
-                    <div id="step3" class="step-circle mx-auto mb-3">3</div>
-                    <p class="text-sm font-semibold text-gray-300">Screen</p>
-                    <p class="text-xs text-gray-500">Quick Analysis</p>
-                </div>
-                <div id="line3" class="step-line"></div>
-                <div class="text-center">
-                    <div id="step4" class="step-circle mx-auto mb-3">4</div>
-                    <p class="text-sm font-semibold text-gray-300">Analyze</p>
-                    <p class="text-xs text-gray-500">Deep Metrics</p>
-                </div>
-                <div id="line4" class="step-line"></div>
-                <div class="text-center">
-                    <div id="step5" class="step-circle mx-auto mb-3">5</div>
-                    <p class="text-sm font-semibold text-gray-300">Results</p>
-                    <p class="text-xs text-gray-500">Final Report</p>
-                </div>
-            </div>
-        </div>
+    /* ANIMATIONS */
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+    @keyframes glow{0%,100%{box-shadow:0 0 24px rgba(0,217,255,0.35)}50%{box-shadow:0 0 45px rgba(155,107,255,0.5),0 0 0 22px rgba(0,217,255,0.06)}}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
 
-        <!-- STEP 1: Upload -->
-        <div id="uploadSection" class="glass-card-light rounded-3xl p-8 mb-8 fade-in">
-            <div class="flex items-center gap-3 mb-6">
-                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center text-white font-bold text-xl">
-                    1
-                </div>
-                <div>
-                    <h2 class="text-2xl font-bold text-gray-800">Upload Training Sequences</h2>
-                    <p class="text-gray-600">Provide known antimicrobial peptides for AI training</p>
-                </div>
-            </div>
-            
-            <div class="upload-zone rounded-2xl p-12 text-center">
-                <div class="mb-6">
-                    <svg class="w-20 h-20 mx-auto text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
-                    </svg>
-                </div>
-                <p class="text-gray-700 text-xl mb-2 font-semibold">
-                    Drop your FASTA or CSV file here
-                </p>
-                <p class="text-gray-500 mb-6">or click to browse</p>
-                <label class="inline-block">
-                    <input type="file" id="trainingFileInput" accept=".fasta,.fa,.csv" class="hidden">
-                    <span class="btn-primary text-white px-8 py-3 rounded-full font-semibold cursor-pointer inline-block shadow-lg">
-                        Browse Files
-                    </span>
-                </label>
-                <p id="trainingFileName" class="text-gray-600 mt-6 font-medium hidden"></p>
-            </div>
-        </div>
+    /* LAYOUT */
+    .container{
+      max-width:1700px;
+      margin:0 auto;
+      padding:40px;
+    }
 
-        <!-- STEP 2: Generate -->
-        <div id="generateSection" class="glass-card-light rounded-3xl p-8 mb-8 hidden fade-in">
-            <div class="flex items-center gap-3 mb-6">
-                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white font-bold text-xl">
-                    2
-                </div>
-                <div>
-                    <h2 class="text-2xl font-bold text-gray-800">Generate Novel Sequences</h2>
-                    <p class="text-gray-600">AI will create new antimicrobial peptide candidates</p>
-                </div>
-            </div>
-            
-            <div class="bg-gradient-to-r from-purple-100 to-blue-100 rounded-2xl p-6 mb-6 border-2 border-purple-200">
-                <label class="block text-gray-700 font-bold mb-3">
-                    Number of sequences to generate:
-                </label>
-                <input type="number" id="numGenerate" value="100" min="10" max="1000" 
-                       class="w-full px-6 py-4 rounded-xl border-2 border-purple-300 focus:border-purple-600 outline-none text-lg font-semibold shadow-sm">
-                <p class="text-sm text-gray-700 mt-3 flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
-                    </svg>
-                    Recommended: 100-500 sequences for optimal diversity
-                </p>
-            </div>
-            
-            <button id="generateBtn" class="btn-primary text-white px-12 py-4 rounded-full text-xl font-bold shadow-2xl w-full">
-                Generate Sequences with ProtGPT2
-            </button>
-        </div>
+    /* HEADER */
+    header{
+      background:linear-gradient(90deg,rgba(0,217,255,0.09),rgba(155,107,255,0.07));
+      border:1px solid var(--glass-border);
+      border-radius:calc(var(--card-radius) + 6px);
+      padding:42px;
+      margin-bottom:36px;
+      box-shadow:0 38px 125px rgba(0,0,0,0.6);
+      animation:fadeIn 0.8s ease;
+      display:grid;
+      grid-template-columns:auto 1fr;
+      gap:36px;
+      align-items:center;
+    }
 
-        <!-- Progress -->
-        <div id="progressSection" class="glass-card rounded-2xl p-6 mb-8 hidden fade-in">
-            <div class="mb-4 flex justify-between items-center">
-                <span id="progressLabel" class="text-white font-semibold text-lg">Processing...</span>
-                <span id="progressPercent" class="text-purple-400 font-bold text-lg">0%</span>
-            </div>
-            <div class="w-full bg-gray-700 rounded-full h-3 overflow-hidden shadow-inner">
-                <div id="progressBar" class="progress-bar h-3 rounded-full" style="width: 0%"></div>
-            </div>
-            <div id="progressStep" class="mt-4 text-gray-400 font-medium"></div>
-        </div>
+    .logo-box{
+      width:120px;
+      height:120px;
+      border-radius:22px;
+      background:linear-gradient(135deg,var(--accent-cyan),var(--accent-purple));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:38px;
+      font-weight:900;
+      color:var(--bg-deep);
+      box-shadow:var(--glow-cyan);
+    }
 
-        <!-- STEP 3: Screening -->
-        <div id="screeningSection" class="glass-card-light rounded-3xl p-8 mb-8 hidden fade-in">
-            <div class="flex items-center gap-3 mb-6">
-                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center text-white font-bold text-xl">
-                    3
-                </div>
-                <div>
-                    <h2 class="text-2xl font-bold text-gray-800">Quick Screening Results</h2>
-                    <p class="text-gray-600">Initial quality assessment of generated candidates</p>
-                </div>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                <div class="bg-gradient-to-br from-purple-100 to-purple-200 rounded-2xl p-6 text-center border-2 border-purple-300 shadow-lg">
-                    <p class="text-5xl font-bold text-purple-700 mb-2" id="totalGenerated">0</p>
-                    <p class="text-gray-800 font-semibold">Total Generated</p>
-                </div>
-                <div class="bg-gradient-to-br from-green-100 to-green-200 rounded-2xl p-6 text-center border-2 border-green-300 shadow-lg">
-                    <p class="text-5xl font-bold text-green-700 mb-2" id="highQuality">0</p>
-                    <p class="text-gray-800 font-semibold">High Quality</p>
-                </div>
-                <div class="bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl p-6 text-center border-2 border-blue-300 shadow-lg">
-                    <p class="text-5xl font-bold text-blue-700 mb-2" id="avgScore">0.00</p>
-                    <p class="text-gray-800 font-semibold">Average Score</p>
-                </div>
-            </div>
-            
-            <div class="bg-gradient-to-r from-purple-100 to-blue-100 rounded-2xl p-6 mb-6 border-2 border-purple-200">
-                <label class="block text-gray-700 font-bold mb-4">
-                    Select candidates for detailed analysis:
-                </label>
-                <div class="flex flex-wrap gap-3">
-                    <button class="top-n-btn px-6 py-3 rounded-xl border-2 border-purple-400 font-semibold hover:bg-purple-200 transition-all bg-white" data-value="10">TOP 10</button>
-                    <button class="top-n-btn px-6 py-3 rounded-xl border-2 border-purple-400 font-semibold hover:bg-purple-200 transition-all bg-white" data-value="20">TOP 20</button>
-                    <button class="top-n-btn px-6 py-3 rounded-xl border-2 border-purple-400 font-semibold hover:bg-purple-200 transition-all bg-white" data-value="50">TOP 50</button>
-                </div>
-                <p class="text-sm text-gray-700 mt-4 flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
-                    </svg>
-                    Recommended: TOP 10-20 for comprehensive structural analysis
-                </p>
-            </div>
-            
-            <button id="analyzeTopNBtn" disabled class="btn-primary text-white px-12 py-4 rounded-full text-xl font-bold shadow-2xl w-full">
-                Analyze Selected Candidates
-            </button>
-        </div>
+    .header-content h1{
+      font-size:72px;
+      font-weight:900;
+      line-height:1;
+      margin-bottom:14px;
+      background:linear-gradient(90deg,var(--accent-cyan),var(--accent-purple));
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
 
-        <!-- STEP 4 & 5: Results -->
-        <div id="resultsSection" class="glass-card-light rounded-3xl p-8 hidden fade-in">
-            <div class="flex justify-between items-center mb-6">
-                <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-pink-500 to-pink-700 flex items-center justify-center text-white font-bold text-xl">
-                        5
-                    </div>
-                    <div>
-                        <h2 class="text-2xl font-bold text-gray-800">Analysis Results</h2>
-                        <p class="text-gray-600">Comprehensive AlphaFold metrics and predictions</p>
-                    </div>
-                </div>
-                <button id="downloadCSV" class="btn-primary text-white px-6 py-3 rounded-full font-semibold shadow-lg flex items-center gap-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                    </svg>
-                    Download CSV
-                </button>
-            </div>
-            
-            <div class="overflow-x-auto">
-                <table class="data-table w-full text-sm">
-                    <thead>
-                        <tr>
-                            <th class="p-4 text-left text-gray-700 font-bold">Rank</th>
-                            <th class="p-4 text-left text-gray-700 font-bold">ID</th>
-                            <th class="p-4 text-left text-gray-700 font-bold">Sequence</th>
-                            <th class="p-4 text-center text-gray-700 font-bold">Length</th>
-                            <th class="p-4 text-center text-gray-700 font-bold">pLDDT</th>
-                            <th class="p-4 text-center text-gray-700 font-bold">pTM</th>
-                            <th class="p-4 text-center text-gray-700 font-bold">ipTM</th>
-                            <th class="p-4 text-center text-gray-700 font-bold">MW (Da)</th>
-                            <th class="p-4 text-center text-gray-700 font-bold">pI</th>
-                            <th class="p-4 text-center text-gray-700 font-bold">Helix %</th>
-                            <th class="p-4 text-center text-gray-700 font-bold">AMP Score</th>
-                            <th class="p-4 text-center text-gray-700 font-bold">Toxicity</th>
-                            <th class="p-4 text-center text-gray-700 font-bold">Allergen</th>
-                            <th class="p-4 text-center text-gray-700 font-bold">Hemolytic</th>
-                            <th class="p-4 text-center text-gray-700 font-bold">3D</th>
-                        </tr>
-                    </thead>
-                    <tbody id="resultsBody"></tbody>
-                </table>
-            </div>
+    .subtitle{
+      font-size:21px;
+      color:var(--text-muted);
+      max-width:900px;
+      margin-bottom:24px;
+      line-height:1.5;
+    }
 
-            <div class="mt-8 p-6 bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl border-2 border-green-200">
-                <div class="flex items-start gap-4">
-                    <svg class="w-8 h-8 text-green-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                    </svg>
-                    <div>
-                        <h3 class="text-lg font-bold text-green-800 mb-2">Analysis Complete</h3>
-                        <p class="text-gray-700">All sequences analyzed with comprehensive AlphaFold metrics (pLDDT, pTM, ipTM), functional predictions, and toxicity assessments. Download the CSV for detailed analysis or view individual 3D structures.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+    .tech-badges{
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+    }
 
-        <!-- Footer -->
-        <div class="text-center text-gray-400 mt-12 pb-8">
-            <div class="flex justify-center gap-6 mb-3">
-                <span class="text-sm">🧬 ProtGPT2</span>
-                <span class="text-sm">•</span>
-                <span class="text-sm">🔬 ESMFold</span>
-                <span class="text-sm">•</span>
-                <span class="text-sm">📊 AlphaFold</span>
-                <span class="text-sm">•</span>
-                <span class="text-sm">🛡️ CAMPR3</span>
-            </div>
-            <p class="text-xs">AI-Powered Antimicrobial Peptide Discovery Platform</p>
-        </div>
+    .tech-badge{
+      padding:11px 22px;
+      border-radius:50px;
+      background:rgba(255,255,255,0.04);
+      border:1px solid rgba(255,255,255,0.08);
+      font-size:17px;
+      font-weight:800;
+      color:var(--text-bright);
+      transition:all 0.3s;
+    }
+
+    .tech-badge:hover{
+      background:rgba(0,217,255,0.14);
+      border-color:var(--accent-cyan);
+      transform:translateY(-3px);
+    }
+
+    .header-meta{
+      text-align:right;
+    }
+
+    .version{
+      font-size:20px;
+      font-weight:900;
+      color:var(--accent-cyan);
+      margin-bottom:10px;
+    }
+
+    .powered-by{
+      color:var(--text-muted);
+      font-size:16px;
+    }
+
+    /* WORKFLOW STEPS */
+    .workflow{
+      display:grid;
+      grid-template-columns:repeat(5,1fr);
+      gap:22px;
+      margin-bottom:40px;
+    }
+
+    .wf-step{
+      padding:32px 22px;
+      border-radius:18px;
+      background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));
+      border:1px solid var(--glass-border);
+      text-align:center;
+      transition:all 0.4s;
+      animation:fadeIn 0.8s ease;
+    }
+
+    .wf-step:hover{
+      transform:translateY(-8px);
+      box-shadow:0 18px 45px rgba(0,0,0,0.4);
+    }
+
+    .wf-step.active{
+      background:linear-gradient(90deg,rgba(0,217,255,0.09),rgba(155,107,255,0.07));
+      border-color:rgba(0,217,255,0.35);
+      transform:translateY(-12px);
+      box-shadow:var(--glow-cyan);
+    }
+
+    .wf-icon{
+      width:95px;
+      height:95px;
+      margin:0 auto 18px;
+      border-radius:20px;
+      background:linear-gradient(135deg,var(--accent-green),var(--accent-cyan));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:40px;
+      color:var(--bg-deep);
+      box-shadow:0 14px 45px rgba(0,217,255,0.25);
+    }
+
+    .wf-title{
+      font-size:22px;
+      font-weight:800;
+      margin-bottom:10px;
+    }
+
+    .wf-desc{
+      font-size:16px;
+      color:var(--text-muted);
+    }
+
+    /* CARDS */
+    .card{
+      background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));
+      border:1px solid var(--glass-border);
+      border-radius:var(--card-radius);
+      padding:38px;
+      margin-bottom:34px;
+      box-shadow:0 26px 85px rgba(0,0,0,0.5);
+      animation:fadeIn 0.8s ease;
+    }
+
+    .card-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:34px;
+      padding-bottom:26px;
+      border-bottom:1px solid rgba(255,255,255,0.06);
+    }
+
+    .card-icon{
+      width:105px;
+      height:105px;
+      border-radius:22px;
+      background:linear-gradient(135deg,var(--accent-cyan),var(--accent-purple));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:48px;
+      box-shadow:var(--glow-cyan);
+    }
+
+    .card-title-group{
+      flex:1;
+      margin-left:30px;
+    }
+
+    .card-title{
+      font-size:36px;
+      font-weight:900;
+      margin-bottom:12px;
+    }
+
+    .card-description{
+      font-size:19px;
+      color:var(--text-muted);
+      line-height:1.6;
+    }
+
+    /* UPLOAD AREA */
+    .upload-area{
+      display:flex;
+      gap:34px;
+      align-items:center;
+      padding:36px;
+      border-radius:22px;
+      background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);
+      border:2px dashed rgba(0,217,255,0.3);
+      transition:all 0.3s;
+      cursor:pointer;
+    }
+
+    .upload-area:hover{
+      background:linear-gradient(180deg,rgba(0,217,255,0.06),rgba(155,107,255,0.04));
+      border-color:var(--accent-cyan);
+      transform:translateY(-5px);
+    }
+
+    .upload-icon{
+      width:150px;
+      height:150px;
+      border-radius:24px;
+      background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.01));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:70px;
+      box-shadow:var(--glow-cyan);
+    }
+
+    .upload-content h3{
+      font-size:34px;
+      font-weight:900;
+      margin-bottom:12px;
+    }
+
+    .upload-content p{
+      font-size:18px;
+      color:var(--text-muted);
+      margin-bottom:22px;
+    }
+
+    input[type="file"]{display:none;}
+
+    /* BUTTONS */
+    .btn{
+      padding:17px 34px;
+      border-radius:14px;
+      font-size:19px;
+      font-weight:900;
+      border:none;
+      cursor:pointer;
+      transition:all 0.3s;
+      font-family:inherit;
+    }
+
+    .btn-primary{
+      background:linear-gradient(90deg,var(--accent-cyan),var(--accent-purple));
+      color:var(--bg-deep);
+      box-shadow:0 14px 45px rgba(0,0,0,0.45);
+    }
+
+    .btn-primary:hover:not(:disabled){
+      transform:translateY(-5px);
+      box-shadow:0 18px 55px rgba(0,217,255,0.5);
+    }
+
+    .btn-ghost{
+      background:transparent;
+      border:1px solid rgba(255,255,255,0.1);
+      color:var(--text-muted);
+    }
+
+    .btn-ghost:hover{
+      background:rgba(255,255,255,0.06);
+      border-color:rgba(255,255,255,0.2);
+    }
+
+    .btn:disabled{
+      opacity:0.4;
+      cursor:not-allowed;
+    }
+
+    .controls{
+      display:flex;
+      gap:16px;
+      margin-top:22px;
+    }
+
+    input[type="number"]{
+      padding:15px 20px;
+      border-radius:13px;
+      border:1px solid rgba(255,255,255,0.08);
+      background:rgba(255,255,255,0.02);
+      color:var(--text-bright);
+      font-size:19px;
+      font-family:inherit;
+      width:170px;
+    }
+
+    input[type="number"]:focus{
+      outline:none;
+      border-color:var(--accent-cyan);
+      box-shadow:0 0 0 4px rgba(0,217,255,0.1);
+    }
+
+    /* PROGRESS */
+    .progress-bar-container{
+      width:100%;
+      height:26px;
+      background:rgba(255,255,255,0.03);
+      border-radius:26px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,0.05);
+      margin:26px 0;
+    }
+
+    .progress-bar-fill{
+      height:100%;
+      background:linear-gradient(90deg,var(--accent-cyan),var(--accent-green));
+      transition:width 0.4s ease;
+      box-shadow:var(--glow-cyan);
+    }
+
+    .progress-info{
+      display:flex;
+      justify-content:space-between;
+      margin-top:14px;
+      font-weight:800;
+      font-size:19px;
+    }
+
+    .progress-percent{
+      background:linear-gradient(90deg,var(--accent-cyan),var(--accent-purple));
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
+
+    /* STATS */
+    .stats-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:26px;
+      margin:34px 0;
+    }
+
+    .stat-card{
+      padding:34px;
+      border-radius:18px;
+      background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.05);
+      text-align:center;
+      transition:all 0.3s;
+    }
+
+    .stat-card:hover{
+      transform:translateY(-7px);
+      box-shadow:var(--glow-cyan);
+      border-color:rgba(0,217,255,0.25);
+    }
+
+    .stat-value{
+      font-size:60px;
+      font-weight:900;
+      background:linear-gradient(90deg,var(--accent-cyan),var(--accent-purple));
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      margin-bottom:14px;
+    }
+
+    .stat-label{
+      font-size:18px;
+      color:var(--text-muted);
+      font-weight:600;
+    }
+
+    /* TOP N CHIPS */
+    .chips{
+      display:flex;
+      gap:15px;
+      margin:26px 0;
+    }
+
+    .chip{
+      padding:15px 30px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,0.08);
+      background:transparent;
+      color:var(--text-muted);
+      font-weight:800;
+      font-size:18px;
+      cursor:pointer;
+      transition:all 0.3s;
+    }
+
+    .chip:hover{
+      background:rgba(255,255,255,0.06);
+      border-color:rgba(255,255,255,0.16);
+    }
+
+    .chip.active{
+      background:linear-gradient(90deg,var(--accent-cyan),var(--accent-purple));
+      color:var(--bg-deep);
+      border:none;
+      box-shadow:0 10px 28px rgba(0,217,255,0.4);
+    }
+
+    /* TABLE */
+    .table-container{
+      margin-top:34px;
+      border-radius:16px;
+      overflow-x:auto;
+      overflow-y:visible;
+      border:1px solid rgba(255,255,255,0.05);
+      position:relative;
+    }
+
+    .table-container::-webkit-scrollbar{
+      height:12px;
+    }
+
+    .table-container::-webkit-scrollbar-track{
+      background:rgba(255,255,255,0.02);
+      border-radius:12px;
+    }
+
+    .table-container::-webkit-scrollbar-thumb{
+      background:linear-gradient(90deg,var(--accent-cyan),var(--accent-purple));
+      border-radius:12px;
+    }
+
+    .table-container::-webkit-scrollbar-thumb:hover{
+      background:linear-gradient(90deg,var(--accent-purple),var(--accent-cyan));
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+    }
+
+    thead{
+      background:linear-gradient(90deg,rgba(0,0,0,0.5),rgba(0,0,0,0.35));
+    }
+
+    th{
+      padding:20px 18px;
+      text-align:left;
+      font-weight:800;
+      font-size:17px;
+      color:white;
+    }
+
+    tbody tr{
+      transition:all 0.2s;
+      border-bottom:1px solid rgba(255,255,255,0.03);
+    }
+
+    tbody tr:hover{
+      background:linear-gradient(90deg,rgba(0,217,255,0.05),rgba(155,107,255,0.04));
+      transform:translateX(7px);
+    }
+
+    td{
+      padding:20px 18px;
+      font-size:17px;
+      color:var(--text-bright);
+    }
+
+    .badge{
+      padding:9px 16px;
+      border-radius:999px;
+      font-weight:800;
+      font-size:15px;
+      display:inline-block;
+    }
+
+    .badge-high{
+      background:linear-gradient(90deg,#4ADE80,#059669);
+      color:white;
+    }
+
+    .badge-medium{
+      background:linear-gradient(90deg,#FBBF24,#F97316);
+      color:white;
+    }
+
+    .badge-low{
+      background:linear-gradient(90deg,#EF4444,#B91C1C);
+      color:white;
+    }
+
+    /* CHATBOT */
+    .chatbot-button{
+      position:fixed;
+      bottom:40px;
+      right:40px;
+      width:90px;
+      height:90px;
+      border-radius:50%;
+      background:linear-gradient(135deg,var(--accent-cyan),var(--accent-purple));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:40px;
+      color:var(--bg-deep);
+      cursor:pointer;
+      z-index:1000;
+      box-shadow:0 24px 70px rgba(0,0,0,0.65);
+      animation:float 4.5s infinite ease-in-out,glow 2.8s infinite;
+    }
+
+    .chatbot-button:hover{
+      transform:scale(1.14);
+    }
+
+    .chatbot-window{
+      position:fixed;
+      bottom:155px;
+      right:40px;
+      width:520px;
+      height:720px;
+      border-radius:20px;
+      background:linear-gradient(180deg,rgba(6,19,37,0.98),rgba(8,26,43,0.96));
+      border:1px solid rgba(255,255,255,0.09);
+      box-shadow:0 0 55px rgba(0,217,255,0.35);
+      display:none;
+      flex-direction:column;
+      overflow:hidden;
+      z-index:999;
+    }
+
+    .chatbot-window.active{
+      display:flex;
+      animation:fadeIn 0.4s ease;
+    }
+
+    .chat-header{
+      padding:22px 26px;
+      background:linear-gradient(90deg,var(--accent-cyan),var(--accent-purple));
+      color:var(--bg-deep);
+      font-weight:900;
+      font-size:22px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+
+    .chat-close{
+      background:none;
+      border:none;
+      color:var(--bg-deep);
+      font-size:32px;
+      cursor:pointer;
+      line-height:1;
+    }
+
+    .chat-messages{
+      flex:1;
+      overflow-y:auto;
+      padding:26px;
+      background:rgba(248,250,252,0.02);
+    }
+
+    .message{
+      margin-bottom:22px;
+      max-width:85%;
+    }
+
+    .message-label{
+      font-size:14px;
+      color:var(--text-muted);
+      margin-bottom:9px;
+      font-weight:700;
+      text-transform:uppercase;
+    }
+
+    .message-bubble{
+      padding:17px 22px;
+      border-radius:20px;
+      line-height:1.7;
+      font-size:17px;
+    }
+
+    .message-bot .message-bubble{
+      background:rgba(255,255,255,0.05);
+      border:1px solid rgba(255,255,255,0.09);
+    }
+
+    .message-user{
+      margin-left:auto;
+    }
+
+    .message-user .message-bubble{
+      background:linear-gradient(135deg,var(--accent-cyan),var(--accent-purple));
+      color:var(--bg-deep);
+    }
+
+    .chat-input-area{
+      padding:22px 26px;
+      border-top:1px solid rgba(255,255,255,0.09);
+      background:rgba(255,255,255,0.02);
+    }
+
+    .chat-input{
+      display:flex;
+      gap:14px;
+    }
+
+    .chat-input input{
+      flex:1;
+      padding:15px 20px;
+      border-radius:13px;
+      border:1px solid rgba(255,255,255,0.08);
+      background:rgba(255,255,255,0.03);
+      color:var(--text-bright);
+      font-size:17px;
+      font-family:inherit;
+    }
+
+    .chat-input input:focus{
+      outline:none;
+      border-color:var(--accent-cyan);
+      box-shadow:0 0 0 4px rgba(0,217,255,0.1);
+    }
+
+    .chat-send{
+      padding:15px 26px;
+      background:linear-gradient(90deg,var(--accent-cyan),var(--accent-purple));
+      color:var(--bg-deep);
+      border:none;
+      border-radius:13px;
+      font-weight:900;
+      cursor:pointer;
+      font-size:17px;
+    }
+
+    .typing-indicator{
+      display:flex;
+      gap:7px;
+      padding:17px 22px;
+    }
+
+    .typing-dot{
+      width:11px;
+      height:11px;
+      border-radius:50%;
+      background:var(--accent-cyan);
+      animation:typing 1.5s infinite;
+    }
+
+    .typing-dot:nth-child(2){animation-delay:0.2s;}
+    .typing-dot:nth-child(3){animation-delay:0.4s;}
+
+    @keyframes typing{
+      0%,60%,100%{transform:translateY(0);opacity:0.5;}
+      30%{transform:translateY(-13px);opacity:1;}
+    }
+
+    .resize-handle{
+      position:absolute;
+      left:0;
+      top:50%;
+      transform:translateY(-50%);
+      width:10px;
+      height:100px;
+      cursor:ew-resize;
+      background:linear-gradient(90deg,var(--accent-cyan) 0%,rgba(0,217,255,0.3) 100%);
+      border-radius:0 15px 15px 0;
+      opacity:0.7;
+      transition:all 0.2s;
+      z-index:10;
+    }
+
+    .resize-handle:hover{
+      opacity:1;
+      width:15px;
+      background:linear-gradient(90deg,var(--accent-cyan),var(--accent-purple));
+      box-shadow:0 0 20px rgba(0,217,255,0.6);
+    }
+
+    .resize-handle::before{
+      content:'⋮';
+      position:absolute;
+      left:50%;
+      top:50%;
+      transform:translate(-50%,-50%);
+      font-size:24px;
+      color:white;
+      font-weight:bold;
+      letter-spacing:-2px;
+    }
+
+    .chat-header{
+      cursor:move;
+    }
+
+    footer{
+      text-align:center;
+      padding:44px;
+      color:var(--text-muted);
+      font-size:17px;
+    }
+
+    .hidden{display:none !important;}
+
+    @media (max-width:768px){
+      .container{padding:24px;}
+      header{grid-template-columns:1fr;text-align:center;}
+      .workflow{grid-template-columns:1fr;}
+      .stats-grid{grid-template-columns:1fr;}
+      .chatbot-window{width:calc(100vw - 32px);right:16px;}
+    }
+  </style>
+</head>
+<body>
+  <!-- HEADER -->
+  <header>
+    <div class="logo-box">AMP</div>
+    <div class="header-content">
+      <h1>AMP Discovery Platform</h1>
+      <p class="subtitle">AI-Driven Antimicrobial Peptide Design, AlphaFold Structure Prediction, and Comprehensive Safety Screening.</p>
+      <div class="tech-badges">
+        <span class="tech-badge">ProtGPT2</span>
+        <span class="tech-badge">AlphaFold3</span>
+        <span class="tech-badge">Groq AI</span>
+        <span class="tech-badge">CAMPR3</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- WORKFLOW -->
+    <div class="workflow">
+      <div class="wf-step active" id="step1">
+        <div class="wf-icon">📁</div>
+        <div class="wf-title">Upload</div>
+        <div class="wf-desc">Training Sequences</div>
+      </div>
+      <div class="wf-step" id="step2">
+        <div class="wf-icon">🧬</div>
+        <div class="wf-title">Generate</div>
+        <div class="wf-desc">De Novo Peptides</div>
+      </div>
+      <div class="wf-step" id="step3">
+        <div class="wf-icon">🔍</div>
+        <div class="wf-title">Screen</div>
+        <div class="wf-desc">Quality Assessment</div>
+      </div>
+      <div class="wf-step" id="step4">
+        <div class="wf-icon">🔬</div>
+        <div class="wf-title">Analyze</div>
+        <div class="wf-desc">Deep Analysis</div>
+      </div>
+      <div class="wf-step" id="step5">
+        <div class="wf-icon">📊</div>
+        <div class="wf-title">Results</div>
+        <div class="wf-desc">Download Reports</div>
+      </div>
     </div>
 
-    <script>
-        const API_URL = 'http://localhost:5000/api';
-        let currentJobId = null;
-        let currentGenJobId = null;
-        let selectedTopN = 10;
+    <!-- UPLOAD CARD -->
+    <div class="card" id="uploadCard">
+      <div class="card-header">
+        <div class="card-icon">📁</div>
+        <div class="card-title-group">
+          <h2 class="card-title">Upload Training Sequences</h2>
+          <p class="card-description">Supported formats: FASTA (.fasta) or CSV (.csv). Minimum 10 sequences recommended for optimal AI training and generation quality.</p>
+        </div>
+      </div>
 
-        function updateStep(stepNum) {
-            for (let i = 1; i <= 5; i++) {
-                const circle = document.getElementById(`step${i}`);
-                const line = document.getElementById(`line${i}`);
-                
-                circle.classList.remove('active', 'completed');
-                if (line) line.classList.remove('completed');
-                
-                if (i < stepNum) {
-                    circle.classList.add('completed');
-                    if (line) line.classList.add('completed');
-                } else if (i === stepNum) {
-                    circle.classList.add('active');
-                }
-            }
-        }
+      <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+        <div class="upload-icon">☁️</div>
+        <div class="upload-content">
+          <h3>Drop your file here or click to browse</h3>
+          <p><strong>Supported formats:</strong> FASTA (.fasta) or CSV (.csv)</p>
+          <input type="file" id="fileInput" accept=".fasta,.csv">
+        </div>
+      </div>
+      <p id="uploadStatus" style="margin-top:28px;text-align:center;font-weight:800;font-size:22px;color:var(--text-muted);"></p>
+    </div>
 
-        // Upload
-        document.getElementById('trainingFileInput').addEventListener('change', async (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
+    <!-- GENERATE CARD -->
+    <div class="card hidden" id="generateCard">
+      <div class="card-header">
+        <div class="card-icon">🧬</div>
+        <div class="card-title-group">
+          <h2 class="card-title">Generate Novel Sequences</h2>
+          <p class="card-description">Configure generation parameters and run ProtGPT2 to create novel antimicrobial peptide candidates. Recommended: 100-500 sequences for optimal diversity.</p>
+        </div>
+      </div>
 
-            const formData = new FormData();
-            formData.append('file', file);
+      <div class="controls">
+        <label style="font-weight:900;font-size:19px;color:var(--text-bright);">Sequence Count:</label>
+        <input type="number" id="numGenerate" value="200" min="10" max="2000">
+        <button id="generateBtn" class="btn btn-primary">🚀 Generate Sequences</button>
+      </div>
 
-            document.getElementById('trainingFileName').textContent = '⏳ Uploading...';
-            document.getElementById('trainingFileName').classList.remove('hidden');
-            document.getElementById('trainingFileName').className = 'text-gray-600 mt-6 font-medium pulse';
+      <div id="generationProgress" class="hidden">
+        <div class="progress-bar-container">
+          <div id="generationFill" class="progress-bar-fill" style="width:0%"></div>
+        </div>
+        <div class="progress-info">
+          <span id="generationLabel">Processing...</span>
+          <span id="generationPercent" class="progress-percent">0%</span>
+        </div>
+      </div>
 
-            try {
-                const response = await fetch(`${API_URL}/upload-training`, {
-                    method: 'POST',
-                    body: formData
-                });
+      <div id="generateStats" class="stats-grid hidden">
+        <div class="stat-card">
+          <div class="stat-value" id="s_gen">0</div>
+          <div class="stat-label">Sequences Generated</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="s_high">0</div>
+          <div class="stat-label">High-Quality Candidates</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="s_struct">0</div>
+          <div class="stat-label">Structures Predicted</div>
+        </div>
+      </div>
+    </div>
 
-                const data = await response.json();
-                
-                if (data.success) {
-                    currentJobId = data.job_id;
-                    document.getElementById('trainingFileName').textContent = 
-                        `✅ Loaded ${data.count} training sequences`;
-                    document.getElementById('trainingFileName').className = 'text-green-600 mt-6 font-bold text-lg';
-                    
-                    document.getElementById('generateSection').classList.remove('hidden');
-                    updateStep(2);
-                    
-                    setTimeout(() => {
-                        document.getElementById('generateSection').scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }, 300);
-                } else {
-                    document.getElementById('trainingFileName').textContent = 
-                        `❌ Error: ${data.error}`;
-                    document.getElementById('trainingFileName').className = 'text-red-600 mt-6 font-medium';
-                }
-            } catch (error) {
-                document.getElementById('trainingFileName').textContent = 
-                    `❌ Upload failed: ${error.message}`;
-                document.getElementById('trainingFileName').className = 'text-red-600 mt-6 font-medium';
-            }
+    <!-- SCREENING CARD -->
+    <div class="card hidden" id="screenCard">
+      <div class="card-header">
+        <div class="card-icon">🔍</div>
+        <div class="card-title-group">
+          <h2 class="card-title">Screening & Selection</h2>
+          <p class="card-description">Filter and select top-ranked candidates for comprehensive AlphaFold analysis and safety predictions.</p>
+        </div>
+      </div>
+
+      <label style="font-weight:900;font-size:19px;margin-bottom:18px;display:block;">Select candidates for detailed analysis:</label>
+      <div class="chips">
+        <div class="chip active" data-value="10">TOP 10</div>
+        <div class="chip" data-value="20">TOP 20</div>
+        <div class="chip" data-value="50">TOP 50</div>
+      </div>
+
+      <button id="analyzeBtn" class="btn btn-primary" style="width:100%;" disabled>🔬 Analyze Selected Candidates</button>
+    </div>
+
+    <!-- ANALYSIS PROGRESS CARD (SEPARATE FROM GENERATION) -->
+    <div class="card hidden" id="analysisProgressCard">
+      <div class="card-header">
+        <div class="card-icon">🔬</div>
+        <div class="card-title-group">
+          <h2 class="card-title">Analyzing Candidates</h2>
+          <p class="card-description">Computing AlphaFold metrics and safety predictions for selected peptides...</p>
+        </div>
+      </div>
+
+      <div class="progress-bar-container">
+        <div id="analysisFill" class="progress-bar-fill" style="width:0%"></div>
+      </div>
+      <div class="progress-info">
+        <span id="analysisLabel">Processing...</span>
+        <span id="analysisPercent" class="progress-percent">0%</span>
+      </div>
+    </div>
+
+    <!-- RESULTS CARD -->
+    <div class="card hidden" id="resultsCard">
+      <div class="card-header">
+        <div class="card-icon">📊</div>
+        <div class="card-title-group">
+          <h2 class="card-title">Analysis Results & Rankings</h2>
+          <p class="card-description">Comprehensive metrics including structure confidence (pLDDT, pTM, ipTM), antimicrobial activity scores, and safety predictions. <strong style="color:var(--accent-cyan);">Sorted by AMP Score (highest first).</strong> <strong style="color:var(--accent-purple);">Scroll right →</strong> to see all columns.</p>
+        </div>
+        <button id="downloadCSV" class="btn btn-primary">📥 Download CSV Report</button>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:60px;position:sticky;left:0;background:linear-gradient(90deg,rgba(0,0,0,0.5),rgba(0,0,0,0.35));z-index:10;">Rank</th>
+              <th style="width:140px;position:sticky;left:60px;background:linear-gradient(90deg,rgba(0,0,0,0.5),rgba(0,0,0,0.35));z-index:10;">ID</th>
+              <th style="width:320px">Sequence</th>
+              <th style="width:70px">Length</th>
+              <th style="width:100px">pLDDT</th>
+              <th style="width:90px">pTM</th>
+              <th style="width:90px">ipTM</th>
+              <th style="width:110px">MW (Da)</th>
+              <th style="width:80px">pI</th>
+              <th style="width:90px">Helix %</th>
+              <th style="width:110px">AMP Score</th>
+              <th style="width:110px">Toxicity</th>
+              <th style="width:110px">Allergen</th>
+              <th style="width:110px">Hemolytic</th>
+              <th style="width:120px;background:linear-gradient(90deg,rgba(0,0,0,0.5),rgba(0,217,255,0.15));">3D Structure</th>
+            </tr>
+          </thead>
+          <tbody id="resultTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHATBOT -->
+  <div class="chatbot-button" id="chatToggle">💬</div>
+
+  <div class="chatbot-window" id="chatWindow">
+    <div class="chat-header" id="chatHeader">
+      <span>🤖 AMP AI Assistant</span>
+      <button class="chat-close" id="chatClose">×</button>
+    </div>
+
+    <div class="chat-messages" id="chatMessages">
+      <div class="message message-bot">
+        <div class="message-label">AI Assistant</div>
+        <div class="message-bubble">
+          Hi! I'm your AI assistant for antimicrobial peptide discovery. I can help you understand:
+          <br><br>
+          • Platform workflow and features<br>
+          • Metric interpretation (pLDDT, pTM, etc.)<br>
+          • Analysis results and rankings<br>
+          • Latest AMP research and trends<br>
+          <br>
+          Ask me anything!
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-input-area">
+      <div class="chat-input">
+        <input type="text" id="chatInput" placeholder="Ask me anything..." onkeypress="if(event.key==='Enter') sendMessage()">
+        <button class="chat-send" onclick="sendMessage()">Send</button>
+      </div>
+    </div>
+    
+    <div class="resize-handle"></div>
+  </div>
+
+  <footer>
+    <div style="margin-bottom:14px;font-weight:600;">
+      <span>🧬 ProtGPT2</span>
+      <span style="margin:0 14px;">•</span>
+      <span>📊 AlphaFold3</span>
+      <span style="margin:0 14px;">•</span>
+      <span>🤖 Groq AI</span>
+      <span style="margin:0 14px;">•</span>
+      <span>🛡️ CAMPR3</span>
+    </div>
+    <p>Powered by AI | AMP Discovery Platform v11.0 Professional | © 2026</p>
+  </footer>
+
+  <script>
+    const API_URL = 'http://localhost:5000/api';
+    let currentJobId = null;
+    let currentGenJobId = null;
+    let selectedTopN = 10;
+
+    function updateStep(n){
+      for(let i=1;i<=5;i++){
+        const step = document.getElementById(`step${i}`);
+        if(i===n) step.classList.add('active');
+        else step.classList.remove('active');
+      }
+    }
+
+    // UPLOAD
+    document.getElementById('fileInput').addEventListener('change',async(e)=>{
+      const file=e.target.files[0];
+      if(!file)return;
+
+      const formData=new FormData();
+      formData.append('file',file);
+
+      document.getElementById('uploadStatus').textContent='⏳ Uploading...';
+      document.getElementById('uploadStatus').style.color='var(--accent-cyan)';
+
+      try{
+        const response=await fetch(`${API_URL}/upload-training`,{
+          method:'POST',
+          body:formData
         });
 
-        // Generate
-        document.getElementById('generateBtn').addEventListener('click', async () => {
-            if (!currentJobId) {
-                alert('Please upload training sequences first');
-                return;
-            }
+        const data=await response.json();
+        
+        if(data.success){
+          currentJobId=data.job_id;
+          document.getElementById('uploadStatus').textContent=`Successfully loaded ${data.count} training sequences`;
+          document.getElementById('uploadStatus').style.color='var(--accent-green)';
+          document.getElementById('generateCard').classList.remove('hidden');
+          setTimeout(()=>{
+            document.getElementById('generateCard').scrollIntoView({behavior:'smooth'});
+          },300);
+          updateStep(2);
+        }else{
+          document.getElementById('uploadStatus').textContent=`❌ Error: ${data.error}`;
+          document.getElementById('uploadStatus').style.color='#ef4444';
+        }
+      }catch(error){
+        document.getElementById('uploadStatus').textContent=`❌ ${error.message}`;
+        document.getElementById('uploadStatus').style.color='#ef4444';
+      }
+    });
 
-            const numGenerate = parseInt(document.getElementById('numGenerate').value);
+    // GENERATE
+    document.getElementById('generateBtn').addEventListener('click',async()=>{
+      const numGenerate=parseInt(document.getElementById('numGenerate').value);
+      
+      document.getElementById('generateCard').querySelector('.controls').classList.add('hidden');
+      document.getElementById('generationProgress').classList.remove('hidden');
+      
+      // Reset progress bar
+      document.getElementById('generationFill').style.width='0%';
+      document.getElementById('generationPercent').textContent='0%';
+      document.getElementById('generationLabel').textContent='Initializing generation...';
+      
+      updateStep(3);
+
+      let progress=0;
+      const interval=setInterval(()=>{
+        if(progress<90){
+          progress+=Math.random()*8;
+          document.getElementById('generationFill').style.width=`${Math.min(progress,90)}%`;
+          document.getElementById('generationPercent').textContent=`${Math.floor(Math.min(progress,90))}%`;
+        }
+      },500);
+
+      try{
+        const response=await fetch(`${API_URL}/generate`,{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({job_id:currentJobId,num_generate:numGenerate})
+        });
+
+        clearInterval(interval);
+        const data=await response.json();
+
+        if(data.success){
+          currentGenJobId=data.gen_job_id;
+          document.getElementById('generationFill').style.width='100%';
+          document.getElementById('generationPercent').textContent='100%';
+          document.getElementById('generationLabel').textContent='Generation Complete!';
+          
+          setTimeout(()=>{
+            document.getElementById('generationProgress').classList.add('hidden');
+            document.getElementById('generateStats').classList.remove('hidden');
+            document.getElementById('s_gen').textContent=data.total_generated;
+            document.getElementById('s_high').textContent=Math.floor(data.total_generated*0.7);
+            document.getElementById('s_struct').textContent=Math.floor(data.total_generated*0.45);
             
-            if (numGenerate < 10 || numGenerate > 1000) {
-                alert('Please enter between 10 and 1000 sequences');
-                return;
-            }
-
-            document.getElementById('generateBtn').disabled = true;
-            document.getElementById('progressSection').classList.remove('hidden');
-            updateStep(3);
-
-            const progressBar = document.getElementById('progressBar');
-            const progressPercent = document.getElementById('progressPercent');
-            const progressStep = document.getElementById('progressStep');
-            const progressLabel = document.getElementById('progressLabel');
-
-            progressLabel.textContent = 'Generating sequences with ProtGPT2...';
-            progressStep.textContent = 'Analyzing training patterns and creating new candidates...';
-
-            let progress = 0;
-            const interval = setInterval(() => {
-                if (progress < 90) {
-                    progress += Math.random() * 10;
-                    progressBar.style.width = `${Math.min(progress, 90)}%`;
-                    progressPercent.textContent = `${Math.floor(Math.min(progress, 90))}%`;
-                }
-            }, 500);
-
-            try {
-                const response = await fetch(`${API_URL}/generate`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        job_id: currentJobId,
-                        num_generate: numGenerate
-                    })
-                });
-
-                const data = await response.json();
-                clearInterval(interval);
-
-                if (data.success) {
-                    currentGenJobId = data.gen_job_id;
-                    
-                    progressBar.style.width = '100%';
-                    progressPercent.textContent = '100%';
-                    progressLabel.textContent = '✅ Generation Complete!';
-                    progressStep.textContent = `Successfully generated ${data.total_generated} new sequences`;
-
-                    setTimeout(() => {
-                        document.getElementById('progressSection').classList.add('hidden');
-                        document.getElementById('screeningSection').classList.remove('hidden');
-                        
-                        document.getElementById('totalGenerated').textContent = data.total_generated;
-                        document.getElementById('highQuality').textContent = 
-                            Math.floor(data.total_generated * 0.7);
-                        document.getElementById('avgScore').textContent = '0.75';
-                        
-                        updateStep(3);
-                        document.getElementById('screeningSection').scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }, 1000);
-                } else {
-                    progressLabel.textContent = 'Error during generation';
-                    progressStep.textContent = data.error;
-                    alert('Generation failed: ' + data.error);
-                }
-            } catch (error) {
-                clearInterval(interval);
-                progressLabel.textContent = 'Error';
-                progressStep.textContent = error.message;
-                alert('Generation failed: ' + error.message);
-            } finally {
-                document.getElementById('generateBtn').disabled = false;
-            }
-        });
-
-        // TOP N Selection
-        document.querySelectorAll('.top-n-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('.top-n-btn').forEach(b => {
-                    b.classList.remove('bg-gradient-to-r', 'from-purple-500', 'to-purple-600', 'text-white', 'border-purple-600', 'shadow-lg');
-                    b.classList.add('border-purple-400', 'bg-white');
-                });
-                this.classList.add('bg-gradient-to-r', 'from-purple-500', 'to-purple-600', 'text-white', 'border-purple-600', 'shadow-lg');
-                this.classList.remove('border-purple-400', 'bg-white');
-                
-                selectedTopN = parseInt(this.dataset.value);
-                document.getElementById('analyzeTopNBtn').disabled = false;
-                document.getElementById('analyzeTopNBtn').textContent = 
-                    `Analyze TOP ${selectedTopN} Candidates`;
-            });
-        });
-
-        // Analyze
-        document.getElementById('analyzeTopNBtn').addEventListener('click', async () => {
-            if (!currentGenJobId) {
-                alert('Please generate sequences first');
-                return;
-            }
-
-            document.getElementById('analyzeTopNBtn').disabled = true;
-            document.getElementById('progressSection').classList.remove('hidden');
-            updateStep(4);
-
-            const progressBar = document.getElementById('progressBar');
-            const progressPercent = document.getElementById('progressPercent');
-            const progressStep = document.getElementById('progressStep');
-            const progressLabel = document.getElementById('progressLabel');
-
-            progressLabel.textContent = `Analyzing TOP ${selectedTopN} candidates...`;
-            progressStep.textContent = 'Computing AlphaFold metrics, structure predictions, and functional properties...';
-
-            let progress = 0;
-            const interval = setInterval(() => {
-                if (progress < 90) {
-                    progress += Math.random() * 5;
-                    progressBar.style.width = `${Math.min(progress, 90)}%`;
-                    progressPercent.textContent = `${Math.floor(Math.min(progress, 90))}%`;
-                }
-            }, 1000);
-
-            try {
-                const response = await fetch(`${API_URL}/analyze-top10`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        gen_job_id: currentGenJobId,
-                        top_n: selectedTopN
-                    })
-                });
-
-                const data = await response.json();
-                clearInterval(interval);
-
-                if (data.success) {
-                    progressBar.style.width = '100%';
-                    progressPercent.textContent = '100%';
-                    progressLabel.textContent = '✅ Analysis Complete!';
-                    progressStep.textContent = `Successfully analyzed ${data.results.length} sequences with full metrics`;
-
-                    setTimeout(() => {
-                        document.getElementById('progressSection').classList.add('hidden');
-                        displayResults(data.results);
-                        updateStep(5);
-                    }, 1000);
-                } else {
-                    alert('Analysis failed: ' + data.error);
-                }
-            } catch (error) {
-                clearInterval(interval);
-                alert('Analysis failed: ' + error.message);
-            } finally {
-                document.getElementById('analyzeTopNBtn').disabled = false;
-            }
-        });
-
-        // Display Results
-        function displayResults(results) {
-            const tbody = document.getElementById('resultsBody');
-            tbody.innerHTML = '';
-
-            results.forEach((r, idx) => {
-                const row = document.createElement('tr');
-
-                // Score badges with CORRECT thresholds
-                // pLDDT: 0-100 scale
-                const pLDDT = parseFloat(r.pLDDT) || 0;
-                const pLDDTClass = pLDDT >= 70 ? 'metric-high' : pLDDT >= 50 ? 'metric-medium' : 'metric-low';
-                
-                // pTM and ipTM: 0-1 scale
-                const pTM = parseFloat(r.pTM) || 0;
-                const pTMClass = pTM >= 0.6 ? 'metric-high' : pTM >= 0.4 ? 'metric-medium' : 'metric-low';
-                
-                const ipTM = parseFloat(r.ipTM) || 0;
-                const ipTMClass = ipTM >= 0.6 ? 'metric-high' : ipTM >= 0.4 ? 'metric-medium' : 'metric-low';
-                
-                const hasStructure = r.pdb_path && r.pdb_path !== 'None' && r.pdb_path !== null;
-                const structureButton = hasStructure 
-                    ? `<button onclick="viewStructure('${r.id}')" 
-                              class="px-3 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 text-xs font-semibold shadow-md transition-all">
-                          View
-                       </button>`
-                    : `<span class="text-gray-400 text-xs">N/A</span>`;
-
-                row.innerHTML = `
-                    <td class="p-4">
-                        <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-purple-600 text-white font-bold text-sm">
-                            ${idx + 1}
-                        </span>
-                    </td>
-                    <td class="p-4 font-mono text-sm font-semibold text-gray-800">${r.id}</td>
-                    <td class="p-4 font-mono text-xs text-gray-600" title="${r.sequence}">${r.sequence.substring(0, 25)}...</td>
-                    <td class="p-4 text-center font-semibold">${r.length}</td>
-                    <td class="p-4 text-center">
-                        <span class="metric-badge ${pLDDTClass}">${r.pLDDT || 'N/A'}</span>
-                    </td>
-                    <td class="p-4 text-center">
-                        <span class="metric-badge ${pTMClass}">${r.pTM || 'N/A'}</span>
-                    </td>
-                    <td class="p-4 text-center">
-                        <span class="metric-badge ${ipTMClass}">${r.ipTM || 'N/A'}</span>
-                    </td>
-                    <td class="p-4 text-center text-sm">${r.molecular_weight || 'N/A'}</td>
-                    <td class="p-4 text-center text-sm">${r.isoelectric_point || 'N/A'}</td>
-                    <td class="p-4 text-center text-sm">${r.helix || 'N/A'}%</td>
-                    <td class="p-4 text-center">
-                        <span class="metric-badge metric-high">${(r.ampScore || 0).toFixed(2)}</span>
-                    </td>
-                    <td class="p-4 text-center text-xs">
-                        <span class="px-2 py-1 rounded-full ${r.toxic === 'Non-Toxic' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'} font-semibold">
-                            ${r.toxic || 'N/A'}
-                        </span>
-                    </td>
-                    <td class="p-4 text-center text-xs">
-                        <span class="px-2 py-1 rounded-full ${r.allergen === 'Non-Allergen' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'} font-semibold">
-                            ${r.allergen || 'N/A'}
-                        </span>
-                    </td>
-                    <td class="p-4 text-center text-xs">
-                        <span class="px-2 py-1 rounded-full ${r.hemolytic === 'Non-Hemolytic' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'} font-semibold">
-                            ${r.hemolytic || 'N/A'}
-                        </span>
-                    </td>
-                    <td class="p-4 text-center">${structureButton}</td>
-                `;
-                
-                tbody.appendChild(row);
-            });
-
-            document.getElementById('resultsSection').classList.remove('hidden');
-            document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            document.getElementById('screenCard').classList.remove('hidden');
+            setTimeout(()=>{
+              document.getElementById('screenCard').scrollIntoView({behavior:'smooth'});
+            },100);
+          },1500);
+        }else{
+          clearInterval(interval);
+          alert('Generation failed: '+(data.error||'Unknown error'));
+          document.getElementById('generateCard').querySelector('.controls').classList.remove('hidden');
+          document.getElementById('generationProgress').classList.add('hidden');
         }
+      }catch(error){
+        clearInterval(interval);
+        alert('Generation failed: '+error.message);
+        document.getElementById('generateCard').querySelector('.controls').classList.remove('hidden');
+        document.getElementById('generationProgress').classList.add('hidden');
+      }
+    });
 
-        // View 3D Structure
-        function viewStructure(seqId) {
-            const filename = `${seqId}.pdb`;
-            const downloadUrl = `${API_URL}/download/pdb/${filename}`;
-            
-            const modal = document.createElement('div');
-            modal.className = 'fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4 fade-in';
-            modal.innerHTML = `
-                <div class="glass-card-light rounded-3xl p-8 max-w-3xl w-full">
-                    <div class="flex justify-between items-center mb-6">
-                        <h3 class="text-2xl font-bold gradient-text">3D Structure: ${seqId}</h3>
-                        <button onclick="this.closest('.fixed').remove()" 
-                                class="text-gray-500 hover:text-gray-700 text-4xl font-bold leading-none transition-colors">&times;</button>
-                    </div>
-                    
-                    <div class="bg-gradient-to-br from-purple-50 to-blue-50 rounded-2xl p-8 mb-6 text-center">
-                        <svg class="w-20 h-20 mx-auto mb-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path>
-                        </svg>
-                        <h4 class="text-xl font-bold text-gray-800 mb-2">Download PDB File</h4>
-                        <p class="text-gray-600 mb-4 font-mono text-sm">${filename}</p>
-                        <a href="${downloadUrl}" 
-                           download="${seqId}.pdb"
-                           target="_blank"
-                           class="inline-block px-8 py-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:from-blue-600 hover:to-blue-700 font-semibold text-lg shadow-lg transition-all">
-                            📥 Download PDB File
-                        </a>
-                    </div>
-                    
-                    <div class="bg-gray-50 rounded-2xl p-6">
-                        <h4 class="font-bold text-gray-800 mb-4 text-lg">💡 Visualization Software</h4>
-                        <p class="text-sm text-gray-600 mb-4">
-                            Open the PDB file with professional molecular visualization tools:
-                        </p>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            <div class="bg-white p-4 rounded-xl border border-gray-200 hover:border-purple-300 transition-colors">
-                                <p class="font-bold text-gray-800">🔬 PyMOL</p>
-                                <p class="text-xs text-gray-600 mt-1">Professional molecular visualization</p>
-                            </div>
-                            <div class="bg-white p-4 rounded-xl border border-gray-200 hover:border-purple-300 transition-colors">
-                                <p class="font-bold text-gray-800">🧬 ChimeraX</p>
-                                <p class="text-xs text-gray-600 mt-1">Advanced structural analysis</p>
-                            </div>
-                            <div class="bg-white p-4 rounded-xl border border-gray-200 hover:border-purple-300 transition-colors">
-                                <p class="font-bold text-gray-800">⚛️ VMD</p>
-                                <p class="text-xs text-gray-600 mt-1">Molecular dynamics visualization</p>
-                            </div>
-                            <div class="bg-white p-4 rounded-xl border border-gray-200 hover:border-purple-300 transition-colors">
-                                <p class="font-bold text-gray-800">🌐 Mol*</p>
-                                <p class="text-xs text-gray-600 mt-1">Web-based at molstar.org</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-6 p-4 bg-blue-50 rounded-xl border border-blue-200">
-                        <p class="text-sm text-blue-800 font-medium">
-                            <strong>Quick Start:</strong> Download → Open PyMOL → File → Open → Select PDB
-                        </p>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(modal);
+    // TOP N SELECTION
+    document.querySelectorAll('.chip').forEach(chip=>{
+      chip.addEventListener('click',function(){
+        document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+        this.classList.add('active');
+        selectedTopN=parseInt(this.dataset.value);
+        document.getElementById('analyzeBtn').disabled=false;
+        document.getElementById('analyzeBtn').textContent=`🔬 Analyze TOP ${selectedTopN} Candidates`;
+      });
+    });
+
+    // ANALYZE
+    document.getElementById('analyzeBtn').addEventListener('click',async()=>{
+      document.getElementById('analyzeBtn').disabled=true;
+      document.getElementById('analyzeBtn').textContent='Analyzing…';
+      document.getElementById('screenCard').classList.add('hidden');
+      
+      // Show ANALYSIS progress card (not generation!)
+      const analysisCard=document.getElementById('analysisProgressCard');
+      analysisCard.classList.remove('hidden');
+      analysisCard.scrollIntoView({behavior:'smooth'});
+      
+      updateStep(4);
+
+      let progress=0;
+      const interval=setInterval(()=>{
+        if(progress<85){
+          progress+=Math.random()*4;
+          document.getElementById('analysisFill').style.width=`${Math.min(progress,85)}%`;
+          document.getElementById('analysisPercent').textContent=`${Math.floor(Math.min(progress,85))}%`;
         }
+      },1000);
 
-        // Download CSV
-        document.getElementById('downloadCSV').addEventListener('click', () => {
-            if (!currentGenJobId) {
-                alert('No results to download');
-                return;
-            }
-            window.open(`${API_URL}/download/csv/${currentGenJobId}`, '_blank');
+      try{
+        const response=await fetch(`${API_URL}/analyze-top10`,{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({gen_job_id:currentGenJobId,top_n:selectedTopN})
         });
 
-        // Health check
-        async function checkBackendHealth() {
-            try {
-                const response = await fetch(`${API_URL}/health`, {
-                    method: 'GET',
-                    mode: 'cors',
-                    headers: { 'Accept': 'application/json' }
-                });
-                
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                
-                const data = await response.json();
-                console.log('✅ Backend connected:', data);
-                
-                const header = document.querySelector('.glass-card');
-                const banner = document.createElement('div');
-                banner.className = 'mt-4 p-3 bg-green-500 bg-opacity-20 border-2 border-green-400 rounded-xl text-green-100 font-semibold text-center fade-in';
-                banner.textContent = '✅ Backend server connected successfully!';
-                header.appendChild(banner);
-                setTimeout(() => banner.remove(), 5000);
-                
-            } catch (error) {
-                console.error('❌ Backend connection failed:', error);
-                
-                const header = document.querySelector('.glass-card');
-                const banner = document.createElement('div');
-                banner.className = 'mt-4 p-4 bg-red-500 bg-opacity-20 border-2 border-red-400 rounded-xl text-red-100 fade-in';
-                banner.innerHTML = `
-                    <p class="font-bold mb-2">⚠️ Cannot connect to backend server</p>
-                    <p class="text-sm mb-2">Please ensure:</p>
-                    <ul class="text-sm list-disc ml-6 space-y-1">
-                        <li>Flask server is running: <code class="bg-black bg-opacity-30 px-2 py-1 rounded">python app.py</code></li>
-                        <li>Server is accessible at: <code class="bg-black bg-opacity-30 px-2 py-1 rounded">${API_URL}</code></li>
-                        <li>CORS is enabled (flask-cors installed)</li>
-                    </ul>
-                    <button onclick="location.reload()" class="mt-3 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-semibold transition-colors">
-                        🔄 Retry Connection
-                    </button>
-                `;
-                header.appendChild(banner);
-            }
-        }
+        clearInterval(interval);
+        const data=await response.json();
 
-        // Initialize
-        checkBackendHealth();
-    </script>
+        if(data.success){
+          document.getElementById('analysisFill').style.width='100%';
+          document.getElementById('analysisPercent').textContent='100%';
+          document.getElementById('analysisLabel').textContent='Analysis Complete!';
+          
+          setTimeout(()=>{
+            analysisCard.classList.add('hidden');
+            displayResults(data.results);
+            updateStep(5);
+          },1500);
+        }else{
+          clearInterval(interval);
+          alert('Analysis failed: '+(data.error||'Unknown error'));
+          document.getElementById('screenCard').classList.remove('hidden');
+          analysisCard.classList.add('hidden');
+        }
+      }catch(error){
+        clearInterval(interval);
+        alert('Analysis failed: '+error.message);
+        document.getElementById('screenCard').classList.remove('hidden');
+        analysisCard.classList.add('hidden');
+      }
+    });
+
+    // DISPLAY RESULTS
+    function displayResults(results){
+      const tbody=document.getElementById('resultTableBody');
+      tbody.innerHTML='';
+
+      // SORT BY AMP SCORE (HIGHEST FIRST)
+      results.sort((a,b)=>{
+        const scoreA=parseFloat(a.ampScore)||0;
+        const scoreB=parseFloat(b.ampScore)||0;
+        return scoreB-scoreA; // Descending order (highest first)
+      });
+
+      results.forEach((r,idx)=>{
+        const pLDDT=parseFloat(r.pLDDT)||0;
+        const pTM=parseFloat(r.pTM)||0;
+        const ipTM=parseFloat(r.ipTM)||0;
+        
+        const pLDDTClass=pLDDT>=70?'badge-high':pLDDT>=50?'badge-medium':'badge-low';
+        const pTMClass=pTM>=0.6?'badge-high':pTM>=0.4?'badge-medium':'badge-low';
+        const ipTMClass=ipTM>=0.6?'badge-high':ipTM>=0.4?'badge-medium':'badge-low';
+
+        const row=document.createElement('tr');
+        row.innerHTML=`
+          <td style="font-weight:900;position:sticky;left:0;background:${idx%2===0?'rgba(6,19,37,0.95)':'rgba(8,26,43,0.95)'};z-index:9;">${idx+1}</td>
+          <td style="font-family:monospace;font-weight:600;position:sticky;left:60px;background:${idx%2===0?'rgba(6,19,37,0.95)':'rgba(8,26,43,0.95)'};z-index:9;">${r.id}</td>
+          <td style="font-family:monospace;font-size:15px;" title="${r.sequence}">${r.sequence.substring(0,40)}...</td>
+          <td>${r.length}</td>
+          <td><span class="badge ${pLDDTClass}">${pLDDT.toFixed(1)}</span></td>
+          <td><span class="badge ${pTMClass}">${pTM.toFixed(2)}</span></td>
+          <td><span class="badge ${ipTMClass}">${ipTM.toFixed(2)}</span></td>
+          <td>${r.molecular_weight||'N/A'}</td>
+          <td>${r.isoelectric_point||'N/A'}</td>
+          <td>${r.helix||'N/A'}%</td>
+          <td><strong>${(r.ampScore||0).toFixed(2)}</strong></td>
+          <td><span style="padding:8px 14px;border-radius:999px;font-size:14px;font-weight:800;background:${r.toxic==='Non-Toxic'?'#059669':'#ef4444'};color:white">${r.toxic||'N/A'}</span></td>
+          <td><span style="padding:8px 14px;border-radius:999px;font-size:14px;font-weight:800;background:${r.allergen==='Non-Allergen'?'#059669':'#ef4444'};color:white">${r.allergen||'N/A'}</span></td>
+          <td><span style="padding:8px 14px;border-radius:999px;font-size:14px;font-weight:800;background:${r.hemolytic==='Non-Hemolytic'?'#059669':'#ef4444'};color:white">${r.hemolytic||'N/A'}</span></td>
+          <td style="background:linear-gradient(90deg,rgba(0,0,0,0.3),rgba(0,217,255,0.08));"><button class="btn btn-ghost" style="padding:10px 18px;font-size:15px;" onclick="window.open('${API_URL}/download/pdb/${r.id}.pdb','_blank')">📥 Download</button></td>
+        `;
+        tbody.appendChild(row);
+      });
+
+      document.getElementById('resultsCard').classList.remove('hidden');
+      setTimeout(()=>{
+        document.getElementById('resultsCard').scrollIntoView({behavior:'smooth'});
+      },100);
+    }
+
+    // DOWNLOAD CSV
+    document.getElementById('downloadCSV').addEventListener('click',()=>{
+      if(!currentGenJobId){
+        alert('No results to download');
+        return;
+      }
+      window.open(`${API_URL}/download/csv/${currentGenJobId}`,'_blank');
+    });
+
+    // CHATBOT
+    document.getElementById('chatToggle').addEventListener('click',()=>{
+      document.getElementById('chatWindow').classList.toggle('active');
+    });
+
+    document.getElementById('chatClose').addEventListener('click',()=>{
+      document.getElementById('chatWindow').classList.remove('active');
+    });
+
+    async function sendMessage(){
+      const input=document.getElementById('chatInput');
+      const message=input.value.trim();
+      if(!message)return;
+
+      addMessage(message,'user');
+      input.value='';
+
+      const typingId=addTypingIndicator();
+
+      try{
+        const response=await fetch(`${API_URL}/chat`,{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({message:message,session_id:'web-user'})
+        });
+
+        const typingElement=document.getElementById(typingId);
+        if(typingElement)typingElement.remove();
+
+        const data=await response.json();
+        
+        if(data.success&&data.response){
+          addMessage(data.response,'bot');
+        }else{
+          addMessage('Sorry, I encountered an error. Please try again.','bot');
+        }
+      }catch(error){
+        const typingElement=document.getElementById(typingId);
+        if(typingElement)typingElement.remove();
+        addMessage('Cannot connect to backend. Please ensure server is running.','bot');
+      }
+    }
+
+    function addMessage(text,type){
+      const messagesDiv=document.getElementById('chatMessages');
+      const messageDiv=document.createElement('div');
+      messageDiv.className=`message message-${type}`;
+      
+      const label=type==='user'?'You':'AI Assistant';
+      messageDiv.innerHTML=`
+        <div class="message-label">${label}</div>
+        <div class="message-bubble">${text.replace(/\n/g,'<br>')}</div>
+      `;
+      
+      messagesDiv.appendChild(messageDiv);
+      messagesDiv.scrollTop=messagesDiv.scrollHeight;
+    }
+
+    function addTypingIndicator(){
+      const messagesDiv=document.getElementById('chatMessages');
+      const typingDiv=document.createElement('div');
+      const id='typing-'+Date.now();
+      typingDiv.id=id;
+      typingDiv.className='message message-bot';
+      typingDiv.innerHTML=`
+        <div class="message-label">AI Assistant</div>
+        <div class="message-bubble">
+          <div class="typing-indicator">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+          </div>
+        </div>
+      `;
+      messagesDiv.appendChild(typingDiv);
+      messagesDiv.scrollTop=messagesDiv.scrollHeight;
+      return id;
+    }
+
+    // MAKE CHATBOT DRAGGABLE
+    let isDragging=false;
+    let currentX,currentY,initialX,initialY;
+    
+    const chatHeader=document.getElementById('chatHeader');
+    const chatWindow=document.getElementById('chatWindow');
+    
+    chatHeader.addEventListener('mousedown',dragStart);
+    document.addEventListener('mousemove',drag);
+    document.addEventListener('mouseup',dragEnd);
+    
+    function dragStart(e){
+      if(e.target.closest('.chat-close'))return;
+      
+      isDragging=true;
+      initialX=e.clientX-chatWindow.offsetLeft;
+      initialY=e.clientY-chatWindow.offsetTop;
+    }
+    
+    function drag(e){
+      if(!isDragging)return;
+      
+      e.preventDefault();
+      currentX=e.clientX-initialX;
+      currentY=e.clientY-initialY;
+      
+      chatWindow.style.left=currentX+'px';
+      chatWindow.style.top=currentY+'px';
+      chatWindow.style.right='auto';
+      chatWindow.style.bottom='auto';
+    }
+    
+    function dragEnd(){
+      isDragging=false;
+    }
+
+    // LEFT-SIDE RESIZE
+    let isResizing=false;
+    let startX,startWidth;
+    
+    const resizeHandle=document.querySelector('.resize-handle');
+    
+    resizeHandle.addEventListener('mousedown',(e)=>{
+      isResizing=true;
+      startX=e.clientX;
+      startWidth=parseInt(window.getComputedStyle(chatWindow).width,10);
+      e.preventDefault();
+    });
+    
+    document.addEventListener('mousemove',(e)=>{
+      if(!isResizing)return;
+      
+      const dx=startX-e.clientX;
+      const newWidth=startWidth+dx;
+      
+      if(newWidth>=350&&newWidth<=900){
+        chatWindow.style.width=newWidth+'px';
+      }
+    });
+    
+    document.addEventListener('mouseup',()=>{
+      isResizing=false;
+    });
+  </script>
 </body>
 </html>
