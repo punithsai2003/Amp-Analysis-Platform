@@ -1,0 +1,7 @@
+# Streamlit Community Cloud installs from this file at the repo root.
+# All pure-Python or prebuilt-wheel packages, so no compiler is needed.
+# 1.50 is the floor: the width="stretch" API replaced use_container_width.
+streamlit>=1.50
+requests>=2.31
+pandas>=2.2
+py3Dmol>=2.1
