@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>AMP Discovery Platform v6.3</title>
+<title>AMP Discovery Platform v6.4</title>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
 <script src="https://3Dmol.csb.pitt.edu/build/3Dmol-min.js"></script>
 <style>
@@ -30,7 +30,6 @@
   --rsm:   8px;
   --f:     'Sora', sans-serif;
   --mono:  'JetBrains Mono', monospace;
-  /* Scaled down base font for a clean, compact look */
   font-size: 15px;
 }
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
@@ -51,13 +50,12 @@ body {
 @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
 @keyframes float  { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
 @keyframes gpulse { 0%,100%{box-shadow:var(--glow)} 50%{box-shadow:0 0 56px rgba(59,158,255,.25)} }
-@keyframes dots   { 0%,60%,100%{transform:translateY(0);opacity:.35} 30%{transform:translateY(-8px);opacity:1} }
 .au  { animation:fadeUp .48s ease both; }
 .d1  { animation-delay:.07s; }
 .d2  { animation-delay:.14s; }
 .d3  { animation-delay:.21s; }
 
-/* ══════ FULL-WIDTH LAYOUT with comfortable margins */
+/* ══════ FULL-WIDTH LAYOUT */
 .page {
   width: 100%;
   max-width: 1400px;
@@ -135,11 +133,10 @@ body {
   background: var(--bg1); 
   border: 1px solid var(--bdr);
   border-radius: 16px; 
-  padding: 28px 32px;  /* Reduced from 48px */
+  padding: 28px 32px; 
   margin-bottom: 16px; 
   box-shadow: var(--shad);
 }
-
 .card-hd {
   display: flex; 
   align-items: flex-start; 
@@ -148,16 +145,14 @@ body {
   padding-bottom: 18px;
   border-bottom: 1px solid var(--bdr);
 }
-
 .card-ico {
-  width: 52px; height: 52px; /* Reduced from 72px */
+  width: 52px; height: 52px; 
   border-radius: 12px; flex-shrink: 0;
   background: linear-gradient(135deg, var(--teal), var(--blue));
   display: flex; align-items: center; justify-content: center;
   font-size: 22px; 
   box-shadow: 0 6px 20px rgba(13,232,198,.22);
 }
-
 .card-title { font-size: 1.35rem; font-weight: 700; letter-spacing: -.4px; margin-bottom: 4px; }
 .card-desc  { font-size: 0.92rem; color: var(--muted); line-height: 1.5; }
 
@@ -196,44 +191,22 @@ input[type=file] { display: none; }
 .g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
 
 /* ══════ DATABASE CARDS */
-.db-card {
-  border: 2px solid var(--bdr); border-radius: 14px; padding: 20px;
-}
-.db-card::before {
-  content:''; position:absolute; inset:0; opacity:0; transition:opacity .3s;
-  background: linear-gradient(135deg, color-mix(in srgb, var(--db-c, var(--teal)) 10%, transparent), transparent);
-}
-.db-card:hover::before, .db-card.sel::before { opacity:1; }
+.db-card { border: 2px solid var(--bdr); border-radius: 14px; padding: 20px; position: relative; }
 .db-card:hover { transform:translateY(-3px); }
-.db-card.sel   { border-color: var(--db-c, var(--teal)); }
+.db-card.sel   { border-color: var(--teal); background: rgba(13,232,198,0.03); }
 .db-chk {
   position: absolute; top:15px; right:15px; width:26px; height:26px; border-radius:50%;
   border: 2px solid var(--bdr); display:flex; align-items:center; justify-content:center;
   font-size:.78rem; font-weight:700; transition:all .2s;
 }
-.db-card.sel .db-chk { background:var(--db-c, var(--teal)); border-color:transparent; color:#000; }
-.db-name  { font-family:var(--mono); font-size:.92rem; font-weight:700; color:var(--db-c,var(--teal)); margin-bottom:5px; padding-right:32px; }
+.db-card.sel .db-chk { background:var(--teal); border-color:transparent; color:#000; }
+.db-name  { font-family:var(--mono); font-size:.92rem; font-weight:700; color:var(--teal); margin-bottom:5px; padding-right:32px; }
 .db-desc  { font-size:.9rem; color:var(--muted); margin-bottom:16px; line-height:1.5; }
 .db-count { font-size:2.3rem; font-weight:800; color:var(--text); letter-spacing:-1px; line-height:1; }
 .db-unit  { font-size:.68rem; color:var(--dim); letter-spacing:1.5px; text-transform:uppercase; margin-top:3px; }
 
 /* ══════ MODEL CARDS */
-.model-card {
-  border: 2px solid var(--bdr); border-radius: 14px; padding: 18px;
-}
-
-.modal-close { 
-  background: var(--bg3); 
-  border: 1px solid var(--bdr); 
-  color: var(--text); 
-  width: 32px; height: 32px; 
-  border-radius: 50%; 
-  cursor: pointer; 
-  display: flex; align-items: center; justify-content: center; 
-  font-size: 16px;
-  position: relative;
-  z-index: 10;
-}
+.model-card { border: 2px solid var(--bdr); border-radius: 14px; padding: 18px; cursor: pointer; }
 .model-card:hover { border-color: rgba(255,255,255,.18); transform: translateY(-3px); }
 .model-card.sel   { border-color: var(--teal); background: rgba(13,232,198,0.045); }
 .model-n { font-size: 1.12rem; font-weight: 700; margin-bottom: 7px; }
@@ -242,30 +215,6 @@ input[type=file] { display: none; }
 .mp      { font-family:var(--mono); font-size:.68rem; font-weight:700; padding:4px 10px; border-radius:5px; }
 .mpt     { background:rgba(13,232,198,.10); color:var(--teal);  border:1px solid rgba(13,232,198,.22); }
 .mpg     { background:rgba(45,226,138,.10); color:var(--green); border:1px solid rgba(45,226,138,.22); }
-
-/* ══════ FORM */
-.form-wrap { display:flex; flex-direction:column; gap:24px; }
-.form-row  { display:flex; flex-direction:column; gap:9px; }
-.form-lbl  { font-size:.95rem; font-weight:600; color:var(--muted); letter-spacing:.3px; }
-.form-inp, .form-sel {
-  width:100%; padding:15px 18px;
-  background:rgba(255,255,255,0.04); border:1px solid var(--bdr);
-  border-radius:var(--rsm); color:var(--text);
-  font-size:1rem; font-family:var(--f); outline:none; transition:border-color .2s;
-}
-.form-inp:focus, .form-sel:focus { border-color:var(--teal); }
-.form-sel option { background:var(--bg2); }
-.rrow { display:flex; align-items:center; gap:16px; }
-.rv   { font-family:var(--mono); font-size:1rem; font-weight:700; color:var(--teal); min-width:54px; text-align:right; }
-input[type=range] {
-  flex:1; -webkit-appearance:none; background:rgba(255,255,255,0.12);
-  height:5px; border-radius:3px; outline:none;
-}
-input[type=range]::-webkit-slider-thumb {
-  -webkit-appearance:none; width:20px; height:20px; border-radius:50%;
-  background:var(--teal); cursor:pointer;
-  box-shadow:0 0 10px rgba(13,232,198,0.45);
-}
 
 /* ══════ NEG TOGGLE */
 .neg-row {
@@ -320,14 +269,14 @@ input[type=range]::-webkit-slider-thumb {
 /* ══════ STATS */
 .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin:24px 0; }
 .stat { 
-  padding: 18px 16px; /* Reduced padding */
+  padding: 18px 16px; 
   border-radius: 12px; 
   text-align: center; 
   background: rgba(255,255,255,0.02); 
   border: 1px solid var(--bdr); 
 }
 .stat:hover { border-color:var(--teal); transform:translateY(-3px); }
-.stat-n { font-size: 2.5rem; /* Scaled down */ font-weight: 800; line-height: 1; margin-bottom: 8px; }
+.stat-n { font-size: 2.5rem; font-weight: 800; line-height: 1; margin-bottom: 8px; }
 .stat-n.g { background:linear-gradient(90deg,var(--green),var(--teal)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
 .stat-n.a { background:linear-gradient(90deg,var(--amber),var(--red));  -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
 .stat-l { font-size:.82rem; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:.7px; }
@@ -373,31 +322,36 @@ tbody tr:hover td.sk { background:rgba(13,232,198,0.04); }
 .bl  { background:linear-gradient(90deg,#dc2626,#b91c1c); color:#fff; }
 
 /* ══════ MODALS */
-/* Decrease 3D Viewer Modal Box Size */
 .modal {
   position: fixed; inset: 0; background: rgba(0,0,0,.82); backdrop-filter: blur(10px);
   display: none; align-items: center; justify-content: center; z-index: 9999; padding: 20px;
 }
 .modal.open { display: flex; animation: fadeUp .3s ease; }
+
+/* Decreased modal box size */
 .mbox {
   background: var(--bg2); border: 1px solid var(--bdr); border-radius: 16px;
-  width: 100%; max-width: 850px; max-height: 85vh; overflow-y: auto;
-  box-shadow: 0 24px 64px rgba(0,0,0,0.75); padding: 24px 28px;
+  width: 100%; max-width: 680px; max-height: 75vh; overflow-y: auto;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.75); padding: 18px 22px;
 }
+
 .mhead {
-  padding:26px 36px; border-bottom:1px solid var(--bdr);
-  display:flex; justify-content:space-between; align-items:center;
-  background:linear-gradient(90deg,rgba(13,232,198,.06),rgba(59,158,255,.04));
-  border-radius:22px 22px 0 0; position:sticky; top:0; z-index:5;
+  padding: 16px 20px; border-bottom: 1px solid var(--bdr);
+  display: flex; justify-content: space-between; align-items: center;
+  background: linear-gradient(90deg, rgba(13,232,198,.06), rgba(59,158,255,.04));
+  border-radius: 12px 12px 0 0; position: sticky; top: 0; z-index: 5;
 }
-.mtitle { font-size:1.35rem; font-weight:700; }
-.mclose {
-  width:42px; height:42px; border-radius:50%; border:1px solid var(--bdr);
-  background:rgba(255,255,255,.05); color:var(--muted); font-size:1.1rem;
-  cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .2s;
+.mtitle { font-size: 1.15rem; font-weight: 700; }
+
+/* Fixed close button styling with proper z-index */
+.mclose, .modal-close {
+  width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--bdr);
+  background: var(--bg3); color: var(--muted); font-size: 1rem;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; 
+  transition: all .2s; position: relative; z-index: 20;
 }
-.mclose:hover { background:rgba(255,95,109,.15); border-color:var(--red); color:var(--red); }
-.mbody { padding:36px; }
+.mclose:hover, .modal-close:hover { background: rgba(255,95,109,.15); border-color: var(--red); color: var(--red); }
+.mbody { padding: 20px; }
 
 /* detail layout */
 .dg2 { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:20px; }
@@ -427,18 +381,10 @@ tbody tr:hover td.sk { background:rgba(13,232,198,0.04); }
 .saf-l { font-size:.72rem; font-family:var(--mono); letter-spacing:1px; color:var(--muted); margin-bottom:7px; }
 .saf-v { font-size:1rem; font-weight:700; }
 
-/* AA composition */
-.aa-g { display:grid; grid-template-columns:repeat(5,1fr); gap:13px; margin-top:18px; }
-.aa-c { padding:17px 13px; border-radius:var(--rsm); background:rgba(255,255,255,.03); border:1px solid var(--bdr); text-align:center; }
-.aa-l { font-size:2rem; font-weight:800; color:var(--teal); margin-bottom:5px; }
-.aa-p { font-size:1.1rem; font-weight:700; margin-bottom:7px; }
-.aa-bg { width:100%; height:6px; background:rgba(255,255,255,.08); border-radius:3px; overflow:hidden; }
-.aa-f  { height:100%; background:linear-gradient(90deg,var(--teal),var(--blue)); border-radius:3px; }
-
-/* 3D viewer */
-.v3d-wrap { position:relative; width:100%; height:580px; border-radius:var(--r); overflow:hidden; border:1px solid var(--bdr2); background:#050e1a; }
+/* 3D viewer compact styling */
+.v3d-wrap { position:relative; width:100%; height:320px; border-radius:var(--rsm); overflow:hidden; border:1px solid var(--bdr2); background:#050e1a; }
 #v3d      { width:100%; height:100%; }
-.v3d-ctrls { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:18px; }
+.v3d-ctrls { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:14px; }
 
 .hidden { display:none !important; }
 footer { text-align:center; padding:48px; color:var(--dim); font-size:.82rem; font-family:var(--mono); letter-spacing:.5px; }
@@ -471,7 +417,7 @@ footer { text-align:center; padding:48px; color:var(--dim); font-size:.82rem; fo
       <span class="htag">DRAMP 4.0</span><span class="htag">Global Microbiome</span>
     </div>
   </div>
-  <div class="ver">v6.3 Professional</div>
+  <div class="ver">v6.4 Professional</div>
 </header>
 
 <!-- ════════════ STEP NAVIGATOR -->
@@ -517,7 +463,6 @@ footer { text-align:center; padding:48px; color:var(--dim); font-size:.82rem; fo
     </div>
   </div>
 
-  <!-- Databases -->
   <div class="slbl"><div class="slbl-bar"></div>Training Databases<span class="bdg" style="margin-left:4px">Upgraded</span></div>
   <div class="g3" id="dbCards" style="margin-bottom:26px;"></div>
   <label class="neg-row">
@@ -528,11 +473,9 @@ footer { text-align:center; padding:48px; color:var(--dim); font-size:.82rem; fo
     </div>
   </label>
 
-  <!-- Model -->
   <div class="slbl"><div class="slbl-bar"></div>Generative Model<span class="bdg" style="margin-left:4px">+ HydrAMP</span></div>
   <div class="g3" id="modelCards" style="margin-bottom:36px;"></div>
 
-  <!-- Info box about v2 metrics -->
   <div style="background:rgba(13,232,198,0.04);border:1px solid rgba(13,232,198,0.15);border-radius:var(--r);padding:22px 26px;margin-top:16px;">
     <div style="font-size:.78rem;font-family:var(--mono);letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:10px;font-weight:700;">
       ✦ Automatically Computed for Every Candidate
@@ -584,7 +527,7 @@ footer { text-align:center; padding:48px; color:var(--dim); font-size:.82rem; fo
     <div class="card-ico">🔍</div>
     <div>
       <div class="card-title">Screening &amp; Selection</div>
-      <div class="card-desc">Choose how many top-ranked candidates to submit to the deep analysis pipeline — ESMFold structure prediction and all 27 parameters.</div>
+      <div class="card-desc">Choose how many top-ranked candidates to submit to the deep analysis pipeline — ESMFold structure prediction and all parameters.</div>
     </div>
   </div>
   <div class="slbl"><div class="slbl-bar"></div>Select top N for deep analysis</div>
@@ -618,7 +561,7 @@ footer { text-align:center; padding:48px; color:var(--dim); font-size:.82rem; fo
     <div class="card-ico">📊</div>
     <div>
       <div class="card-title">Analysis Results</div>
-      <div class="card-desc">All 29 parameters per candidate. Click any row for the full detail panel. v2 columns highlighted in green — these are always computed.</div>
+      <div class="card-desc">All parameters per candidate. Click any row for the full detail panel. v2 columns highlighted in green.</div>
     </div>
     <div style="display:flex;gap:10px;margin-left:auto;flex-shrink:0;">
       <button class="btn btn-ghost bsm" onclick="reconfigure()">← Reconfigure</button>
@@ -627,7 +570,6 @@ footer { text-align:center; padding:48px; color:var(--dim); font-size:.82rem; fo
   </div>
   <div class="stats" id="resStat"></div>
 
-  <!-- Score explanation panel -->
   <div id="scoreGuide" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;"></div>
 
   <div class="tbl-out">
@@ -639,33 +581,30 @@ footer { text-align:center; padding:48px; color:var(--dim); font-size:.82rem; fo
 
 <!-- ════════════ MODALS -->
 <div class="modal" id="mDetail">
-  <div class="mbox" style="max-width:1100px">
+  <div class="mbox">
     <div class="mhead"><div class="mtitle" id="mDtitle">Candidate Detail</div><button class="mclose" onclick="closeMod('mDetail')">✕</button></div>
     <div class="mbody" id="mDbody"></div>
   </div>
 </div>
 
-
-
 <div class="modal" id="mStruct">
-  <div class="mbox" style="max-width:1300px">
+  <div class="mbox">
     <div class="mhead"><div class="mtitle" id="mStitle">3D Structure Viewer</div><button class="mclose" onclick="closeMod('mStruct')">✕</button></div>
     <div class="mbody">
       <div class="v3d-wrap"><div id="v3d"></div></div>
       <div class="v3d-ctrls">
-        <button class="btn btn-main bsm" onclick="resetV()">🔄 Reset View</button>
-        <button class="btn btn-ghost bsm" onclick="toggleStyle()">🎨 Toggle Style</button>
-        <button class="btn btn-ghost bsm" id="dlPDB">📥 Download PDB</button>
+        <button class="btn btn-main bsm" onclick="resetV()">🔄 Reset</button>
+        <button class="btn btn-ghost bsm" onclick="toggleStyle()">🎨 Style</button>
+        <button class="btn btn-ghost bsm" id="dlPDB">📥 PDB</button>
         <button class="btn btn-ghost bsm" onclick="closeMod('mStruct')">✖ Close</button>
       </div>
     </div>
   </div>
 </div>
 
-<footer>AMP Discovery Platform v6.3 &nbsp;·&nbsp; M.Sc BINDS 2024–26 &nbsp;·&nbsp; Sathyabama Institute of Science and Technology</footer>
+<footer>AMP Discovery Platform v6.4 &nbsp;·&nbsp; M.Sc BINDS &nbsp;·&nbsp; Sathyabama Institute of Science and Technology</footer>
 
 <script>
-// ─── CONFIG
 const API = '/api';
 
 const DBS = [
@@ -685,7 +624,6 @@ const MOA_IC = {
 
 let jobId=null, gjId=null, topN=10, cfg={}, allRes=[], viewer=null, vStyle='cartoon';
 
-// ─── INIT
 function init() {
   buildDBCards();
   buildModelCards();
@@ -743,7 +681,6 @@ function buildModelCards() {
   });
 }
 
-// ─── NAV HELPERS
 function setStep(n) {
   for (let i = 1; i <= 6; i++) {
     const el = document.getElementById(`s${i}`);
@@ -756,7 +693,6 @@ const show = id => document.getElementById(id).classList.remove('hidden');
 const hide = id => document.getElementById(id).classList.add('hidden');
 const scrollTo = id => setTimeout(() => document.getElementById(id).scrollIntoView({behavior:'smooth'}), 100);
 
-// ─── UPLOAD
 async function onUpload(e) {
   const file = e.target.files[0];
   if (!file) return;
@@ -768,18 +704,17 @@ async function onUpload(e) {
     const d = await r.json();
     if (d.success) {
       jobId = d.job_id;
-      st.textContent = `✅  Loaded ${d.count} training sequences`;
+      st.textContent = `✅ Loaded ${d.count} training sequences`;
       st.style.color = 'var(--green)';
       setStep(2); show('c-config'); scrollTo('c-config');
     } else {
-      st.textContent = `❌  ${d.error}`; st.style.color = 'var(--red)';
+      st.textContent = `❌ ${d.error}`; st.style.color = 'var(--red)';
     }
   } catch(err) {
-    st.textContent = `❌  ${err.message}`; st.style.color = 'var(--red)';
+    st.textContent = `❌ ${err.message}`; st.style.color = 'var(--red)';
   }
 }
 
-// ─── CONFIG SUBMIT
 function submitConfig() {
   const dbs = [...document.querySelectorAll('.db-card.sel')].map(x => x.dataset.id);
   if (!dbs.length) { alert('Please select at least one database.'); return; }
@@ -797,16 +732,15 @@ function submitConfig() {
   };
   const pills = document.getElementById('genPills');
   pills.innerHTML = [
-    {t:`🗄  ${dbs.map(id => DBS.find(x=>x.id===id)?.name).join(' + ')}`, c:'pt'},
-    {t:`🤖  ${MODELS.find(m=>m.id===model)?.name}`,                       c:'pi'},
-    {t:`🧬  200 sequences`,                                                c:'pg'},
-    {t:`📏  10–50 AA`,                                                     c:'pt'},
-    {t:`🎯  AMP ≥ 0.40`,                                                   c:'pg'},
+    {t:`🗄 ${dbs.map(id => DBS.find(x=>x.id===id)?.name).join(' + ')}`, c:'pt'},
+    {t:`🤖 ${MODELS.find(m=>m.id===model)?.name}`,                       c:'pi'},
+    {t:`🧬 200 sequences`,                                                c:'pg'},
+    {t:`📏 10–50 AA`,                                                     c:'pt'},
+    {t:`🎯 AMP ≥ 0.40`,                                                   c:'pg'},
   ].map(p => `<span class="pill ${p.c}">${p.t}</span>`).join('');
   setStep(3); show('c-gen'); scrollTo('c-gen');
 }
 
-// ─── GENERATE
 async function doGenerate() {
   hide('genCtrl'); show('genProg');
   const fill = document.getElementById('gFill');
@@ -846,7 +780,6 @@ async function doGenerate() {
   } catch(e) { clearInterval(iv); alert(e.message); show('genCtrl'); hide('genProg'); }
 }
 
-// ─── ANALYSE
 async function doAnalyse() {
   document.getElementById('analyzeBtn').disabled = true;
   hide('c-screen'); show('c-analysis'); scrollTo('c-analysis'); setStep(5);
@@ -855,11 +788,9 @@ async function doAnalyse() {
   const lbl  = document.getElementById('aLbl');
   const steps = [
     'ESMFold structure prediction…','Computing physicochemical properties…',
-    'CAMPR3 AMP scoring…','Safety screening (ToxinPred / AllerTOP / HemoPI)…',
-    'Solubility prediction (SCRATCH)…','Mechanism of Action inference…',
-    'Half-life estimation in human serum…','Protease stability scoring…',
-    'pepADMET composite scoring…','bRo5 compliance check…',
-    'Compiling report…'
+    'CAMPR3 AMP scoring…','Safety screening…','Solubility prediction…',
+    'Mechanism of Action inference…','Half-life estimation…','Protease stability…',
+    'pepADMET scoring…','bRo5 compliance check…','Compiling report…'
   ];
   let p = 0, si = 0;
   const iv = setInterval(() => {
@@ -886,11 +817,9 @@ async function doAnalyse() {
 }
 function reconfigure() { hide('c-results'); show('c-config'); setStep(2); scrollTo('c-config'); }
 
-// ─── RENDER RESULTS
 function renderResults(res) {
   res.sort((a, b) => (parseFloat(b.ampScore)||0) - (parseFloat(a.ampScore)||0));
 
-  // Stats
   const safe   = res.filter(r => r.toxic==='Non-Toxic' && r.allergen==='Non-Allergen' && r.hemolytic==='Non-Hemolytic').length;
   const hiAmp  = res.filter(r => parseFloat(r.ampScore)  >= 0.6).length;
   const hiSol  = res.filter(r => parseFloat(r.solubility) >= 0.6).length;
@@ -900,7 +829,6 @@ function renderResults(res) {
     <div class="stat"><div class="stat-n">${hiAmp}</div><div class="stat-l">High Potency ≥0.6</div></div>
     <div class="stat"><div class="stat-n a">${hiSol}</div><div class="stat-l">High Solubility</div></div>`;
 
-  // Score guide
   document.getElementById('scoreGuide').innerHTML = `
     <div style="padding:14px 16px;background:rgba(45,226,138,0.05);border:1px solid rgba(45,226,138,.2);border-radius:var(--rsm);font-size:.84rem;color:var(--muted);">
       <div style="color:var(--green);font-weight:700;margin-bottom:5px;">🧪 Solubility (0–1)</div>
@@ -915,7 +843,6 @@ function renderResults(res) {
       <div style="color:var(--amber);font-weight:700;margin-bottom:5px;">⚙️ Primary MoA</div>
       Membrane · Intracellular · Cell Wall · Lipid II · ROS</div>`;
 
-  // Table header
   document.getElementById('resThead').innerHTML = `<tr>
     <th class="sk" style="left:0;min-width:56px">Rank</th>
     <th class="sk" style="left:56px;min-width:110px">ID</th>
@@ -961,7 +888,6 @@ function renderResults(res) {
       return `<div class="sb"><div class="strack"><div class="sfill" style="width:${w.toFixed(1)}%;background:${col};"></div></div><span class="sval" style="color:${col};">${fmt(val)}</span></div>`;
     }
 
-    // v2 display — always show real value, never fallback to dash
     const solD = sbar(sol, 0.60, 0.35, v => v.toFixed(2));
     const hlD  = `<span style="font-family:var(--mono);font-size:.85rem;font-weight:700;color:${hl>8?'var(--green)':hl>2?'var(--amber)':'var(--red)'};">${hl.toFixed(1)}&nbsp;hr<br><span style="font-size:.7rem;color:var(--muted);font-weight:500;">${r.half_life_class||''}</span></span>`;
     const psD  = sbar(ps/100, 0.65, 0.35, v => (v*100).toFixed(0)+'%');
@@ -970,7 +896,7 @@ function renderResults(res) {
       : `<span style="color:var(--dim)">—</span>`;
     const paD  = `<span style="font-family:var(--mono);font-size:.85rem;font-weight:700;color:${pa>=0.65?'var(--green)':pa>=0.40?'var(--amber)':'var(--red)'};">${pa.toFixed(2)}<br><span style="font-size:.7rem;color:var(--muted);font-weight:500;">${r.pepADMET_class||''}</span></span>`;
     const broD = bro5ok!==undefined
-      ? `<span class="tag ${bro5ok?'ts':'td'}" style="font-size:.75rem;">${bro5ok?'✓ Pass':'✗ Fail'}</span><br><span style="font-size:.68rem;color:var(--dim);word-break:break-word;">${bro5ok?`MW ${r.bRo5_MW?.toFixed(0)} | HBD ${r.bRo5_HBD} | HBA ${r.bRo5_HBA}`:r.bRo5_status||''}</span>`
+      ? `<span class="tag ${bro5ok?'ts':'td'}" style="font-size:.75rem;">${bro5ok?'✓ Pass':'✗ Fail'}</span><br><span style="font-size:.68rem;color:var(--dim);word-break:break-word;">${bro5ok?`MW ${r.bRo5_MW?.toFixed(0)} | HBD ${r.bRo5_HBD} \vert{} HBA${r.bRo5_HBA}`:r.bRo5_status||''}</span>`
       : `<span style="color:var(--dim)">—</span>`;
 
     const tr = document.createElement('tr');
@@ -1015,7 +941,6 @@ function renderResults(res) {
   show('c-results'); scrollTo('c-results');
 }
 
-// ─── DETAIL MODAL
 function showDetail(r, idx) {
   document.getElementById('mDtitle').textContent = `${r.id} — Full Analysis Profile`;
   const safe = r.toxic==='Non-Toxic' && r.allergen==='Non-Allergen' && r.hemolytic==='Non-Hemolytic';
@@ -1085,110 +1010,14 @@ function showDetail(r, idx) {
             <span class="tag tc" style="font-size:.7rem;padding:3px 7px;">${r.pepADMET_class||''}</span>
           </div>
         </div>
-        <div class="dc-t" style="margin-top:16px;">Beyond Rule of Five (bRo5)</div>
-        ${[
-          ['MW (Da)',    r.bRo5_MW !== undefined ? r.bRo5_MW.toFixed(1) : '—',  1000, 700],
-          ['HBD',       r.bRo5_HBD ?? '—',  10,  7],
-          ['HBA',       r.bRo5_HBA ?? '—',  15, 12],
-          ['cLogP',     r.bRo5_cLogP !== undefined ? r.bRo5_cLogP.toFixed(2) : '—', 10, 5],
-        ].map(([n,v]) => `<div class="pr"><span class="pn">${n}</span><span class="pv">${v}</span></div>`).join('')}
-        <div class="pr">
-          <span class="pn">bRo5 Compliance</span>
-          <span class="tag ${r.bRo5_compliant?'ts':'td'}" style="font-size:.75rem;padding:3px 8px;">${r.bRo5_compliant?'✓ Compliant':'✗ Violations'}</span>
-        </div>
-        ${!r.bRo5_compliant && r.bRo5_status ? `<div style="font-size:.72rem;color:var(--amber);padding:4px 0 0 4px;word-break:break-word;">${r.bRo5_status}</div>` : ''}
       </div>
     </div>
 
-    ${moa.length ? `
-    <div class="slbl" style="margin-bottom:10px;"><div class="slbl-bar"></div>Mechanism of Action Prediction</div>
-    <div class="moa-g">
-      ${moa.map((m, i) => `
-        <div class="moa-c ${i===0?'top':''}">
-          <div class="moa-ic">${MOA_IC[m.name]||'•'}</div>
-          <div class="moa-nm">${m.name}</div>
-          <div class="moa-pct">${(m.probability*100).toFixed(1)}%</div>
-          <div class="moa-bar"><div class="moa-fill" style="width:${(m.probability*100).toFixed(1)}%"></div></div>
-        </div>`).join('')}
-    </div>` : ''}
-
-    <div class="slbl" style="margin:22px 0 10px;"><div class="slbl-bar"></div>Safety Profile</div>
-    <div class="saf-g">
-      ${[
-        {l:'ToxinPred',  v:r.toxic,    ok:r.toxic==='Non-Toxic'},
-        {l:'AllerTOP v2',v:r.allergen, ok:r.allergen==='Non-Allergen'},
-        {l:'HemoPI',     v:r.hemolytic,ok:r.hemolytic==='Non-Hemolytic'},
-        {l:'Overall',    v:safe?'✓ SAFE':'⚠ REVIEW', ok:safe},
-      ].map(s => `
-        <div class="saf-c" style="border:1px solid ${s.ok?'rgba(45,226,138,.25)':'rgba(255,95,109,.25)'};
-             background:${s.ok?'rgba(45,226,138,.05)':'rgba(255,95,109,.05)'};">
-          <div class="saf-l">${s.l}</div>
-          <div class="saf-v" style="color:${s.ok?'var(--green)':'var(--red)'};">${s.v}</div>
-        </div>`).join('')}
-    </div>
-
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:18px;">
-      ${(r.databases_used||['adp3']).map(d => `<span class="tag tc">${d.toUpperCase()}</span>`).join('')}
-      <span class="tag tc">${r.model_used||'protgpt2'}</span>
-    </div>
     <div style="display:flex;gap:10px;margin-top:18px;justify-content:flex-end;">
       <button class="btn btn-main bsm" onclick="view3D('${r.id}');closeMod('mDetail')">👁 3D Structure</button>
     </div>`;
 
   document.getElementById('mDetail').classList.add('open');
-}
-
-// ─── 3D VIEWER  (fixed alignment)
-function view3D(id) {
-  document.getElementById('mStitle').textContent = `3D Structure — ${id}`;
-  document.getElementById('mStruct').classList.add('open');
-
-  // Destroy old viewer cleanly
-  if (viewer) { try { viewer.clear(); } catch(e) {} viewer = null; }
-  const vdiv = document.getElementById('v3d');
-  vdiv.innerHTML = '';
-
-  // Wait for modal to fully render, then create viewer
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      const w = vdiv.clientWidth  || 1200;
-      const h = vdiv.clientHeight || 580;
-
-      // Create viewer with explicit pixel size and dark background
-      viewer = $3Dmol.createViewer(vdiv, {
-        backgroundColor: '#050e1a',
-        antialias:       true,
-        id:              'mol-viewer'
-      });
-      viewer.setWidth(w);
-      viewer.setHeight(h);
-
-      document.getElementById('dlPDB').onclick = () => window.open(`${API}/download/pdb/${id}.pdb`, '_blank');
-
-      fetch(`${API}/download/pdb/${id}.pdb`)
-        .then(resp => {
-          if (!resp.ok) throw new Error('PDB not found (run analysis first to generate structure)');
-          return resp.text();
-        })
-        .then(pdb => {
-          viewer.addModel(pdb, 'pdb');
-          viewer.setStyle({}, {cartoon: {color: 'spectrum'}});
-          viewer.zoomTo();           // auto-center on all atoms
-          viewer.zoom(0.85);         // slight zoom-out for breathing room
-          viewer.render();
-          vStyle = 'cartoon';
-          // Re-render once more after a short delay to ensure proper centering
-          setTimeout(() => { viewer.zoomTo(); viewer.render(); }, 200);
-        })
-        .catch(err => {
-          vdiv.innerHTML = `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;color:var(--muted);">
-            <div style="font-size:48px;">🔬</div>
-            <div style="font-size:1rem;text-align:center;padding:0 40px;">${err.message}</div>
-            <a class="btn btn-main bsm" href="${API}/download/pdb/${id}.pdb" target="_blank" style="text-decoration:none;">📥 Download PDB</a>
-          </div>`;
-        });
-    });
-  });
 }
 
 function view3D(id) {
@@ -1201,8 +1030,8 @@ function view3D(id) {
 
   requestAnimationFrame(() => {
     setTimeout(() => {
-      const w = vdiv.clientWidth || 800;
-      const h = vdiv.clientHeight || 580;
+      const w = vdiv.clientWidth || 600;
+      const h = vdiv.clientHeight || 320;
 
       viewer = $3Dmol.createViewer(vdiv, {
         backgroundColor: '#050e1a',
@@ -1216,7 +1045,7 @@ function view3D(id) {
 
       fetch(`${API}/download/pdb/${id}.pdb`)
         .then(resp => {
-          if (!resp.ok) throw new Error('PDB not found (run analysis first to generate structure)');
+          if (!resp.ok) throw new Error('PDB not found (run analysis first)');
           return resp.text();
         })
         .then(pdb => {
@@ -1226,23 +1055,50 @@ function view3D(id) {
           viewer.zoom(0.85);
           viewer.render();
           vStyle = 'cartoon';
-          
-          // Force resize handler so WebGL canvas paints correctly
-          setTimeout(() => { 
-            viewer.resize(); 
-            viewer.zoomTo(); 
-            viewer.render(); 
-          }, 100);
+          setTimeout(() => { viewer.resize(); viewer.zoomTo(); viewer.render(); }, 100);
         })
         .catch(err => {
-          vdiv.innerHTML = `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;color:var(--muted);">
-            <div style="font-size:48px;">🔬</div>
-            <div style="font-size:1rem;text-align:center;padding:0 40px;">${err.message}</div>
-            <a class="btn btn-main bsm" href="${API}/download/pdb/${id}.pdb" target="_blank" style="text-decoration:none;">📥 Download PDB</a>
+          vdiv.innerHTML = `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;color:var(--muted);">
+            <div style="font-size:32px;">🔬</div>
+            <div style="font-size:0.9rem;text-align:center;padding:0 20px;">${err.message}</div>
           </div>`;
         });
-    }, 150); // Small delay to let CSS transition finish
+    }, 150);
   });
+}
+
+function resetV() {
+  if (!viewer) return;
+  try { viewer.zoomTo(); viewer.zoom(0.85); viewer.render(); } catch(e) {}
+}
+
+function toggleStyle() {
+  if (!viewer) return;
+  const styles = [
+    ['cartoon', {color: 'spectrum'}],
+    ['sphere', {}],
+    ['stick', {}],
+  ];
+  const cur = styles.findIndex(([s]) => s === vStyle);
+  const nxt = (cur + 1) % styles.length;
+  vStyle = styles[nxt][0];
+  try {
+    viewer.setStyle({}, {[vStyle]: styles[nxt][1]});
+    viewer.render();
+  } catch(e) {}
+}
+
+function closeMod(id) {
+  document.getElementById(id).classList.remove('open');
+  if (id === 'mStruct' && viewer) {
+    try { viewer.clear(); } catch(e) {}
+    viewer = null;
+  }
+}
+
+function dlCSV() {
+  if (!gjId) { alert('No results yet.'); return; }
+  window.open(`${API}/download/csv/${gjId}`, '_blank');
 }
 
 init();
