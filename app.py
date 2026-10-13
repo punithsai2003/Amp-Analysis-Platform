@@ -643,10 +643,6 @@ def parse_csv(txt):
 # ROUTES
 # ═══════════════════════════════════════════════════════
 
-@app.route('/')
-def index():
-    return jsonify({'service': 'AMP Platform v6.3', 'status': 'running'})
-
 @app.route('/api/health')
 def health():
     return jsonify({'status': 'healthy', 'timestamp': datetime.now().isoformat()})
