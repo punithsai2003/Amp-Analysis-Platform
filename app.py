@@ -815,6 +815,11 @@ def dl_pdb(filename):
         return jsonify({'error': 'PDB not found'}), 404
     return send_file(p, mimetype='chemical/x-pdb', as_attachment=True, download_name=filename)
 
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
 import os
 
 if __name__ == '__main__':
@@ -822,8 +827,3 @@ if __name__ == '__main__':
     print(f"Run:     python app.py")
     print(f"Test:    http://localhost:{port}/api/test\n")
     app.run(host='0.0.0.0', port=port)
-
-
-@app.route('/')
-def index():
-    return render_template('index.html')
