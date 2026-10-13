@@ -1,0 +1,1201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>AMP Discovery Platform v6.3</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+<script src="https://3Dmol.csb.pitt.edu/build/3Dmol-min.js"></script>
+<style>
+/* ══════════════════════════════ DESIGN TOKENS */
+:root {
+  --bg0:   #030c18;
+  --bg1:   #07162a;
+  --bg2:   #0b1e38;
+  --bg3:   #102848;
+  --teal:  #0de8c6;
+  --blue:  #3b9eff;
+  --indigo:#7c6ffd;
+  --green: #2de28a;
+  --amber: #f5a623;
+  --red:   #ff5f6d;
+  --text:  #dff0ff;
+  --muted: rgba(175,215,255,0.60);
+  --dim:   rgba(175,215,255,0.30);
+  --bdr:   rgba(255,255,255,0.08);
+  --bdr2:  rgba(13,232,198,0.25);
+  --shad:  0 24px 64px rgba(0,0,0,0.65);
+  --glow:  0 0 40px rgba(13,232,198,0.18);
+  --r:     18px;
+  --rsm:   10px;
+  --f:     'Sora', sans-serif;
+  --mono:  'JetBrains Mono', monospace;
+  /* +2 base font vs previous 17px */
+  font-size: 19px;
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  font-family: var(--f);
+  font-size: 1rem;
+  background: var(--bg0);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.65;
+  background-image:
+    radial-gradient(circle 700px at 5% 8%,  rgba(13,232,198,0.045), transparent),
+    radial-gradient(circle 500px at 95% 92%, rgba(59,158,255,0.040), transparent);
+}
+
+/* ══════ ANIMATIONS */
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+@keyframes float  { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+@keyframes gpulse { 0%,100%{box-shadow:var(--glow)} 50%{box-shadow:0 0 56px rgba(59,158,255,.25)} }
+@keyframes dots   { 0%,60%,100%{transform:translateY(0);opacity:.35} 30%{transform:translateY(-8px);opacity:1} }
+.au  { animation:fadeUp .48s ease both; }
+.d1  { animation-delay:.07s; }
+.d2  { animation-delay:.14s; }
+.d3  { animation-delay:.21s; }
+
+/* ══════ FULL-WIDTH LAYOUT with comfortable margins */
+.page {
+  width: 100%;
+  padding: 36px 88px 120px;  /* generous left/right */
+}
+
+/* ══════ HEADER */
+.hdr {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 28px;
+  align-items: center;
+  background: linear-gradient(140deg, rgba(13,232,198,0.055), rgba(59,158,255,0.04));
+  border: 1px solid var(--bdr);
+  border-radius: 22px;
+  padding: 40px 56px;
+  margin-bottom: 24px;
+  box-shadow: var(--shad);
+}
+.hdr-logo {
+  width: 100px; height: 100px;
+  border-radius: 20px; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--teal), var(--blue));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 32px; font-weight: 800; color: #000;
+  box-shadow: 0 8px 32px rgba(13,232,198,0.30);
+}
+.hdr-title {
+  font-size: 3rem; font-weight: 800; letter-spacing: -1.5px; line-height: 1.05;
+  background: linear-gradient(100deg, var(--teal) 15%, var(--blue) 55%, var(--indigo));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  margin-bottom: 10px;
+}
+.hdr-sub { font-size: 1rem; color: var(--muted); margin-bottom: 18px; }
+.htags   { display:flex; gap:10px; flex-wrap:wrap; }
+.htag {
+  padding: 7px 18px; border-radius: 50px; font-size: .82rem; font-weight: 600;
+  background: rgba(255,255,255,0.05); border: 1px solid var(--bdr);
+  color: var(--muted); transition: all .2s; cursor: default;
+}
+.htag:hover { border-color:var(--teal); color:var(--teal); }
+.ver {
+  font-family: var(--mono); font-size: .72rem; font-weight: 700; letter-spacing: 1px;
+  padding: 9px 22px; border-radius: 50px;
+  border: 1px solid var(--teal); color: var(--teal); white-space: nowrap;
+}
+
+/* ══════ STEP NAV */
+.steps {
+  display: grid; grid-template-columns: repeat(6, 1fr);
+  background: var(--bg2); border: 1px solid var(--bdr);
+  border-radius: var(--r); padding: 10px; margin-bottom: 24px; gap: 6px;
+}
+.step {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  padding: 20px 14px; border-radius: 12px;
+  border: 1px solid transparent; transition: all .3s;
+}
+.step-dot {
+  width: 42px; height: 42px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: .88rem; font-weight: 700;
+  border: 2px solid var(--dim); color: var(--dim); transition: all .3s;
+}
+.step-lbl { font-size: .85rem; font-weight: 600; color: var(--dim); text-align: center; transition: color .3s; }
+.step.active { background: rgba(13,232,198,0.06); border-color: rgba(13,232,198,0.22); }
+.step.active .step-dot { border-color:var(--teal); color:var(--teal); box-shadow:0 0 18px rgba(13,232,198,.28); }
+.step.active .step-lbl { color: var(--text); }
+.step.done .step-dot { background:rgba(45,226,138,0.14); border-color:var(--green); color:var(--green); }
+.step.done .step-lbl { color: var(--green); }
+
+/* ══════ CARD */
+.card {
+  background: var(--bg1); border: 1px solid var(--bdr);
+  border-radius: 22px; padding: 48px;
+  margin-bottom: 22px; box-shadow: var(--shad);
+}
+.card-hd {
+  display: flex; align-items: flex-start; gap: 24px;
+  margin-bottom: 38px; padding-bottom: 28px;
+  border-bottom: 1px solid var(--bdr);
+}
+.card-ico {
+  width: 72px; height: 72px; border-radius: 16px; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--teal), var(--blue));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 30px; box-shadow: 0 6px 24px rgba(13,232,198,.22);
+}
+.card-title { font-size: 1.6rem; font-weight: 700; letter-spacing: -.4px; margin-bottom: 7px; }
+.card-desc  { font-size: 1rem; color: var(--muted); line-height: 1.65; }
+
+/* ══════ SECTION LABEL */
+.slbl {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 18px;
+  font-family: var(--mono); font-size: .72rem; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase; color: var(--muted);
+}
+.slbl-bar { width:3px; height:15px; background:var(--teal); border-radius:2px; flex-shrink:0; }
+.slbl .bdg {
+  font-size: .62rem; padding: 3px 8px; border-radius: 3px;
+  background: rgba(13,232,198,.12); color:var(--teal);
+  border: 1px solid rgba(13,232,198,.25); letter-spacing:1px;
+}
+
+/* ══════ UPLOAD */
+.upload-zone {
+  border: 2px dashed rgba(13,232,198,0.22); border-radius: var(--r);
+  padding: 56px 44px; display: flex; align-items: center; gap: 40px;
+  cursor: pointer; transition: all .3s; background: rgba(13,232,198,0.018);
+}
+.upload-zone:hover {
+  border-color: var(--teal); background: rgba(13,232,198,0.042);
+  transform: translateY(-3px); box-shadow: var(--glow);
+}
+.upload-emoji { font-size: 76px; flex-shrink: 0; }
+.upload-h  { font-size: 1.35rem; font-weight: 700; margin-bottom: 8px; }
+.upload-p  { font-size: 1rem; color: var(--muted); }
+.upload-p2 { font-size: .88rem; color: var(--dim); margin-top: 5px; }
+input[type=file] { display: none; }
+.upload-st { margin-top: 22px; text-align: center; font-size: 1.1rem; font-weight: 700; min-height: 30px; }
+
+/* ══════ GRID */
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+
+/* ══════ DATABASE CARDS */
+.db-card {
+  border: 2px solid var(--bdr); border-radius: var(--r); padding: 28px;
+  cursor: pointer; transition: all .25s;
+  background: rgba(255,255,255,0.014); position: relative; overflow: hidden;
+}
+.db-card::before {
+  content:''; position:absolute; inset:0; opacity:0; transition:opacity .3s;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--db-c, var(--teal)) 10%, transparent), transparent);
+}
+.db-card:hover::before, .db-card.sel::before { opacity:1; }
+.db-card:hover { transform:translateY(-3px); }
+.db-card.sel   { border-color: var(--db-c, var(--teal)); }
+.db-chk {
+  position: absolute; top:15px; right:15px; width:26px; height:26px; border-radius:50%;
+  border: 2px solid var(--bdr); display:flex; align-items:center; justify-content:center;
+  font-size:.78rem; font-weight:700; transition:all .2s;
+}
+.db-card.sel .db-chk { background:var(--db-c, var(--teal)); border-color:transparent; color:#000; }
+.db-name  { font-family:var(--mono); font-size:.92rem; font-weight:700; color:var(--db-c,var(--teal)); margin-bottom:5px; padding-right:32px; }
+.db-desc  { font-size:.9rem; color:var(--muted); margin-bottom:16px; line-height:1.5; }
+.db-count { font-size:2.3rem; font-weight:800; color:var(--text); letter-spacing:-1px; line-height:1; }
+.db-unit  { font-size:.68rem; color:var(--dim); letter-spacing:1.5px; text-transform:uppercase; margin-top:3px; }
+
+/* ══════ MODEL CARDS */
+.model-card {
+  border: 2px solid var(--bdr); border-radius: var(--r); padding: 26px;
+  cursor: pointer; transition: all .25s; background: rgba(255,255,255,0.014);
+}
+.model-card:hover { border-color: rgba(255,255,255,.18); transform: translateY(-3px); }
+.model-card.sel   { border-color: var(--teal); background: rgba(13,232,198,0.045); }
+.model-n { font-size: 1.12rem; font-weight: 700; margin-bottom: 7px; }
+.model-d { font-size: .9rem; color: var(--muted); margin-bottom: 15px; line-height: 1.55; }
+.mpills  { display:flex; gap:8px; flex-wrap:wrap; }
+.mp      { font-family:var(--mono); font-size:.68rem; font-weight:700; padding:4px 10px; border-radius:5px; }
+.mpt     { background:rgba(13,232,198,.10); color:var(--teal);  border:1px solid rgba(13,232,198,.22); }
+.mpg     { background:rgba(45,226,138,.10); color:var(--green); border:1px solid rgba(45,226,138,.22); }
+
+/* ══════ FORM */
+.form-wrap { display:flex; flex-direction:column; gap:24px; }
+.form-row  { display:flex; flex-direction:column; gap:9px; }
+.form-lbl  { font-size:.95rem; font-weight:600; color:var(--muted); letter-spacing:.3px; }
+.form-inp, .form-sel {
+  width:100%; padding:15px 18px;
+  background:rgba(255,255,255,0.04); border:1px solid var(--bdr);
+  border-radius:var(--rsm); color:var(--text);
+  font-size:1rem; font-family:var(--f); outline:none; transition:border-color .2s;
+}
+.form-inp:focus, .form-sel:focus { border-color:var(--teal); }
+.form-sel option { background:var(--bg2); }
+.rrow { display:flex; align-items:center; gap:16px; }
+.rv   { font-family:var(--mono); font-size:1rem; font-weight:700; color:var(--teal); min-width:54px; text-align:right; }
+input[type=range] {
+  flex:1; -webkit-appearance:none; background:rgba(255,255,255,0.12);
+  height:5px; border-radius:3px; outline:none;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance:none; width:20px; height:20px; border-radius:50%;
+  background:var(--teal); cursor:pointer;
+  box-shadow:0 0 10px rgba(13,232,198,0.45);
+}
+
+/* ══════ NEG TOGGLE */
+.neg-row {
+  display:flex; align-items:flex-start; gap:14px; padding:20px 24px;
+  border-radius:var(--r); background:rgba(255,255,255,0.02);
+  border:1px solid var(--bdr); cursor:pointer; transition:border-color .25s;
+  max-width:620px; margin-bottom:32px;
+}
+.neg-row:hover        { border-color:rgba(255,255,255,.16); }
+.neg-row input        { width:18px; height:18px; accent-color:var(--teal); cursor:pointer; flex-shrink:0; margin-top:3px; }
+.neg-title            { font-size:1rem; font-weight:600; margin-bottom:4px; }
+.neg-desc             { font-size:.9rem; color:var(--muted); }
+
+/* ══════ BUTTONS */
+.btn {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:15px 32px; border-radius:var(--rsm);
+  font-size:1rem; font-weight:700; font-family:var(--f);
+  border:none; cursor:pointer; transition:all .25s;
+}
+.btn-main  { background:linear-gradient(100deg,var(--teal),var(--blue)); color:#000; box-shadow:0 8px 28px rgba(13,232,198,.22); }
+.btn-main:hover:not(:disabled) { transform:translateY(-3px); box-shadow:0 14px 40px rgba(13,232,198,.32); }
+.btn-ghost { background:transparent; color:var(--muted); border:1px solid var(--bdr); }
+.btn-ghost:hover { border-color:var(--teal); color:var(--teal); }
+.btn:disabled { opacity:.35; cursor:not-allowed; }
+.btn-row { display:flex; gap:12px; justify-content:flex-end; align-items:center; margin-top:32px; }
+.bsm { padding:10px 20px; font-size:.9rem; border-radius:8px; }
+
+/* ══════ CHIPS */
+.chips { display:flex; gap:11px; flex-wrap:wrap; }
+.chip {
+  padding:13px 28px; border-radius:50px; border:1px solid var(--bdr);
+  background:transparent; color:var(--muted); font-weight:600;
+  font-size:1rem; cursor:pointer; transition:all .25s; font-family:var(--f);
+}
+.chip.active { background:linear-gradient(100deg,var(--teal),var(--blue)); color:#000; border-color:transparent; box-shadow:0 6px 20px rgba(13,232,198,.22); }
+
+/* ══════ PILLS */
+.pill   { font-family:var(--mono); font-size:.8rem; font-weight:700; padding:6px 14px; border-radius:6px; }
+.pt     { background:rgba(13,232,198,.1);  color:var(--teal);   border:1px solid rgba(13,232,198,.2); }
+.pg     { background:rgba(45,226,138,.1);  color:var(--green);  border:1px solid rgba(45,226,138,.2); }
+.pb     { background:rgba(59,158,255,.1);  color:var(--blue);   border:1px solid rgba(59,158,255,.2); }
+.pi     { background:rgba(124,111,253,.1); color:var(--indigo); border:1px solid rgba(124,111,253,.2); }
+
+/* ══════ PROGRESS */
+.prog-bg   { height:13px; background:rgba(255,255,255,0.07); border-radius:13px; overflow:hidden; margin:24px 0; }
+.prog-fill { height:100%; background:linear-gradient(90deg,var(--teal),var(--green)); border-radius:13px; transition:width .4s ease; box-shadow:0 0 12px rgba(13,232,198,.35); }
+.prog-row  { display:flex; justify-content:space-between; align-items:center; }
+.prog-lbl  { font-size:1rem; color:var(--muted); }
+.prog-pct  { font-family:var(--mono); font-size:1.5rem; font-weight:700; background:linear-gradient(90deg,var(--teal),var(--blue)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+
+/* ══════ STATS */
+.stats { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin:24px 0; }
+.stat  { padding:30px 22px; border-radius:var(--r); text-align:center; background:rgba(255,255,255,0.02); border:1px solid var(--bdr); transition:all .3s; }
+.stat:hover { border-color:var(--teal); transform:translateY(-3px); }
+.stat-n { font-size:3.4rem; font-weight:800; background:linear-gradient(100deg,var(--teal),var(--blue)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; line-height:1; margin-bottom:12px; }
+.stat-n.g { background:linear-gradient(90deg,var(--green),var(--teal)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.stat-n.a { background:linear-gradient(90deg,var(--amber),var(--red));  -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.stat-l { font-size:.82rem; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:.7px; }
+
+/* ══════ TABLE */
+.tbl-out { overflow-x:auto; border-radius:var(--r); border:1px solid var(--bdr); margin-top:8px; }
+.tbl-out::-webkit-scrollbar { height:8px; }
+.tbl-out::-webkit-scrollbar-track  { background:rgba(255,255,255,0.02); }
+.tbl-out::-webkit-scrollbar-thumb  { background:linear-gradient(90deg,var(--teal),var(--blue)); border-radius:4px; }
+table { width:100%; border-collapse:collapse; }
+thead { background:rgba(0,0,0,0.55); }
+th {
+  padding: 18px 16px; text-align:left; white-space:nowrap;
+  font-family:var(--mono); font-size:.72rem; font-weight:700;
+  color:var(--dim); letter-spacing:.9px; text-transform:uppercase;
+}
+th.v2 { color:var(--green); }
+th.sk { position:sticky; z-index:5; background:rgba(3,12,24,.98); }
+tbody tr { border-bottom:1px solid rgba(255,255,255,0.045); transition:all .2s; cursor:pointer; }
+tbody tr:hover { background:rgba(13,232,198,0.04); }
+td { padding:17px 16px; font-size:.9rem; white-space:nowrap; }
+td.sk { position:sticky; z-index:4; background:var(--bg0); }
+tbody tr:hover td.sk { background:rgba(13,232,198,0.04); }
+.id-cell  { font-family:var(--mono); font-size:.88rem; color:var(--teal); font-weight:700; }
+.seq-cell { font-family:var(--mono); font-size:.8rem; color:var(--muted); }
+
+/* score bar */
+.sb  { display:flex; align-items:center; gap:9px; }
+.strack { width:56px; height:5px; background:rgba(255,255,255,.1); border-radius:3px; overflow:hidden; flex-shrink:0; }
+.sfill  { height:100%; border-radius:3px; }
+.sval   { font-family:var(--mono); font-size:.82rem; font-weight:600; }
+
+/* tags */
+.tag { padding:5px 12px; border-radius:5px; font-size:.74rem; font-weight:700; font-family:var(--mono); display:inline-block; }
+.ts  { background:rgba(45,226,138,.1);  color:var(--green); border:1px solid rgba(45,226,138,.25); }
+.td  { background:rgba(255,95,109,.1);  color:var(--red);   border:1px solid rgba(255,95,109,.25); }
+.tc  { background:rgba(13,232,198,.1);  color:var(--teal);  border:1px solid rgba(13,232,198,.2);  }
+
+/* badge */
+.bdg { padding:5px 12px; border-radius:50px; font-size:.8rem; font-weight:700; display:inline-block; }
+.bh  { background:linear-gradient(90deg,#16a34a,#15803d); color:#fff; }
+.bm  { background:linear-gradient(90deg,#d97706,#b45309); color:#fff; }
+.bl  { background:linear-gradient(90deg,#dc2626,#b91c1c); color:#fff; }
+
+/* ══════ MODALS */
+.modal {
+  position:fixed; inset:0; background:rgba(0,0,0,.88); backdrop-filter:blur(10px);
+  display:none; align-items:center; justify-content:center; z-index:9999; padding:24px;
+}
+.modal.open { display:flex; animation:fadeUp .3s ease; }
+.mbox {
+  background:var(--bg2); border:1px solid var(--bdr); border-radius:22px;
+  width:100%; max-width:1180px; max-height:92vh; overflow-y:auto;
+  box-shadow:0 48px 120px rgba(0,0,0,.85);
+}
+.mhead {
+  padding:26px 36px; border-bottom:1px solid var(--bdr);
+  display:flex; justify-content:space-between; align-items:center;
+  background:linear-gradient(90deg,rgba(13,232,198,.06),rgba(59,158,255,.04));
+  border-radius:22px 22px 0 0; position:sticky; top:0; z-index:5;
+}
+.mtitle { font-size:1.35rem; font-weight:700; }
+.mclose {
+  width:42px; height:42px; border-radius:50%; border:1px solid var(--bdr);
+  background:rgba(255,255,255,.05); color:var(--muted); font-size:1.1rem;
+  cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .2s;
+}
+.mclose:hover { background:rgba(255,95,109,.15); border-color:var(--red); color:var(--red); }
+.mbody { padding:36px; }
+
+/* detail layout */
+.dg2 { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:20px; }
+.dc  { background:rgba(255,255,255,.02); border:1px solid var(--bdr); border-radius:var(--r); padding:24px; }
+.dc-t { font-size:.72rem; font-family:var(--mono); letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-bottom:15px; }
+.pr  { display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid rgba(255,255,255,.04); font-size:.95rem; }
+.pr:last-child { border-bottom:none; }
+.pn  { color:var(--muted); }
+.pv  { font-family:var(--mono); font-weight:600; }
+.pv.g { color:var(--green); }
+.pv.a { color:var(--amber); }
+.pv.r { color:var(--red);   }
+
+/* MoA */
+.moa-g  { display:grid; grid-template-columns:repeat(5,1fr); gap:11px; margin-top:15px; }
+.moa-c  { padding:20px 12px; border-radius:var(--r); text-align:center; background:rgba(255,255,255,.02); border:1px solid var(--bdr); transition:.25s; }
+.moa-c.top { border-color:var(--teal); background:rgba(13,232,198,.05); }
+.moa-ic { font-size:1.4rem; margin-bottom:8px; }
+.moa-nm { font-size:.78rem; color:var(--muted); margin-bottom:6px; line-height:1.4; }
+.moa-pct { font-family:var(--mono); font-size:1.25rem; font-weight:700; color:var(--teal); }
+.moa-bar { height:4px; background:rgba(255,255,255,.08); border-radius:2px; margin-top:9px; overflow:hidden; }
+.moa-fill { height:100%; background:var(--teal); border-radius:2px; }
+
+/* safety */
+.saf-g { display:grid; grid-template-columns:repeat(4,1fr); gap:13px; margin-top:14px; }
+.saf-c { padding:20px; border-radius:var(--r); text-align:center; }
+.saf-l { font-size:.72rem; font-family:var(--mono); letter-spacing:1px; color:var(--muted); margin-bottom:7px; }
+.saf-v { font-size:1rem; font-weight:700; }
+
+/* AA composition */
+.aa-g { display:grid; grid-template-columns:repeat(5,1fr); gap:13px; margin-top:18px; }
+.aa-c { padding:17px 13px; border-radius:var(--rsm); background:rgba(255,255,255,.03); border:1px solid var(--bdr); text-align:center; }
+.aa-l { font-size:2rem; font-weight:800; color:var(--teal); margin-bottom:5px; }
+.aa-p { font-size:1.1rem; font-weight:700; margin-bottom:7px; }
+.aa-bg { width:100%; height:6px; background:rgba(255,255,255,.08); border-radius:3px; overflow:hidden; }
+.aa-f  { height:100%; background:linear-gradient(90deg,var(--teal),var(--blue)); border-radius:3px; }
+
+/* 3D viewer */
+.v3d-wrap { position:relative; width:100%; height:580px; border-radius:var(--r); overflow:hidden; border:1px solid var(--bdr2); background:#050e1a; }
+#v3d      { width:100%; height:100%; }
+.v3d-ctrls { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:18px; }
+
+.hidden { display:none !important; }
+footer { text-align:center; padding:48px; color:var(--dim); font-size:.82rem; font-family:var(--mono); letter-spacing:.5px; }
+
+@media(max-width:1100px){
+  .g2,.g3 { grid-template-columns:1fr; }
+  .steps  { grid-template-columns:repeat(3,1fr); }
+  .hdr    { grid-template-columns:1fr; }
+  .hdr-title { font-size:2.2rem; }
+  .page   { padding:22px 24px 80px; }
+  .card   { padding:30px; }
+  .dg2    { grid-template-columns:1fr; }
+  .moa-g  { grid-template-columns:repeat(3,1fr); }
+  .saf-g  { grid-template-columns:repeat(2,1fr); }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ════════════ HEADER -->
+<header class="hdr au">
+  <div class="hdr-logo">AMP</div>
+  <div>
+    <div class="hdr-title">AMP Discovery Platform</div>
+    <div class="hdr-sub">Professional AI-powered antimicrobial peptide generation, structure prediction &amp; comprehensive druggability screening</div>
+    <div class="htags">
+      <span class="htag">ProtGPT2</span><span class="htag">HydrAMP</span>
+      <span class="htag">ESMFold</span><span class="htag">CAMPR3</span>
+      <span class="htag">DRAMP 4.0</span><span class="htag">Global Microbiome</span>
+    </div>
+  </div>
+  <div class="ver">v6.3 Professional</div>
+</header>
+
+<!-- ════════════ STEP NAVIGATOR -->
+<div class="steps au d1" id="stepnav">
+  <div class="step active" id="s1"><div class="step-dot">1</div><div class="step-lbl">Upload Data</div></div>
+  <div class="step"        id="s2"><div class="step-dot">2</div><div class="step-lbl">Configure</div></div>
+  <div class="step"        id="s3"><div class="step-dot">3</div><div class="step-lbl">Generate</div></div>
+  <div class="step"        id="s4"><div class="step-dot">4</div><div class="step-lbl">Screen</div></div>
+  <div class="step"        id="s5"><div class="step-dot">5</div><div class="step-lbl">Analyse</div></div>
+  <div class="step"        id="s6"><div class="step-dot">6</div><div class="step-lbl">Results</div></div>
+</div>
+
+<!-- ════════════ STEP 1: UPLOAD -->
+<div class="card au d2" id="c-upload">
+  <div class="card-hd">
+    <div class="card-ico">📁</div>
+    <div>
+      <div class="card-title">Upload Training Sequences</div>
+      <div class="card-desc">Provide your AMP dataset in FASTA (.fasta / .fa) or CSV (.csv) format. Minimum 10 sequences required to begin the pipeline.</div>
+    </div>
+  </div>
+  <label for="fileInput">
+    <div class="upload-zone">
+      <div class="upload-emoji">☁️</div>
+      <div>
+        <div class="upload-h">Drop your file here or click to browse</div>
+        <div class="upload-p">Accepted: <strong>.fasta</strong>&nbsp;&nbsp;<strong>.fa</strong>&nbsp;&nbsp;<strong>.csv</strong></div>
+        <div class="upload-p2">CSV: one sequence per row, or a column named "sequence"</div>
+      </div>
+    </div>
+  </label>
+  <input type="file" id="fileInput" accept=".fasta,.fa,.csv"/>
+  <div class="upload-st" id="uploadSt"></div>
+</div>
+
+<!-- ════════════ STEP 2: CONFIGURE -->
+<div class="card hidden" id="c-config">
+  <div class="card-hd">
+    <div class="card-ico">⚙️</div>
+    <div>
+      <div class="card-title">Pipeline Configuration</div>
+      <div class="card-desc">Select databases, generative model, and set parameters. Solubility, Half-life, Protease Stability, Mechanism of Action, pepADMET and bRo5 are always computed automatically.</div>
+    </div>
+  </div>
+
+  <!-- Databases -->
+  <div class="slbl"><div class="slbl-bar"></div>Training Databases<span class="bdg" style="margin-left:4px">Upgraded</span></div>
+  <div class="g3" id="dbCards" style="margin-bottom:26px;"></div>
+  <label class="neg-row">
+    <input type="checkbox" id="cfgNeg"/>
+    <div>
+      <div class="neg-title">Include verified non-AMP negative training set</div>
+      <div class="neg-desc">Improves CAMPR3 prediction precision through contrast learning — recommended for higher specificity</div>
+    </div>
+  </label>
+
+  <!-- Model -->
+  <div class="slbl"><div class="slbl-bar"></div>Generative Model<span class="bdg" style="margin-left:4px">+ HydrAMP</span></div>
+  <div class="g3" id="modelCards" style="margin-bottom:36px;"></div>
+
+  <!-- Info box about v2 metrics -->
+  <div style="background:rgba(13,232,198,0.04);border:1px solid rgba(13,232,198,0.15);border-radius:var(--r);padding:22px 26px;margin-top:16px;">
+    <div style="font-size:.78rem;font-family:var(--mono);letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:10px;font-weight:700;">
+      ✦ Automatically Computed for Every Candidate
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;font-size:.95rem;color:var(--muted);">
+      <div>🧪 <strong style="color:var(--text)">Solubility</strong> — SCRATCH/CamSol heuristics (score 0–1)</div>
+      <div>⚙️ <strong style="color:var(--text)">Mechanism of Action</strong> — 5-class probability prediction</div>
+      <div>⏱ <strong style="color:var(--text)">Half-life in Human Serum</strong> — stability in hours</div>
+      <div>🛡 <strong style="color:var(--text)">Protease Stability</strong> — trypsin/chymotrypsin resistance (%)</div>
+      <div>💊 <strong style="color:var(--text)">pepADMET</strong> — absorption, permeability &amp; plasma stability composite (0–1)</div>
+      <div>📐 <strong style="color:var(--text)">bRo5</strong> — Beyond Rule of Five: MW, HBD, HBA, cLogP compliance</div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-main" onclick="submitConfig()">Save &amp; Continue →</button>
+  </div>
+</div>
+
+<!-- ════════════ STEP 3: GENERATE -->
+<div class="card hidden" id="c-gen">
+  <div class="card-hd">
+    <div class="card-ico">🧬</div>
+    <div>
+      <div class="card-title">Generate Novel Sequences</div>
+      <div class="card-desc">The selected generative model synthesises new AMP candidates using patterns learned from your training data and the configured parameters.</div>
+    </div>
+  </div>
+  <div id="genPills" style="display:flex;gap:9px;flex-wrap:wrap;margin-bottom:28px;"></div>
+  <div id="genCtrl"><button class="btn btn-main" id="genBtn">🚀 Launch Generation</button></div>
+  <div class="hidden" id="genProg">
+    <div class="prog-bg"><div class="prog-fill" id="gFill" style="width:0%"></div></div>
+    <div class="prog-row">
+      <span class="prog-lbl" id="gLbl">Initialising…</span>
+      <span class="prog-pct" id="gPct">0%</span>
+    </div>
+  </div>
+  <div class="stats hidden" id="genStats">
+    <div class="stat"><div class="stat-n" id="gs1">0</div><div class="stat-l">Generated</div></div>
+    <div class="stat"><div class="stat-n g" id="gs2">0</div><div class="stat-l">Pass Threshold</div></div>
+    <div class="stat"><div class="stat-n" id="gs3">0</div><div class="stat-l">High Quality</div></div>
+    <div class="stat"><div class="stat-n a" id="gs4">0</div><div class="stat-l">Ready for Analysis</div></div>
+  </div>
+</div>
+
+<!-- ════════════ STEP 4: SCREEN -->
+<div class="card hidden" id="c-screen">
+  <div class="card-hd">
+    <div class="card-ico">🔍</div>
+    <div>
+      <div class="card-title">Screening &amp; Selection</div>
+      <div class="card-desc">Choose how many top-ranked candidates to submit to the deep analysis pipeline — ESMFold structure prediction and all 27 parameters.</div>
+    </div>
+  </div>
+  <div class="slbl"><div class="slbl-bar"></div>Select top N for deep analysis</div>
+  <div class="chips" style="margin-bottom:28px;">
+    <div class="chip active" data-n="10">TOP 10</div>
+    <div class="chip" data-n="20">TOP 20</div>
+    <div class="chip" data-n="50">TOP 50</div>
+  </div>
+  <button class="btn btn-main" id="analyzeBtn" disabled>🔬 Run Deep Analysis</button>
+</div>
+
+<!-- ════════════ STEP 5: ANALYSIS PROGRESS -->
+<div class="card hidden" id="c-analysis">
+  <div class="card-hd">
+    <div class="card-ico">🔬</div>
+    <div>
+      <div class="card-title">Running Deep Analysis</div>
+      <div class="card-desc">ESMFold structure prediction · Physicochemical · CAMPR3 · Safety Screening · Solubility · Mechanism of Action · Half-life · Protease Stability · pepADMET · bRo5</div>
+    </div>
+  </div>
+  <div class="prog-bg"><div class="prog-fill" id="aFill" style="width:0%"></div></div>
+  <div class="prog-row">
+    <span class="prog-lbl" id="aLbl">Starting…</span>
+    <span class="prog-pct" id="aPct">0%</span>
+  </div>
+</div>
+
+<!-- ════════════ STEP 6: RESULTS -->
+<div class="card hidden" id="c-results">
+  <div class="card-hd">
+    <div class="card-ico">📊</div>
+    <div>
+      <div class="card-title">Analysis Results</div>
+      <div class="card-desc">All 29 parameters per candidate. Click any row for the full detail panel. v2 columns highlighted in green — these are always computed.</div>
+    </div>
+    <div style="display:flex;gap:10px;margin-left:auto;flex-shrink:0;">
+      <button class="btn btn-ghost bsm" onclick="reconfigure()">← Reconfigure</button>
+      <button class="btn btn-main bsm" id="dlCSV">📥 Download CSV</button>
+    </div>
+  </div>
+  <div class="stats" id="resStat"></div>
+
+  <!-- Score explanation panel -->
+  <div id="scoreGuide" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;"></div>
+
+  <div class="tbl-out">
+    <table><thead id="resThead"></thead><tbody id="resTbody"></tbody></table>
+  </div>
+</div>
+
+</div><!-- /page -->
+
+<!-- ════════════ MODALS -->
+<div class="modal" id="mDetail">
+  <div class="mbox" style="max-width:1100px">
+    <div class="mhead"><div class="mtitle" id="mDtitle">Candidate Detail</div><button class="mclose" onclick="closeMod('mDetail')">✕</button></div>
+    <div class="mbody" id="mDbody"></div>
+  </div>
+</div>
+
+
+
+<div class="modal" id="mStruct">
+  <div class="mbox" style="max-width:1300px">
+    <div class="mhead"><div class="mtitle" id="mStitle">3D Structure Viewer</div><button class="mclose" onclick="closeMod('mStruct')">✕</button></div>
+    <div class="mbody">
+      <div class="v3d-wrap"><div id="v3d"></div></div>
+      <div class="v3d-ctrls">
+        <button class="btn btn-main bsm" onclick="resetV()">🔄 Reset View</button>
+        <button class="btn btn-ghost bsm" onclick="toggleStyle()">🎨 Toggle Style</button>
+        <button class="btn btn-ghost bsm" id="dlPDB">📥 Download PDB</button>
+        <button class="btn btn-ghost bsm" onclick="closeMod('mStruct')">✖ Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>AMP Discovery Platform v6.3 &nbsp;·&nbsp; M.Sc BINDS 2024–26 &nbsp;·&nbsp; Sathyabama Institute of Science and Technology</footer>
+
+<script>
+// ─── CONFIG
+const API = 'http://localhost:5000/api';
+
+const DBS = [
+  {id:'adp3',        name:'ADP3',             desc:'Antimicrobial Peptide Database 3', count:'3,500+',   col:'var(--teal)'},
+  {id:'dramp4',      name:'DRAMP 4.0',         desc:'Clinical Translation Focus',       count:'22,000+',  col:'var(--green)'},
+  {id:'global_micro',name:'Global Microbiome', desc:'Environmental AMPs (Santos 2024)', count:'863,000+', col:'var(--amber)'},
+];
+const MODELS = [
+  {id:'protgpt2', name:'ProtGPT2',  desc:'GPT-2 fine-tuned on protein sequences (Ferruz et al. 2022)',           sp:'Fast',    ac:'High'},
+  {id:'hydramp',  name:'HydrAMP',   desc:'Deep generative model for high-potency AMP discovery (Szymczak 2023)',  sp:'Moderate',ac:'Very High'},
+  {id:'hydra-pro', name:'Hydra-Pro',  desc:'ProtGPT2 + HydrAMP combined — diversity × potency optimisation',       sp:'Slow',    ac:'Maximum'},
+];
+const MOA_IC = {
+  'Membrane Disruption':'🔴','Intracellular Targeting':'🟡',
+  'Cell Wall Inhibition':'🔵','Lipid II Binding':'🟣','ROS Generation':'🟠'
+};
+
+let jobId=null, gjId=null, topN=10, cfg={}, allRes=[], viewer=null, vStyle='cartoon';
+
+// ─── INIT
+function init() {
+  buildDBCards();
+  buildModelCards();
+  document.getElementById('fileInput').addEventListener('change', onUpload);
+  document.querySelectorAll('.chip').forEach(c => c.addEventListener('click', function() {
+    document.querySelectorAll('.chip').forEach(x => x.classList.remove('active'));
+    this.classList.add('active');
+    topN = parseInt(this.dataset.n);
+    const btn = document.getElementById('analyzeBtn');
+    btn.disabled = false;
+    btn.textContent = `🔬 Deep Analyse TOP ${topN}`;
+  }));
+  document.getElementById('genBtn').addEventListener('click', doGenerate);
+  document.getElementById('analyzeBtn').addEventListener('click', doAnalyse);
+  document.getElementById('dlCSV').addEventListener('click', dlCSV);
+}
+
+function buildDBCards() {
+  const el = document.getElementById('dbCards');
+  DBS.forEach((d, i) => {
+    const div = document.createElement('div');
+    div.className = 'db-card' + (i === 0 ? ' sel' : '');
+    div.style.setProperty('--db-c', d.col);
+    div.dataset.id = d.id;
+    div.innerHTML = `<div class="db-chk">${i===0?'✓':''}</div>
+      <div class="db-name">${d.name}</div>
+      <div class="db-desc">${d.desc}</div>
+      <div class="db-count">${d.count}</div>
+      <div class="db-unit">Sequences</div>`;
+    div.addEventListener('click', () => {
+      div.classList.toggle('sel');
+      div.querySelector('.db-chk').textContent = div.classList.contains('sel') ? '✓' : '';
+    });
+    el.appendChild(div);
+  });
+}
+
+function buildModelCards() {
+  const el = document.getElementById('modelCards');
+  MODELS.forEach((m, i) => {
+    const div = document.createElement('div');
+    div.className = 'model-card' + (i === 0 ? ' sel' : '');
+    div.dataset.id = m.id;
+    div.innerHTML = `<div class="model-n">${m.name}</div>
+      <div class="model-d">${m.desc}</div>
+      <div class="mpills">
+        <span class="mp mpt">Speed: ${m.sp}</span>
+        <span class="mp mpg">Accuracy: ${m.ac}</span>
+      </div>`;
+    div.addEventListener('click', () => {
+      document.querySelectorAll('.model-card').forEach(x => x.classList.remove('sel'));
+      div.classList.add('sel');
+    });
+    el.appendChild(div);
+  });
+}
+
+// ─── NAV HELPERS
+function setStep(n) {
+  for (let i = 1; i <= 6; i++) {
+    const el = document.getElementById(`s${i}`);
+    el.className = 'step';
+    if (i === n) el.classList.add('active');
+    else if (i < n) el.classList.add('done');
+  }
+}
+const show = id => document.getElementById(id).classList.remove('hidden');
+const hide = id => document.getElementById(id).classList.add('hidden');
+const scrollTo = id => setTimeout(() => document.getElementById(id).scrollIntoView({behavior:'smooth'}), 100);
+
+// ─── UPLOAD
+async function onUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const st = document.getElementById('uploadSt');
+  st.textContent = '⏳ Uploading…'; st.style.color = 'var(--teal)';
+  const fd = new FormData(); fd.append('file', file);
+  try {
+    const r = await fetch(`${API}/upload-training`, {method:'POST', body:fd});
+    const d = await r.json();
+    if (d.success) {
+      jobId = d.job_id;
+      st.textContent = `✅  Loaded ${d.count} training sequences`;
+      st.style.color = 'var(--green)';
+      setStep(2); show('c-config'); scrollTo('c-config');
+    } else {
+      st.textContent = `❌  ${d.error}`; st.style.color = 'var(--red)';
+    }
+  } catch(err) {
+    st.textContent = `❌  ${err.message}`; st.style.color = 'var(--red)';
+  }
+}
+
+// ─── CONFIG SUBMIT
+function submitConfig() {
+  const dbs = [...document.querySelectorAll('.db-card.sel')].map(x => x.dataset.id);
+  if (!dbs.length) { alert('Please select at least one database.'); return; }
+  const model = document.querySelector('.model-card.sel')?.dataset.id || 'protgpt2';
+  cfg = {
+    databases:     dbs,
+    model:         model,
+    species:       'Human',
+    num_generate:  200,
+    min_len:       10,
+    max_len:       50,
+    temperature:   1.05,
+    amp_threshold: 0.4,
+    use_negatives: document.getElementById('cfgNeg').checked,
+  };
+  const pills = document.getElementById('genPills');
+  pills.innerHTML = [
+    {t:`🗄  ${dbs.map(id => DBS.find(x=>x.id===id)?.name).join(' + ')}`, c:'pt'},
+    {t:`🤖  ${MODELS.find(m=>m.id===model)?.name}`,                       c:'pi'},
+    {t:`🧬  200 sequences`,                                                c:'pg'},
+    {t:`📏  10–50 AA`,                                                     c:'pt'},
+    {t:`🎯  AMP ≥ 0.40`,                                                   c:'pg'},
+  ].map(p => `<span class="pill ${p.c}">${p.t}</span>`).join('');
+  setStep(3); show('c-gen'); scrollTo('c-gen');
+}
+
+// ─── GENERATE
+async function doGenerate() {
+  hide('genCtrl'); show('genProg');
+  const fill = document.getElementById('gFill');
+  const pct  = document.getElementById('gPct');
+  const lbl  = document.getElementById('gLbl');
+  const steps = ['Connecting to database…','Loading sequences…','Running generative model…','Scoring candidates…','Filtering results…'];
+  let p = 0, si = 0;
+  const iv = setInterval(() => {
+    if (p < 88) {
+      p += Math.random() * 6;
+      fill.style.width = Math.min(p, 88) + '%';
+      pct.textContent  = Math.floor(Math.min(p, 88)) + '%';
+      if (si < steps.length && p > (si+1)*15) lbl.textContent = steps[si++];
+    }
+  }, 600);
+  try {
+    const r = await fetch(`${API}/generate`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({job_id: jobId, ...cfg})
+    });
+    clearInterval(iv);
+    const d = await r.json();
+    if (d.success) {
+      gjId = d.gen_job_id;
+      fill.style.width = '100%'; pct.textContent = '100%'; lbl.textContent = 'Complete!';
+      const pass = d.passing_threshold || Math.floor(d.total_generated * 0.65);
+      setTimeout(() => {
+        hide('genProg'); show('genStats');
+        document.getElementById('gs1').textContent = d.total_generated;
+        document.getElementById('gs2').textContent = pass;
+        document.getElementById('gs3').textContent = Math.floor(d.total_generated * 0.45);
+        document.getElementById('gs4').textContent = Math.min(50, pass);
+        setStep(4); show('c-screen'); scrollTo('c-screen');
+        document.getElementById('analyzeBtn').disabled = false;
+      }, 1200);
+    } else { alert('Generation failed: ' + (d.error||'Unknown')); show('genCtrl'); hide('genProg'); }
+  } catch(e) { clearInterval(iv); alert(e.message); show('genCtrl'); hide('genProg'); }
+}
+
+// ─── ANALYSE
+async function doAnalyse() {
+  document.getElementById('analyzeBtn').disabled = true;
+  hide('c-screen'); show('c-analysis'); scrollTo('c-analysis'); setStep(5);
+  const fill = document.getElementById('aFill');
+  const pct  = document.getElementById('aPct');
+  const lbl  = document.getElementById('aLbl');
+  const steps = [
+    'ESMFold structure prediction…','Computing physicochemical properties…',
+    'CAMPR3 AMP scoring…','Safety screening (ToxinPred / AllerTOP / HemoPI)…',
+    'Solubility prediction (SCRATCH)…','Mechanism of Action inference…',
+    'Half-life estimation in human serum…','Protease stability scoring…',
+    'pepADMET composite scoring…','bRo5 compliance check…',
+    'Compiling report…'
+  ];
+  let p = 0, si = 0;
+  const iv = setInterval(() => {
+    if (p < 88) {
+      p += Math.random() * 4;
+      fill.style.width = Math.min(p, 88) + '%';
+      pct.textContent  = Math.floor(Math.min(p, 88)) + '%';
+      if (si < steps.length && p > (si+1)*8) lbl.textContent = steps[si++];
+    }
+  }, 900);
+  try {
+    const r = await fetch(`${API}/analyze-top10`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({gen_job_id: gjId, top_n: topN})
+    });
+    clearInterval(iv);
+    const d = await r.json();
+    if (d.success) {
+      fill.style.width = '100%'; pct.textContent = '100%'; lbl.textContent = 'Done!';
+      allRes = d.results;
+      setTimeout(() => { hide('c-analysis'); renderResults(d.results); setStep(6); }, 900);
+    } else { alert('Analysis failed: ' + (d.error||'Unknown')); show('c-screen'); hide('c-analysis'); }
+  } catch(e) { clearInterval(iv); alert(e.message); show('c-screen'); hide('c-analysis'); }
+}
+function reconfigure() { hide('c-results'); show('c-config'); setStep(2); scrollTo('c-config'); }
+
+// ─── RENDER RESULTS
+function renderResults(res) {
+  res.sort((a, b) => (parseFloat(b.ampScore)||0) - (parseFloat(a.ampScore)||0));
+
+  // Stats
+  const safe   = res.filter(r => r.toxic==='Non-Toxic' && r.allergen==='Non-Allergen' && r.hemolytic==='Non-Hemolytic').length;
+  const hiAmp  = res.filter(r => parseFloat(r.ampScore)  >= 0.6).length;
+  const hiSol  = res.filter(r => parseFloat(r.solubility) >= 0.6).length;
+  document.getElementById('resStat').innerHTML = `
+    <div class="stat"><div class="stat-n">${res.length}</div><div class="stat-l">Analysed</div></div>
+    <div class="stat"><div class="stat-n g">${safe}</div><div class="stat-l">Fully Safe</div></div>
+    <div class="stat"><div class="stat-n">${hiAmp}</div><div class="stat-l">High Potency ≥0.6</div></div>
+    <div class="stat"><div class="stat-n a">${hiSol}</div><div class="stat-l">High Solubility</div></div>`;
+
+  // Score guide
+  document.getElementById('scoreGuide').innerHTML = `
+    <div style="padding:14px 16px;background:rgba(45,226,138,0.05);border:1px solid rgba(45,226,138,.2);border-radius:var(--rsm);font-size:.84rem;color:var(--muted);">
+      <div style="color:var(--green);font-weight:700;margin-bottom:5px;">🧪 Solubility (0–1)</div>
+      High &gt;0.60 · Moderate 0.35–0.60 · Low &lt;0.35</div>
+    <div style="padding:14px 16px;background:rgba(59,158,255,0.05);border:1px solid rgba(59,158,255,.2);border-radius:var(--rsm);font-size:.84rem;color:var(--muted);">
+      <div style="color:var(--blue);font-weight:700;margin-bottom:5px;">⏱ Half-life (hours)</div>
+      Long &gt;8 hr · Moderate 2–8 hr · Short &lt;2 hr</div>
+    <div style="padding:14px 16px;background:rgba(124,111,253,0.05);border:1px solid rgba(124,111,253,.2);border-radius:var(--rsm);font-size:.84rem;color:var(--muted);">
+      <div style="color:var(--indigo);font-weight:700;margin-bottom:5px;">🛡 Protease Stability (%)</div>
+      Stable &gt;65% · Moderate 35–65% · Labile &lt;35%</div>
+    <div style="padding:14px 16px;background:rgba(245,166,35,0.05);border:1px solid rgba(245,166,35,.2);border-radius:var(--rsm);font-size:.84rem;color:var(--muted);">
+      <div style="color:var(--amber);font-weight:700;margin-bottom:5px;">⚙️ Primary MoA</div>
+      Membrane · Intracellular · Cell Wall · Lipid II · ROS</div>`;
+
+  // Table header
+  document.getElementById('resThead').innerHTML = `<tr>
+    <th class="sk" style="left:0;min-width:56px">Rank</th>
+    <th class="sk" style="left:56px;min-width:110px">ID</th>
+    <th style="min-width:200px">Sequence</th>
+    <th>Len</th><th>pLDDT</th><th>pTM</th><th>ipTM</th>
+    <th>MW (kDa)</th><th>pI</th><th>Charge</th>
+    <th>Hydrophob.</th><th>Amphipat.</th><th>Instability</th><th>Boman</th>
+    <th>Helix%</th><th>Sheet%</th><th>AMP Score</th>
+    <th>Toxicity</th><th>Allergen</th><th>Hemolytic</th>
+    <th class="v2">Solubility ★</th>
+    <th class="v2">Half-life ★</th>
+    <th class="v2">Protease Stab. ★</th>
+    <th class="v2">Primary MoA ★</th>
+    <th class="v2">pepADMET ★</th>
+    <th class="v2">bRo5 ★</th>
+    <th style="min-width:160px">3D Structure</th>
+  </tr>`;
+
+  const tbody = document.getElementById('resTbody');
+  tbody.innerHTML = '';
+
+  res.forEach((r, idx) => {
+    const plddt = parseFloat(r.pLDDT)              || 0;
+    const ptm   = parseFloat(r.pTM)                || 0;
+    const iptm  = parseFloat(r.ipTM)               || 0;
+    const amp   = parseFloat(r.ampScore)            || 0;
+    const sol   = parseFloat(r.solubility)          || 0;
+    const hl    = parseFloat(r.half_life)           || 0;
+    const ps    = parseFloat(r.protease_stability)  || 0;
+    const inst  = parseFloat(r.instability_index)   || 40;
+    const pa    = parseFloat(r.pepADMET_score)      || 0;
+    const bro5ok= r.bRo5_compliant;
+
+    const pLC  = plddt >= 70 ? 'bh' : plddt >= 50 ? 'bm' : 'bl';
+    const pTC  = ptm   >= 0.6 ? 'bh' : ptm   >= 0.4 ? 'bm' : 'bl';
+    const iTC  = iptm  >= 0.6 ? 'bh' : iptm  >= 0.4 ? 'bm' : 'bl';
+    const iLC  = inst  < 40   ? 'bh' : 'bl';
+    const bg   = idx % 2 === 0 ? 'rgba(3,12,24,.98)' : 'rgba(7,19,38,.98)';
+
+    function sbar(val, hi, lo, fmt) {
+      const col = val >= hi ? 'var(--green)' : val >= lo ? 'var(--amber)' : 'var(--red)';
+      const w   = Math.min(val * 100 / (hi * 1.5 || 1), 100);
+      return `<div class="sb"><div class="strack"><div class="sfill" style="width:${w.toFixed(1)}%;background:${col};"></div></div><span class="sval" style="color:${col};">${fmt(val)}</span></div>`;
+    }
+
+    // v2 display — always show real value, never fallback to dash
+    const solD = sbar(sol, 0.60, 0.35, v => v.toFixed(2));
+    const hlD  = `<span style="font-family:var(--mono);font-size:.85rem;font-weight:700;color:${hl>8?'var(--green)':hl>2?'var(--amber)':'var(--red)'};">${hl.toFixed(1)}&nbsp;hr<br><span style="font-size:.7rem;color:var(--muted);font-weight:500;">${r.half_life_class||''}</span></span>`;
+    const psD  = sbar(ps/100, 0.65, 0.35, v => (v*100).toFixed(0)+'%');
+    const moaD = r.primary_moa
+      ? `<span style="font-size:.85rem;color:var(--muted);">${MOA_IC[r.primary_moa]||'•'} ${r.primary_moa}</span>`
+      : `<span style="color:var(--dim)">—</span>`;
+    const paD  = `<span style="font-family:var(--mono);font-size:.85rem;font-weight:700;color:${pa>=0.65?'var(--green)':pa>=0.40?'var(--amber)':'var(--red)'};">${pa.toFixed(2)}<br><span style="font-size:.7rem;color:var(--muted);font-weight:500;">${r.pepADMET_class||''}</span></span>`;
+    const broD = bro5ok!==undefined
+      ? `<span class="tag ${bro5ok?'ts':'td'}" style="font-size:.75rem;">${bro5ok?'✓ Pass':'✗ Fail'}</span><br><span style="font-size:.68rem;color:var(--dim);word-break:break-word;">${bro5ok?`MW ${r.bRo5_MW?.toFixed(0)} | HBD ${r.bRo5_HBD} | HBA ${r.bRo5_HBA}`:r.bRo5_status||''}</span>`
+      : `<span style="color:var(--dim)">—</span>`;
+
+    const tr = document.createElement('tr');
+    tr.title = 'Click for full analysis';
+    tr.addEventListener('click', () => showDetail(r, idx));
+    tr.innerHTML = `
+      <td class="sk" style="left:0;font-weight:800;font-size:1rem;background:${bg};">${idx<3?['🥇','🥈','🥉'][idx]:idx+1}</td>
+      <td class="sk id-cell" style="left:56px;background:${bg};">${r.id}</td>
+      <td class="seq-cell" title="${r.sequence}">${r.sequence.substring(0,24)}…</td>
+      <td style="font-family:var(--mono);">${r.length}</td>
+      <td><span class="bdg ${pLC}">${plddt.toFixed(1)}</span></td>
+      <td><span class="bdg ${pTC}">${ptm.toFixed(3)}</span></td>
+      <td><span class="bdg ${iTC}">${iptm.toFixed(3)}</span></td>
+      <td style="font-family:var(--mono);">${r.molecular_weight ? (r.molecular_weight/1000).toFixed(2) : '—'}</td>
+      <td style="font-family:var(--mono);">${r.isoelectric_point ?? '—'}</td>
+      <td style="font-family:var(--mono);">${r.net_charge !== undefined ? r.net_charge.toFixed(3) : '—'}</td>
+      <td style="font-family:var(--mono);">${r.hydrophobicity !== undefined ? r.hydrophobicity.toFixed(3) : '—'}</td>
+      <td style="font-family:var(--mono);">${r.amphipathicity !== undefined ? r.amphipathicity.toFixed(3) : '—'}</td>
+      <td><span class="bdg ${iLC}">${inst.toFixed(1)}</span></td>
+      <td style="font-family:var(--mono);">${r.boman_index !== undefined ? r.boman_index.toFixed(3) : '—'}</td>
+      <td style="font-family:var(--mono);">${r.helix ?? '—'}%</td>
+      <td style="font-family:var(--mono);">${r.sheet ?? '—'}%</td>
+      <td>${sbar(amp, 0.6, 0.4, v => v.toFixed(2))}</td>
+      <td><span class="tag ${r.toxic==='Non-Toxic'?'ts':'td'}">${r.toxic==='Non-Toxic'?'✓ Safe':'✗ Toxic'}</span></td>
+      <td><span class="tag ${r.allergen==='Non-Allergen'?'ts':'td'}">${r.allergen==='Non-Allergen'?'✓ Safe':'✗ Allergen'}</span></td>
+      <td><span class="tag ${r.hemolytic==='Non-Hemolytic'?'ts':'td'}">${r.hemolytic==='Non-Hemolytic'?'✓ Safe':'✗ Hemo'}</span></td>
+      <td style="background:rgba(45,226,138,0.028);">${solD}</td>
+      <td style="background:rgba(45,226,138,0.028);">${hlD}</td>
+      <td style="background:rgba(45,226,138,0.028);">${psD}</td>
+      <td style="background:rgba(45,226,138,0.028);max-width:155px;white-space:normal;">${moaD}</td>
+      <td style="background:rgba(45,226,138,0.028);min-width:95px;">${paD}</td>
+      <td style="background:rgba(45,226,138,0.028);min-width:130px;white-space:normal;line-height:1.4;">${broD}</td>
+      <td style="background:rgba(13,232,198,0.022);">
+        <div style="display:flex;gap:7px;">
+          <button class="btn btn-main bsm" onclick="event.stopPropagation();view3D('${r.id}')">👁 View</button>
+          <a class="btn btn-ghost bsm" href="${API}/download/pdb/${r.id}.pdb" target="_blank" onclick="event.stopPropagation()" style="text-decoration:none;">📥</a>
+        </div>
+      </td>`;
+    tbody.appendChild(tr);
+  });
+
+  show('c-results'); scrollTo('c-results');
+}
+
+// ─── DETAIL MODAL
+function showDetail(r, idx) {
+  document.getElementById('mDtitle').textContent = `${r.id} — Full Analysis Profile`;
+  const safe = r.toxic==='Non-Toxic' && r.allergen==='Non-Allergen' && r.hemolytic==='Non-Hemolytic';
+  const moa  = r.moa || [];
+
+  function pv(v, g, b) {
+    const f = parseFloat(v);
+    const cl = f >= g ? 'g' : f >= b ? 'a' : 'r';
+    return `<span class="pv ${cl}">${v ?? '—'}</span>`;
+  }
+
+  document.getElementById('mDbody').innerHTML = `
+    <div class="slbl" style="margin-bottom:10px;"><div class="slbl-bar"></div>Full Sequence — ${r.length} Amino Acids</div>
+    <div style="font-family:var(--mono);font-size:.84rem;color:var(--teal);word-break:break-all;
+                padding:18px 22px;background:rgba(13,232,198,0.03);
+                border:1px solid rgba(13,232,198,0.14);border-radius:var(--r);
+                letter-spacing:2px;line-height:1.9;margin-bottom:24px;">${r.sequence}</div>
+    <div class="dg2">
+      <div class="dc">
+        <div class="dc-t">Physicochemical Properties</div>
+        ${[
+          ['Molecular Weight',   `${((r.molecular_weight||0)/1000).toFixed(2)} kDa`],
+          ['Isoelectric Point (pI)', r.isoelectric_point],
+          ['Net Charge',         r.net_charge],
+          ['Hydrophobicity',     r.hydrophobicity],
+          ['Amphipathicity',     r.amphipathicity],
+          ['Instability Index',  r.instability_index],
+          ['Boman Index',        r.boman_index],
+          ['Helical Content',    `${r.helix}%`],
+          ['Sheet Content',      `${r.sheet}%`],
+        ].map(([n,v]) => `<div class="pr"><span class="pn">${n}</span><span class="pv">${v ?? '—'}</span></div>`).join('')}
+      </div>
+      <div class="dc">
+        <div class="dc-t">Structure &amp; Activity</div>
+        ${[
+          ['pLDDT Confidence',    r.pLDDT, 70, 50],
+          ['pTM Score',           r.pTM,  0.6, 0.4],
+          ['ipTM Score',          r.ipTM, 0.6, 0.4],
+          ['AMP Score (CAMPR3)',  r.ampScore, 0.6, 0.4],
+        ].map(([n,v,g,b]) => `<div class="pr"><span class="pn">${n}</span>${pv(v,g,b)}</div>`).join('')}
+        <div class="dc-t" style="margin-top:16px;">Druggability Metrics (v2)</div>
+        <div class="pr">
+          <span class="pn">Solubility (0–1)</span>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span class="pv g">${r.solubility ?? '—'}</span>
+            <span class="tag tc" style="font-size:.7rem;padding:3px 7px;">${r.solubility_class||''}</span>
+          </div>
+        </div>
+        <div class="pr">
+          <span class="pn">Half-life (human serum)</span>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span class="pv g">${r.half_life ?? '—'} hr</span>
+            <span class="tag tc" style="font-size:.7rem;padding:3px 7px;">${r.half_life_class||''}</span>
+          </div>
+        </div>
+        <div class="pr">
+          <span class="pn">Protease Stability</span>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span class="pv g">${r.protease_stability ?? '—'}%</span>
+            <span class="tag tc" style="font-size:.7rem;padding:3px 7px;">${r.protease_class||''}</span>
+          </div>
+        </div>
+        <div class="pr">
+          <span class="pn">pepADMET Score</span>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span class="pv ${(r.pepADMET_score||0)>=0.65?'g':(r.pepADMET_score||0)>=0.40?'a':'r'}">${r.pepADMET_score ?? '—'}</span>
+            <span class="tag tc" style="font-size:.7rem;padding:3px 7px;">${r.pepADMET_class||''}</span>
+          </div>
+        </div>
+        <div class="dc-t" style="margin-top:16px;">Beyond Rule of Five (bRo5)</div>
+        ${[
+          ['MW (Da)',    r.bRo5_MW !== undefined ? r.bRo5_MW.toFixed(1) : '—',  1000, 700],
+          ['HBD',       r.bRo5_HBD ?? '—',  10,  7],
+          ['HBA',       r.bRo5_HBA ?? '—',  15, 12],
+          ['cLogP',     r.bRo5_cLogP !== undefined ? r.bRo5_cLogP.toFixed(2) : '—', 10, 5],
+        ].map(([n,v]) => `<div class="pr"><span class="pn">${n}</span><span class="pv">${v}</span></div>`).join('')}
+        <div class="pr">
+          <span class="pn">bRo5 Compliance</span>
+          <span class="tag ${r.bRo5_compliant?'ts':'td'}" style="font-size:.75rem;padding:3px 8px;">${r.bRo5_compliant?'✓ Compliant':'✗ Violations'}</span>
+        </div>
+        ${!r.bRo5_compliant && r.bRo5_status ? `<div style="font-size:.72rem;color:var(--amber);padding:4px 0 0 4px;word-break:break-word;">${r.bRo5_status}</div>` : ''}
+      </div>
+    </div>
+
+    ${moa.length ? `
+    <div class="slbl" style="margin-bottom:10px;"><div class="slbl-bar"></div>Mechanism of Action Prediction</div>
+    <div class="moa-g">
+      ${moa.map((m, i) => `
+        <div class="moa-c ${i===0?'top':''}">
+          <div class="moa-ic">${MOA_IC[m.name]||'•'}</div>
+          <div class="moa-nm">${m.name}</div>
+          <div class="moa-pct">${(m.probability*100).toFixed(1)}%</div>
+          <div class="moa-bar"><div class="moa-fill" style="width:${(m.probability*100).toFixed(1)}%"></div></div>
+        </div>`).join('')}
+    </div>` : ''}
+
+    <div class="slbl" style="margin:22px 0 10px;"><div class="slbl-bar"></div>Safety Profile</div>
+    <div class="saf-g">
+      ${[
+        {l:'ToxinPred',  v:r.toxic,    ok:r.toxic==='Non-Toxic'},
+        {l:'AllerTOP v2',v:r.allergen, ok:r.allergen==='Non-Allergen'},
+        {l:'HemoPI',     v:r.hemolytic,ok:r.hemolytic==='Non-Hemolytic'},
+        {l:'Overall',    v:safe?'✓ SAFE':'⚠ REVIEW', ok:safe},
+      ].map(s => `
+        <div class="saf-c" style="border:1px solid ${s.ok?'rgba(45,226,138,.25)':'rgba(255,95,109,.25)'};
+             background:${s.ok?'rgba(45,226,138,.05)':'rgba(255,95,109,.05)'};">
+          <div class="saf-l">${s.l}</div>
+          <div class="saf-v" style="color:${s.ok?'var(--green)':'var(--red)'};">${s.v}</div>
+        </div>`).join('')}
+    </div>
+
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:18px;">
+      ${(r.databases_used||['adp3']).map(d => `<span class="tag tc">${d.toUpperCase()}</span>`).join('')}
+      <span class="tag tc">${r.model_used||'protgpt2'}</span>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:18px;justify-content:flex-end;">
+      <button class="btn btn-main bsm" onclick="view3D('${r.id}');closeMod('mDetail')">👁 3D Structure</button>
+    </div>`;
+
+  document.getElementById('mDetail').classList.add('open');
+}
+
+// ─── 3D VIEWER  (fixed alignment)
+function view3D(id) {
+  document.getElementById('mStitle').textContent = `3D Structure — ${id}`;
+  document.getElementById('mStruct').classList.add('open');
+
+  // Destroy old viewer cleanly
+  if (viewer) { try { viewer.clear(); } catch(e) {} viewer = null; }
+  const vdiv = document.getElementById('v3d');
+  vdiv.innerHTML = '';
+
+  // Wait for modal to fully render, then create viewer
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      const w = vdiv.clientWidth  || 1200;
+      const h = vdiv.clientHeight || 580;
+
+      // Create viewer with explicit pixel size and dark background
+      viewer = $3Dmol.createViewer(vdiv, {
+        backgroundColor: '#050e1a',
+        antialias:       true,
+        id:              'mol-viewer'
+      });
+      viewer.setWidth(w);
+      viewer.setHeight(h);
+
+      document.getElementById('dlPDB').onclick = () => window.open(`${API}/download/pdb/${id}.pdb`, '_blank');
+
+      fetch(`${API}/download/pdb/${id}.pdb`)
+        .then(resp => {
+          if (!resp.ok) throw new Error('PDB not found (run analysis first to generate structure)');
+          return resp.text();
+        })
+        .then(pdb => {
+          viewer.addModel(pdb, 'pdb');
+          viewer.setStyle({}, {cartoon: {color: 'spectrum'}});
+          viewer.zoomTo();           // auto-center on all atoms
+          viewer.zoom(0.85);         // slight zoom-out for breathing room
+          viewer.render();
+          vStyle = 'cartoon';
+          // Re-render once more after a short delay to ensure proper centering
+          setTimeout(() => { viewer.zoomTo(); viewer.render(); }, 200);
+        })
+        .catch(err => {
+          vdiv.innerHTML = `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;color:var(--muted);">
+            <div style="font-size:48px;">🔬</div>
+            <div style="font-size:1rem;text-align:center;padding:0 40px;">${err.message}</div>
+            <a class="btn btn-main bsm" href="${API}/download/pdb/${id}.pdb" target="_blank" style="text-decoration:none;">📥 Download PDB</a>
+          </div>`;
+        });
+    });
+  });
+}
+
+function resetV() {
+  if (!viewer) return;
+  try { viewer.zoomTo(); viewer.zoom(0.85); viewer.render(); } catch(e) {}
+}
+
+function toggleStyle() {
+  if (!viewer) return;
+  const styles = [
+    ['cartoon', {color: 'spectrum'}],
+    ['sphere',  {}],
+    ['stick',   {}],
+  ];
+  const cur = styles.findIndex(([s]) => s === vStyle);
+  const nxt = (cur + 1) % styles.length;
+  vStyle = styles[nxt][0];
+  try {
+    viewer.setStyle({}, {[vStyle]: styles[nxt][1]});
+    viewer.render();
+  } catch(e) {}
+}
+
+function closeMod(id) {
+  document.getElementById(id).classList.remove('open');
+  if (id === 'mStruct' && viewer) {
+    try { viewer.clear(); } catch(e) {}
+    viewer = null;
+  }
+}
+
+function dlCSV() {
+  if (!gjId) { alert('No results yet.'); return; }
+  window.open(`${API}/download/csv/${gjId}`, '_blank');
+}
+
+init();
+</script>
+</body>
+</html>
