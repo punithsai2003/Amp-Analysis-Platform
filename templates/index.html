@@ -221,6 +221,19 @@ input[type=file] { display: none; }
 .model-card {
   border: 2px solid var(--bdr); border-radius: 14px; padding: 18px;
 }
+
+.modal-close { 
+  background: var(--bg3); 
+  border: 1px solid var(--bdr); 
+  color: var(--text); 
+  width: 32px; height: 32px; 
+  border-radius: 50%; 
+  cursor: pointer; 
+  display: flex; align-items: center; justify-content: center; 
+  font-size: 16px;
+  position: relative;
+  z-index: 10;
+}
 .model-card:hover { border-color: rgba(255,255,255,.18); transform: translateY(-3px); }
 .model-card.sel   { border-color: var(--teal); background: rgba(13,232,198,0.045); }
 .model-n { font-size: 1.12rem; font-weight: 700; margin-bottom: 7px; }
