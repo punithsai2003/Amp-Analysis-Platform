@@ -13,6 +13,8 @@ import io, os, requests as req_lib, random, math
 from datetime import datetime
 from pathlib import Path
 from collections import Counter
+from flask import render_template
+
 
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {
@@ -821,7 +823,7 @@ if __name__ == '__main__':
     print(f"Test:    http://localhost:{port}/api/test\n")
     app.run(host='0.0.0.0', port=port)
 
-from flask import send_from_directory
+
 @app.route('/')
 def index():
     return render_template('index.html')
