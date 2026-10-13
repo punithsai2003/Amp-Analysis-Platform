@@ -825,3 +825,8 @@ if __name__ == '__main__':
     print(f"Test:    http://localhost:{port}/api/test\n")
     app.run(host='0.0.0.0', port=port)
 
+from flask import send_from_directory
+
+@app.route('/')
+def index():
+    return send_from_directory('.', 'index.html')
