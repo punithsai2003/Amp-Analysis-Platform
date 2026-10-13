@@ -1178,38 +1178,58 @@ function view3D(id) {
   });
 }
 
-function resetV() {
-  if (!viewer) return;
-  try { viewer.zoomTo(); viewer.zoom(0.85); viewer.render(); } catch(e) {}
-}
+function view3D(id) {
+  document.getElementById('mStitle').textContent = `3D Structure — ${id}`;
+  document.getElementById('mStruct').classList.add('open');
 
-function toggleStyle() {
-  if (!viewer) return;
-  const styles = [
-    ['cartoon', {color: 'spectrum'}],
-    ['sphere',  {}],
-    ['stick',   {}],
-  ];
-  const cur = styles.findIndex(([s]) => s === vStyle);
-  const nxt = (cur + 1) % styles.length;
-  vStyle = styles[nxt][0];
-  try {
-    viewer.setStyle({}, {[vStyle]: styles[nxt][1]});
-    viewer.render();
-  } catch(e) {}
-}
+  if (viewer) { try { viewer.clear(); } catch(e) {} viewer = null; }
+  const vdiv = document.getElementById('v3d');
+  vdiv.innerHTML = '';
 
-function closeMod(id) {
-  document.getElementById(id).classList.remove('open');
-  if (id === 'mStruct' && viewer) {
-    try { viewer.clear(); } catch(e) {}
-    viewer = null;
-  }
-}
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      const w = vdiv.clientWidth || 800;
+      const h = vdiv.clientHeight || 580;
 
-function dlCSV() {
-  if (!gjId) { alert('No results yet.'); return; }
-  window.open(`${API}/download/csv/${gjId}`, '_blank');
+      viewer = $3Dmol.createViewer(vdiv, {
+        backgroundColor: '#050e1a',
+        antialias: true,
+        id: 'mol-viewer'
+      });
+      viewer.setWidth(w);
+      viewer.setHeight(h);
+
+      document.getElementById('dlPDB').onclick = () => window.open(`${API}/download/pdb/${id}.pdb`, '_blank');
+
+      fetch(`${API}/download/pdb/${id}.pdb`)
+        .then(resp => {
+          if (!resp.ok) throw new Error('PDB not found (run analysis first to generate structure)');
+          return resp.text();
+        })
+        .then(pdb => {
+          viewer.addModel(pdb, 'pdb');
+          viewer.setStyle({}, {cartoon: {color: 'spectrum'}});
+          viewer.zoomTo();
+          viewer.zoom(0.85);
+          viewer.render();
+          vStyle = 'cartoon';
+          
+          // Force resize handler so WebGL canvas paints correctly
+          setTimeout(() => { 
+            viewer.resize(); 
+            viewer.zoomTo(); 
+            viewer.render(); 
+          }, 100);
+        })
+        .catch(err => {
+          vdiv.innerHTML = `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;color:var(--muted);">
+            <div style="font-size:48px;">🔬</div>
+            <div style="font-size:1rem;text-align:center;padding:0 40px;">${err.message}</div>
+            <a class="btn btn-main bsm" href="${API}/download/pdb/${id}.pdb" target="_blank" style="text-decoration:none;">📥 Download PDB</a>
+          </div>`;
+        });
+    }, 150); // Small delay to let CSS transition finish
+  });
 }
 
 init();
