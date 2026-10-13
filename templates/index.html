@@ -144,6 +144,7 @@ input[type=file] { display: none; }
 table { width:100%; border-collapse:collapse; }
 thead { background:rgba(0,0,0,0.55); }
 th { padding: 18px 16px; text-align:left; white-space:nowrap; font-family:var(--mono); font-size:.72rem; font-weight:700; color:var(--dim); text-transform:uppercase; }
+th.v2 { color:var(--green); }
 th.sk { position:sticky; z-index:5; background:rgba(3,12,24,.98); }
 tbody tr { border-bottom:1px solid rgba(255,255,255,0.045); transition:all .2s; cursor:pointer; }
 tbody tr:hover { background:rgba(13,232,198,0.04); }
@@ -165,17 +166,21 @@ td.sk { position:sticky; z-index:4; background:var(--bg0); }
 .bl  { background:linear-gradient(90deg,#dc2626,#b91c1c); color:#fff; }
 .modal { position: fixed; inset: 0; background: rgba(0,0,0,.82); backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; z-index: 9999; padding: 20px; }
 .modal.open { display: flex; }
-.mbox { background: var(--bg2); border: 1px solid var(--bdr); border-radius: 16px; width: 100%; max-width: 680px; max-height: 75vh; overflow-y: auto; padding: 18px 22px; box-shadow: 0 24px 64px rgba(0,0,0,0.75); }
+.mbox { background: var(--bg2); border: 1px solid var(--bdr); border-radius: 16px; width: 100%; max-width: 750px; max-height: 80vh; overflow-y: auto; padding: 18px 22px; box-shadow: 0 24px 64px rgba(0,0,0,0.75); }
 .mhead { padding: 16px 20px; border-bottom: 1px solid var(--bdr); display: flex; justify-content: space-between; align-items: center; background: rgba(13,232,198,.06); border-radius: 12px 12px 0 0; position: sticky; top: 0; z-index: 5; }
 .mtitle { font-size: 1.15rem; font-weight: 700; }
 .mclose { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--bdr); background: var(--bg3); color: var(--muted); cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 20; position: relative; }
 .mclose:hover { background: rgba(255,95,109,.15); border-color: var(--red); color: var(--red); }
 .mbody { padding: 20px; }
 .dg2 { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:20px; }
-.dc  { background:rgba(255,255,255,.02); border:1px solid var(--bdr); border-radius:var(--r); padding:24px; }
-.dc-t { font-size:.72rem; font-family:var(--mono); letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-bottom:15px; }
-.pr  { display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid rgba(255,255,255,.04); font-size:.95rem; }
+.dc  { background:rgba(255,255,255,.02); border:1px solid var(--bdr); border-radius:var(--r); padding:20px; }
+.dc-t { font-size:.72rem; font-family:var(--mono); letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-bottom:12px; }
+.pr  { display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid rgba(255,255,255,.04); font-size:.9rem; }
+.pn  { color:var(--muted); }
 .pv  { font-family:var(--mono); font-weight:600; }
+.pv.g { color:var(--green); }
+.pv.a { color:var(--amber); }
+.pv.r { color:var(--red); }
 .v3d-wrap { position:relative; width:100%; height:320px; border-radius:var(--rsm); overflow:hidden; border:1px solid var(--bdr2); background:#050e1a; }
 #v3d      { width:100%; height:100%; }
 .v3d-ctrls { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:14px; }
@@ -536,7 +541,14 @@ function renderResults(res) {
     <th class="sk" style="left:56px;min-width:110px">ID</th>
     <th style="min-width:200px">Sequence</th>
     <th>Len</th><th>pLDDT</th><th>pTM</th><th>ipTM</th>
-    <th>AMP Score</th><th>Toxicity</th><th>Solubility</th><th>Primary MoA</th>
+    <th>MW (kDa)</th><th>pI</th><th>Charge</th>
+    <th>AMP Score</th><th>Toxicity</th>
+    <th class="v2">Solubility ★</th>
+    <th class="v2">Half-life ★</th>
+    <th class="v2">Protease Stab. ★</th>
+    <th class="v2">Primary MoA ★</th>
+    <th class="v2">pepADMET ★</th>
+    <th class="v2">bRo5 ★</th>
     <th style="min-width:160px">3D Structure</th>
   </tr>`;
 
@@ -549,7 +561,23 @@ function renderResults(res) {
     const iptm = parseFloat(r.ipTM) || 0;
     const amp = parseFloat(r.ampScore) || 0;
     const sol = parseFloat(r.solubility) || 0;
+    const hl = parseFloat(r.half_life) || 0;
+    const ps = parseFloat(r.protease_stability) || 0;
+    const pa = parseFloat(r.pepADMET_score) || 0;
+    const bro5ok = r.bRo5_compliant;
     const bg = idx % 2 === 0 ? 'rgba(3,12,24,.98)' : 'rgba(7,19,38,.98)';
+
+    function sbar(val, hi, lo, fmt) {
+      const col = val >= hi ? 'var(--green)' : val >= lo ? 'var(--amber)' : 'var(--red)';
+      const w = Math.min(val * 100 / (hi * 1.5 || 1), 100);
+      return `<div class="sb"><div class="strack"><div class="sfill" style="width:${w.toFixed(1)}%;background:${col};"></div></div><span class="sval" style="color:${col};">${fmt(val)}</span></div>`;
+    }
+
+    const solD = sbar(sol, 0.60, 0.35, v => v.toFixed(2));
+    const hlD  = `<span style="font-family:var(--mono);font-size:.85rem;font-weight:700;color:${hl>8?'var(--green)':hl>2?'var(--amber)':'var(--red)'};">${hl.toFixed(1)}&nbsp;hr</span>`;
+    const psD  = sbar(ps/100, 0.65, 0.35, v => (v*100).toFixed(0)+'%');
+    const paD  = `<span style="font-family:var(--mono);font-size:.85rem;font-weight:700;color:${pa>=0.65?'var(--green)':pa>=0.40?'var(--amber)':'var(--red)'};">${pa.toFixed(2)}</span>`;
+    const broD = bro5ok!==undefined ? `<span class="tag ${bro5ok?'ts':'td'}" style="font-size:.75rem;">${bro5ok?'✓ Pass':'✗ Fail'}</span>` : '—';
 
     const tr = document.createElement('tr');
     tr.addEventListener('click', () => showDetail(r, idx));
@@ -561,10 +589,17 @@ function renderResults(res) {
       <td>${plddt.toFixed(1)}</td>
       <td>${ptm.toFixed(3)}</td>
       <td>${iptm.toFixed(3)}</td>
+      <td>${r.molecular_weight ? (r.molecular_weight/1000).toFixed(2) : '—'}</td>
+      <td>${r.isoelectric_point ?? '—'}</td>
+      <td>${r.net_charge !== undefined ? r.net_charge.toFixed(3) : '—'}</td>
       <td>${amp.toFixed(2)}</td>
       <td><span class="tag ${r.toxic==='Non-Toxic'?'ts':'td'}">${r.toxic}</span></td>
-      <td>${sol.toFixed(2)}</td>
-      <td>${r.primary_moa||'—'}</td>
+      <td style="background:rgba(45,226,138,0.028);">${solD}</td>
+      <td style="background:rgba(45,226,138,0.028);">${hlD}</td>
+      <td style="background:rgba(45,226,138,0.028);">${psD}</td>
+      <td style="background:rgba(45,226,138,0.028);">${r.primary_moa||'—'}</td>
+      <td style="background:rgba(45,226,138,0.028);">${paD}</td>
+      <td style="background:rgba(45,226,138,0.028);">${broD}</td>
       <td>
         <button class="btn btn-main bsm" onclick="event.stopPropagation();view3D('${r.id}')">👁 View</button>
       </td>`;
@@ -580,16 +615,20 @@ function showDetail(r, idx) {
     <div style="font-family:var(--mono);font-size:.84rem;color:var(--teal);word-break:break-all;padding:14px;background:rgba(13,232,198,0.03);border-radius:8px;margin-bottom:16px;">${r.sequence}</div>
     <div class="dg2">
       <div class="dc">
-        <div class="dc-t">Properties</div>
-        <div class="pr"><span class="pn">MW</span><span class="pv">${((r.molecular_weight||0)/1000).toFixed(2)} kDa</span></div>
-        <div class="pr"><span class="pn">pI</span><span class="pv">${r.isoelectric_point}</span></div>
-        <div class="pr"><span class="pn">Charge</span><span class="pv">${r.net_charge}</span></div>
+        <div class="dc-t">Physicochemical Properties</div>
+        <div class="pr"><span class="pn">Molecular Weight</span><span class="pv">${((r.molecular_weight||0)/1000).toFixed(2)} kDa</span></div>
+        <div class="pr"><span class="pn">Isoelectric Point (pI)</span><span class="pv">${r.isoelectric_point}</span></div>
+        <div class="pr"><span class="pn">Net Charge</span><span class="pv">${r.net_charge}</span></div>
+        <div class="pr"><span class="pn">Hydrophobicity</span><span class="pv">${r.hydrophobicity}</span></div>
+        <div class="pr"><span class="pn">Amphipathicity</span><span class="pv">${r.amphipathicity}</span></div>
       </div>
       <div class="dc">
-        <div class="dc-t">Druggability</div>
-        <div class="pr"><span class="pn">Solubility</span><span class="pv">${r.solubility}</span></div>
-        <div class="pr"><span class="pn">Half-life</span><span class="pv">${r.half_life} hr</span></div>
-        <div class="pr"><span class="pn">Stability</span><span class="pv">${r.protease_stability}%</span></div>
+        <div class="dc-t">Druggability &amp; Stability</div>
+        <div class="pr"><span class="pn">Solubility</span><span class="pv">${r.solubility} (${r.solubility_class})</span></div>
+        <div class="pr"><span class="pn">Serum Half-life</span><span class="pv">${r.half_life} hr (${r.half_life_class})</span></div>
+        <div class="pr"><span class="pn">Protease Stability</span><span class="pv">${r.protease_stability}% (${r.protease_class})</span></div>
+        <div class="pr"><span class="pn">pepADMET Score</span><span class="pv">${r.pepADMET_score} (${r.pepADMET_class})</span></div>
+        <div class="pr"><span class="pn">bRo5 Status</span><span class="pv">${r.bRo5_status}</span></div>
       </div>
     </div>
     <div style="display:flex;justify-content:flex-end;margin-top:12px;">
