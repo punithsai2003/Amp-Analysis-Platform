@@ -1,12 +1,3 @@
-"""
-AMP Discovery Platform v6.3
-- NO AI (removed Groq/Gemini/OpenRouter completely)
-- v2 predictors rewritten as proper multi-line functions (fixes 0.00 bug)
-- ESMFold structure prediction
-- All 4 v2 metrics always computed and returned
-- Debug: visit http://localhost:5000/api/test to verify predictor output
-"""
-
 from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 import io, os, requests as req_lib, random, math
@@ -820,7 +811,7 @@ def dl_pdb(filename):
 import os
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 7860))
+    port = int(os.environ.get("PORT", 5000))
     print(f"Run:     python app.py")
     print(f"Test:    http://localhost:{port}/api/test\n")
     app.run(host='0.0.0.0', port=port)
